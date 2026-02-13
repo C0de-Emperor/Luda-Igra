@@ -1,5 +1,3 @@
-
-
 # Example file showing a basic pygame "game loop"
 from Objects import *
 import pygame
