@@ -1,6 +1,7 @@
 
 
 # Example file showing a basic pygame "game loop"
+from Objects import *
 import pygame
 
 # pygame setup
@@ -8,10 +9,11 @@ pygame.init()
 screen = pygame.display.set_mode((1280, 720))
 clock = pygame.time.Clock()
 running = True
-
 dt = 0
 
-player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
+
+player = Player(pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2))
+
 
 while running:
     # poll for events
@@ -24,17 +26,9 @@ while running:
     screen.fill("purple")
 
     # RENDER YOUR GAME HERE
-    pygame.draw.circle(screen, "red", player_pos, 40)
-
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_z]:
-        player_pos.y -= 300 * dt
-    if keys[pygame.K_s]:
-        player_pos.y += 300 * dt
-    if keys[pygame.K_q]:
-        player_pos.x -= 300 * dt
-    if keys[pygame.K_d]:
-        player_pos.x += 300 * dt
+    for obj in Object.instances:
+        obj.Update(dt)
+        obj.Render(screen)
 
     # flip() the display to put your work on screen
     pygame.display.flip()
@@ -48,16 +42,5 @@ pygame.quit()
 
 
 
-class Object :
-    instances: list["Object"] = []
 
-    def __init__(self):
-        Object.instances.append(self)
-
-    def Update (self, dt):
-        pass
-
-    def Destroy(self):
-        if self in Object.instances:
-            Object.instances.remove(self)
     
