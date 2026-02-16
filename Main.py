@@ -13,20 +13,21 @@ clock = pygame.time.Clock()
 running = True
 dt = 0
 
-biomeTest=Biome("", ["carte"], [])
+biomeTest=Biome("", ["Donjon"], [])
 
 
 
 tm = biomeTest.tilemaps[0] # peut être faire un dict pour find une zone / tilemap par son nom et une methode load zone / biome
 
+Biome.loadBiome(biomeTest, tm, screen)
+
 player = Player(
-        Vector2(screen.get_width() / 2, screen.get_height() / 2), 
+        Tilemap.currentTilemap.spawn_point, 
         Vector2(50, 50),
         r"player.png",
         speed = 300
     )
 
-Biome.loadBiome(biomeTest, tm, screen)
 
 while running:
     for event in pygame.event.get():
