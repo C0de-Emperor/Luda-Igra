@@ -12,11 +12,11 @@ KEYS_MOVEMENT = {
 
 
 class Object:
-    instances: list["Object"] = []
-
     def __init__(self, position: Vector2):
+        from SceneManager import Scene
+
         self.position: Vector2 = position
-        Object.instances.append(self)
+        Scene.currentScene.objects.append(self)
 
     def Update(self, dt):
         pass
@@ -28,6 +28,9 @@ class Object:
         if self in Object.instances:
             Object.instances.remove(self)
             del self
+
+    def GetColliders(self) -> list[pygame.rect.Rect]:
+        return []
 
 
 class Player(Object):
@@ -99,42 +102,68 @@ class Player(Object):
         return False
 
     def Update(self, dt):
-        from TilemapManager import Tilemap
+        from SceneManager import Scene
         
-        if Tilemap.currentTilemap is None:
+        if Scene.currentScene is None:
             return
         
         direction = self._get_movement_direction()
-        walls = Tilemap.currentTilemap.collisions
+            
+        colliders = Scene.currentScene.GetAllColliders()
 
         # Déplacement et collision en X
         if direction.x != 0:
             self.position.x += direction.x * self.speed * dt
             self._update_rect()
-            self._check_collision(walls, "x")
+            self._check_collision(colliders, "x")
 
         # Déplacement et collision en Y
         if direction.y != 0:
             self.position.y += direction.y * self.speed * dt
             self._update_rect()
-            self._check_collision(walls, "y")
+            self._check_collision(colliders, "y")
 
     def Render(self, screen: pygame.surface.Surface, debug: bool = False):
         # Scale le sprite à la bonne taille
         scaled_sprite = pygame.transform.scale(self.sprite, (int(self.size.x), int(self.size.y)))
         
         # Applique l'offset de la caméra pour l'affichage (même offset que pyscroll)
-        from TilemapManager import Tilemap
+        from SceneManager import Scene
         screen_rect = self.rect.copy()
         
-        if Tilemap.currentTilemap and hasattr(Tilemap.currentTilemap, 'camera_offset'):
-            screen_rect.x -= Tilemap.currentTilemap.camera_offset.x
-            screen_rect.y -= Tilemap.currentTilemap.camera_offset.y
+        if Scene.currentScene.tilemap and hasattr(Scene.currentScene.tilemap, 'camera_offset'):
+            screen_rect.x -= Scene.currentScene.tilemap.camera_offset.x
+            screen_rect.y -= Scene.currentScene.tilemap.camera_offset.y
         
         screen.blit(scaled_sprite, screen_rect)
 
         if debug:
             pygame.draw.rect(screen, (255, 0, 0), screen_rect, 1)
         
+class ObjectWithCollider(Object):
+    def __init__(self, position: pygame.Vector2, size: pygame.Vector2,):
+        self.size = size
 
+        super().__init__(position)
+        
+        self.rect = pygame.Rect(0, 0, size.x, size.y)
+        self._update_rect()
     
+    def _update_rect(self):
+        """Synchronise le rect avec la position (centré)."""
+        self.rect.center = (int(self.position.x), int(self.position.y))
+
+    def GetColliders(self):
+        return [self.rect]
+    
+    def Render(self, screen: pygame.surface.Surface, debug: bool = False):
+        screen_rect = self.rect.copy()
+
+        from SceneManager import Scene
+
+        if Scene.currentScene.tilemap and hasattr(Scene.currentScene.tilemap, 'camera_offset'):
+            screen_rect.x -= Scene.currentScene.tilemap.camera_offset.x
+            screen_rect.y -= Scene.currentScene.tilemap.camera_offset.y
+        
+        if debug:
+            pygame.draw.rect(screen, (255, 0, 0), screen_rect, 1)

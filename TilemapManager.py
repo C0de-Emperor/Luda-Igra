@@ -4,18 +4,20 @@ import pyscroll
 from Objects import Player, Object
 
 
-class Tilemap(Object):
-    currentTilemap = None
 
-    def __init__(self, tilemapPath: str):
+class Tilemap(Object):
+    def __init__(self, path: str):
+        from SceneManager import Scene
         super().__init__(pygame.Vector2(0, 0))
 
-        self.tmx_data = pytmx.load_pygame(tilemapPath)
+        self.tmx_data = pytmx.load_pygame(path)
         self.map_data = pyscroll.data.TiledMapData(self.tmx_data)
         self.collisions: list[pygame.Rect] = []
         
         self._load_collisions()
         self._load_spawn_point()
+
+        Scene.currentScene.tilemap = self
 
     def _load_collisions(self):
         """Charge les rects de collision depuis le layer 'Collisions'"""
@@ -51,30 +53,9 @@ class Tilemap(Object):
                     screen_rect = collision_rect.move(-self.camera_offset.x, -self.camera_offset.y)
                     pygame.draw.rect(screen, (0, 255, 0), screen_rect, 2)
 
-    @staticmethod
-    def loadTilemap(tilemap: "Tilemap", screen: pygame.surface.Surface):
-        """Initialise le rendu du tilemap avec pyscroll"""
-        Tilemap.currentTilemap = tilemap
-        tilemap.map_layer = pyscroll.orthographic.BufferedRenderer(
-            tilemap.map_data, screen.get_size()
-        )
-        tilemap.group = pyscroll.PyscrollGroup(tilemap.map_layer, default_layer=0)
+    def GetColliders(self) -> list[pygame.rect.Rect]:
+        return self.collisions
 
 
-class Biome:
-    """Regroupement de Tilemap"""
-    currentBiome = None
 
-    def __init__(self, biomePath: str, tilemapNames: list[str], tileMapAutomatMatrix=None):
-        self.biome_path = biomePath
-        self.tilemaps: list[Tilemap] = []
-        
-        for name in tilemapNames:
-            path = f"data/tilemaps/{name}.tmx"
-            self.tilemaps.append(Tilemap(path))
 
-    @staticmethod
-    def loadBiome(biome: "Biome", tilemap: "Tilemap", screen: pygame.surface.Surface):
-        Biome.currentBiome = biome
-
-        Tilemap.loadTilemap(tilemap, screen)
