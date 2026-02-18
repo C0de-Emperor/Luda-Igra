@@ -32,6 +32,17 @@ class Object:
     def GetColliders(self) -> list[pygame.rect.Rect]:
         return []
 
+    def LoadSprite(self, sprite: str):
+        if isinstance(sprite, str):
+            if not os.path.exists(sprite):
+                raise FileNotFoundError(f"Image not found: {sprite}")
+            self.sprite = pygame.image.load(sprite).convert_alpha()
+        elif isinstance(sprite, pygame.Surface):
+            self.sprite = sprite
+        else:
+
+            raise TypeError(f"Unsupported image type: {type(sprite)}")
+
 
 class Player(Object):
     player = None
@@ -41,23 +52,12 @@ class Player(Object):
         self.size = size
 
         super().__init__(position)
-        self._load_sprite(sprite)
+        self.LoadSprite(sprite)
         
         self.rect = pygame.Rect(0, 0, size.x, size.y)
         self._update_rect()
 
         Player.player = self
-
-    def _load_sprite(self, sprite: str):
-        """Charge le sprite du joueur."""
-        if isinstance(sprite, str):
-            if not os.path.exists(sprite):
-                raise FileNotFoundError(f"Image not found: {sprite}")
-            self.sprite = pygame.image.load(sprite).convert_alpha()
-        elif isinstance(sprite, pygame.Surface):
-            self.sprite = sprite
-        else:
-            raise TypeError(f"Unsupported image type: {type(sprite)}")
 
     def _update_rect(self):
         """Synchronise le rect avec la position (centré)."""
@@ -141,7 +141,7 @@ class Player(Object):
             pygame.draw.rect(screen, (255, 0, 0), screen_rect, 1)
         
 class ObjectWithCollider(Object):
-    def __init__(self, position: pygame.Vector2, size: pygame.Vector2,):
+    def __init__(self, position: pygame.Vector2, size: pygame.Vector2):
         self.size = size
 
         super().__init__(position)
@@ -167,3 +167,42 @@ class ObjectWithCollider(Object):
         
         if debug:
             pygame.draw.rect(screen, (255, 0, 0), screen_rect, 1)
+
+class Gate(Object):
+    def __init__(self, gateCoordinates, position: pygame.Vector2, size: pygame.Vector2, sprite: str):
+        self.gateCoordinates=gateCoordinates
+        self.size=size
+        
+        super().__init__(position)
+        self.LoadSprite(sprite)
+
+        self.rect=pygame.Rect(self.position.x, self.position.y, self.size.x, self.size.y)
+        self._update_rect()
+
+    def _update_rect(self):
+        """Synchronise le rect avec la position (centré)."""
+        self.rect.center = (int(self.position.x), int(self.position.y))
+
+    def Render(self, screen: pygame.surface.Surface, debug: bool=False):
+        screen_rect=self.rect.copy()
+
+        from SceneManager import Scene
+
+        if Scene.currentScene.tilemap and hasattr(Scene.currentScene.tilemap, 'camera_offset'):
+            screen_rect.x -= Scene.currentScene.tilemap.camera_offset.x
+            screen_rect.y -= Scene.currentScene.tilemap.camera_offset.y
+        
+        if debug:
+            pygame.draw.rect(screen, (0, 0, 255), screen_rect, 1)
+
+        scaled_sprite = pygame.transform.scale(self.sprite, (int(self.size.x), int(self.size.y)))
+        screen.blit(scaled_sprite, screen_rect)
+
+        coll = self.rect.colliderect(Player.player.rect)
+
+        if coll:
+            from SceneManager import BiomeManager
+
+            BiomeManager.biomeManager.loadBiome(self.gateCoordinates[0])
+            BiomeManager.biomeManager.currentBiome.load(self.gateCoordinates[1], screen)
+            

@@ -8,9 +8,8 @@ def load(scene: Scene):
 
     Player(
         Scene.currentScene.tilemap.spawn_point, 
-        Vector2(50, 50),
-        r"player.png",
+        Vector2(100, 100),
+        r"data/sprites/toruk_makto.png",
         speed = 300
     )
 
-    ObjectWithCollider(Vector2(500, 500), Vector2(200, 200))

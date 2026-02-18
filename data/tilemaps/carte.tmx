@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.7.2" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="109">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="111">
+ <editorsettings>
+  <export target="../../../../../Downloads/carte..tmx" format="tmx"/>
+ </editorsettings>
  <tileset firstgid="1" source="../Tilesets/nature.tsx"/>
  <layer id="1" name="map" width="50" height="50">
   <data encoding="csv">
@@ -109,6 +112,10 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup id="6" name="Gates">
+  <object id="109" name="defaultBiome, 1" x="768.125" y="1504.25" width="63.5" height="31.75"/>
+  <object id="110" name="defaultBiome, 0" x="64" y="1184" width="32" height="64"/>
+ </objectgroup>
  <objectgroup id="3" name="Collisions">
   <object id="16" x="0" y="0" width="32" height="1600"/>
   <object id="17" x="32" y="1568" width="1568" height="32"/>

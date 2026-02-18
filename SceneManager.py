@@ -49,11 +49,10 @@ class Scene:
         self.tilemap.group = pyscroll.PyscrollGroup(self.tilemap.map_layer, default_layer=0)
 
 class Biome:
-    """Regroupement de Scene"""
-    currentBiome = None
-
-    def __init__(self, scenes: list[Scene]):
+    """Regroupement de Scenes"""
+    def __init__(self, scenes: list[Scene], automatList: list[list[int]] = []):
         self.scenes: list[Scene] = scenes
+        self.automatList = automatList
    
     def load(self, index: int , screen: pygame.surface.Surface):
         Biome.currentBiome = self
@@ -61,7 +60,24 @@ class Biome:
         self.scenes[index].load(screen)
         #Tilemap.loadTilemap(self.scenes[index].tilemap, screen)
 
-biome = Biome([
+class BiomeManager  :
+    biomeManager=None
+
+    def __init__(self, biomesDict:dict):
+        self.biomesDict:dict=biomesDict
+        self.currentBiome:Biome=None
+
+        BiomeManager.biomeManager = self
+    
+    def loadBiome(self, biomeName):
+        try:
+            self.currentBiome=self.biomesDict[biomeName]
+        except:
+            print(f"no biome matching for biome name: {biomeName}")
+
+biome1 = Biome([
         Scene("Carte"),
         Scene("Donjon")
     ])
+
+BiomeManager({"defaultBiome": biome1})

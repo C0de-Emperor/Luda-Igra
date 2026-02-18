@@ -1,7 +1,7 @@
 import pygame
 import pytmx
 import pyscroll
-from Objects import Player, Object
+from Objects import Player, Object, Gate
 
 
 
@@ -13,8 +13,10 @@ class Tilemap(Object):
         self.tmx_data = pytmx.load_pygame(path)
         self.map_data = pyscroll.data.TiledMapData(self.tmx_data)
         self.collisions: list[pygame.Rect] = []
+        self.gates: list[list[pygame.Rect, int]] = []
         
         self._load_collisions()
+        self._load_gates()
         self._load_spawn_point()
 
         Scene.currentScene.tilemap = self
@@ -36,6 +38,18 @@ class Tilemap(Object):
         except (ValueError, AttributeError):
             print("WARNING: Spawn point 'spawnPoint' non trouvé dans le tilemap")
             self.spawn_point = pygame.Vector2(0, 0)
+    
+    def _load_gates(self):
+        if True:
+            gates_layer=self.tmx_data.get_layer_by_name("Gates")
+            for gate in gates_layer:
+                rect=pygame.Rect(gate.x, gate.y, gate.width, gate.height)
+                coordinates=gate.name.rstrip().replace(" ", "").split(",")
+                coordinates[1]=int(coordinates[1])
+                self.gates.append([rect, coordinates])
+                Gate(coordinates, pygame.Vector2(rect.x, rect.y), pygame.Vector2(rect.width, rect.height), "data/sprites/toruk_makto.png")
+        #except:
+        #    print("WARNING: Couche de portails 'Gates' non trouvée dans le tilemap")
 
     def Render(self, screen: pygame.surface.Surface, debug: bool = False):
         if hasattr(self, 'group') and hasattr(self, 'map_layer'):
@@ -53,8 +67,11 @@ class Tilemap(Object):
                     screen_rect = collision_rect.move(-self.camera_offset.x, -self.camera_offset.y)
                     pygame.draw.rect(screen, (0, 255, 0), screen_rect, 2)
 
-    def GetColliders(self) -> list[pygame.rect.Rect]:
+    def GetColliders(self) -> list[pygame.Rect]:
         return self.collisions
+    
+    def GetGates(self) -> list[list[pygame.Rect, int]]:
+        return self.gates
 
 
 

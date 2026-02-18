@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="2021.03.23" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="95">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="96">
  <tileset firstgid="1" source="../Tilesets/dungeon.tsx"/>
  <layer id="1" name="floors" width="100" height="100">
   <data encoding="csv">
@@ -313,6 +313,9 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup id="6" name="Gates">
+  <object id="95" name="defaultBiome, 0" x="1176.83" y="189.064" width="111.895" height="46.3013"/>
+ </objectgroup>
  <objectgroup id="4" name="Collisions">
   <object id="1" x="53" y="19.5" width="150" height="75.5"/>
   <object id="2" x="53" y="94.5" width="9.5" height="1196"/>

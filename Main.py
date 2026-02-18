@@ -14,9 +14,11 @@ clock = pygame.time.Clock()
 running = True
 dt = 0
 
-from SceneManager import biome
+from SceneManager import BiomeManager
 
-biome.load(0, screen)
+biomeManager=BiomeManager.biomeManager
+biomeManager.loadBiome("defaultBiome")
+biomeManager.currentBiome.load(0, screen)
 
 while running:
     for event in pygame.event.get():
@@ -29,9 +31,9 @@ while running:
     keys = pygame.key.get_pressed()
 
     if keys[pygame.K_h]:
-        biome.load(1, screen)
+        biomeManager.currentBiome.load(1, screen)
     if keys[pygame.K_j]:
-        biome.load(0, screen)
+        biomeManager.currentBiome.load(0, screen)
 
     # RENDER & UPDATE
     for obj in Scene.currentScene.objects:
