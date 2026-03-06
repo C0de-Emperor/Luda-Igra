@@ -7,7 +7,6 @@ from Objects import Player, Object, Gate
 
 class Tilemap(Object):
     def __init__(self, path: str):
-        from SceneManager import Scene
         super().__init__(pygame.Vector2(0, 0))
 
         self.tmx_data = pytmx.load_pygame(path)
@@ -18,8 +17,6 @@ class Tilemap(Object):
         self._load_collisions()
         self._load_gates()
         self._load_spawn_point()
-
-        Scene.currentScene.tilemap = self
 
     def _load_collisions(self):
         """Charge les rects de collision depuis le layer 'Collisions'"""
@@ -53,8 +50,10 @@ class Tilemap(Object):
 
     def Render(self, screen: pygame.surface.Surface, debug: bool = False):
         if hasattr(self, 'group') and hasattr(self, 'map_layer'):
+
             # Centre la caméra sur le joueur
-            self.group.center(Player.player.rect)
+            if Player.player:
+                self.group.center(Player.player.rect)
             # Dessine le tilemap
             self.group.draw(screen)
 
@@ -75,4 +74,10 @@ class Tilemap(Object):
 
 
 
+"""
+Layers
 
+
+
+
+"""

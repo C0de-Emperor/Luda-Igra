@@ -201,8 +201,5 @@ class Gate(Object):
         coll = self.rect.colliderect(Player.player.rect)
 
         if coll:
-            from SceneManager import BiomeManager
-
-            BiomeManager.biomeManager.loadBiome(self.gateCoordinates[0])
-            BiomeManager.biomeManager.currentBiome.load(self.gateCoordinates[1], screen)
+            pass
             
