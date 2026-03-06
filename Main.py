@@ -20,6 +20,24 @@ biomeManager=BiomeManager.biomeManager
 biomeManager.loadBiome("defaultBiome")
 biomeManager.currentBiome.load(0, screen)
 
+currAnimState=0
+doBlackScreenTrans=True
+TRANS_TIME=1
+def blackScreenTrans():
+    global currAnimState
+
+    s=pygame.Surface(screen.get_size())
+    s.fill((0,0,0))
+    if currAnimState<256: s.set_alpha(int(currAnimState))
+    else: s.set_alpha(int(512-currAnimState))
+    screen.blit(s, (0,0))
+    currAnimState+=512/60/TRANS_TIME
+
+    if currAnimState>=512:
+        currAnimState=0
+        doBlackScreenTrans=False
+
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -40,6 +58,8 @@ while running:
         obj.Update(dt)
         obj.Render(screen, DEBUG)
 
+    if doBlackScreenTrans:
+        blackScreenTrans()
 
     # update the display
     pygame.display.flip()
