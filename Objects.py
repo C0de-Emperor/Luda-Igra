@@ -202,4 +202,105 @@ class Gate(Object):
 
         if coll:
             pass
+
             
+class Enemy(Object):
+    def __init__(self, position:Vector2, size:Vector2, sprite:str, baseHealth:float, attackDmg:float, movespeed:float, sightRadius:float):
+        super().__init__(position)
+        self.LoadSprite(sprite)
+
+        self.size=size
+
+        self.baseHealth = baseHealth
+        self.attackDmg = attackDmg
+        self.movespeed=movespeed
+        self.sightRadius = sightRadius
+
+        self.isChasing=False
+        self.randomDirection=Vector2(0,0)
+        
+        self.rect = pygame.Rect(0, 0, size.x, size.y)
+        self._update_rect()
+
+    def _update_rect(self):
+        """Synchronise le rect avec la position (centré)."""
+        self.rect.center = (int(self.position.x), int(self.position.y))
+    
+    def Render(self, screen, debug=False):
+        # Scale le sprite à la bonne taille
+        scaled_sprite = pygame.transform.scale(self.sprite, (int(self.size.x), int(self.size.y)))
+        
+        # Applique l'offset de la caméra pour l'affichage (même offset que pyscroll)
+        from SceneManager import Scene
+        screen_rect = self.rect.copy()
+        
+        if Scene.currentScene.tilemap and hasattr(Scene.currentScene.tilemap, 'camera_offset'):
+            screen_rect.x -= Scene.currentScene.tilemap.camera_offset.x
+            screen_rect.y -= Scene.currentScene.tilemap.camera_offset.y
+        
+        screen.blit(scaled_sprite, screen_rect)
+
+        if debug:
+            pygame.draw.rect(screen, (255, 0, 0), screen_rect, 1)
+
+    def Update(self, dt):
+        from SceneManager import Scene
+        
+        if Scene.currentScene is None:
+            return
+
+        deltaPos=Vector2(self.position.x-Player.player.position.x, self.position.y-Player.player.position.y)
+        self.isChasing = deltaPos.magnitude() <= self.sightRadius
+
+        if self.isChasing:
+            direction=-deltaPos.normalize()
+        else:
+            if pygame.time.get_ticks()%1000*5 <= 10:
+                print(self.randomDirection)
+                self.randomDirection=Vector2(randint(20, 200), randint(20, 200)).normalize()
+
+            direction=self.randomDirection
+        
+        colliders = Scene.currentScene.GetAllColliders()+[Player.player.rect]
+
+        # Déplacement et collision en X
+        if direction.x != 0:
+            self.position.x += direction.x * self.movespeed * dt
+            self._update_rect()
+            self._check_collision(colliders, "x")
+
+        # Déplacement et collision en Y
+        if direction.y != 0:
+            self.position.y += direction.y * self.movespeed * dt
+            self._update_rect()
+            self._check_collision(colliders, "y")
+        
+        self._update_rect()
+    
+    def _check_collision(self, walls: list[pygame.Rect], axis: str) -> bool:
+        """
+        Vérifie les collisions sur un axe.
+        Retourne True si collision détectée.
+        """
+        for wall in walls:
+            if self.rect.colliderect(wall):
+                if axis == "x":
+                    # Ajuste la position X selon la direction
+                    if self.position.x < wall.centerx:
+                        self.position.x = wall.left - self.rect.width / 2
+                    else:
+                        self.position.x = wall.right + self.rect.width / 2
+                else:  # axis == "y"
+                    # Ajuste la position Y selon la direction
+                    if self.position.y < wall.centery:
+                        self.position.y = wall.top - self.rect.height / 2
+                    else:
+                        self.position.y = wall.bottom + self.rect.height / 2
+                
+                self._update_rect()
+                return True
+        return False
+
+class CochonTronc(Enemy):
+    def __init__(self):
+        super().__init__(Vector2(100, 120), Vector2(50, 50), "data/sprites/cochonTronc.png", 100, 10, 60, 400)

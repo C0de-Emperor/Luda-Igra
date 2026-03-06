@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="111">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="114">
  <editorsettings>
   <export target="../../../../../Downloads/carte..tmx" format="tmx"/>
  </editorsettings>
@@ -113,8 +113,11 @@
 </data>
  </layer>
  <objectgroup id="6" name="Gates">
-  <object id="109" name="defaultBiome, 1" x="768.125" y="1504.25" width="63.5" height="31.75"/>
+  <object id="109" name="dungeon1" x="768.125" y="1504.25" width="63.5" height="31.75"/>
   <object id="110" name="defaultBiome, 0" x="64" y="1184" width="32" height="64"/>
+  <object id="112" name="dungeon1" x="799.818" y="1471.64">
+   <point/>
+  </object>
  </objectgroup>
  <objectgroup id="3" name="Collisions">
   <object id="16" x="0" y="0" width="32" height="1600"/>
