@@ -43,7 +43,6 @@ class Object:
 
             raise TypeError(f"Unsupported image type: {type(sprite)}")
 
-
 class Player(Object):
     player = None
 
@@ -169,8 +168,9 @@ class ObjectWithCollider(Object):
             pygame.draw.rect(screen, (255, 0, 0), screen_rect, 1)
 
 class Gate(Object):
-    def __init__(self, gateCoordinates, position: pygame.Vector2, size: pygame.Vector2, sprite: str):
-        self.gateCoordinates=gateCoordinates
+    def __init__(self, name:str, destination:str, position: pygame.Vector2, size: pygame.Vector2, sprite: str):
+        self.name = name
+        self.destination = destination
         self.size=size
         
         super().__init__(position)
@@ -182,6 +182,13 @@ class Gate(Object):
     def _update_rect(self):
         """Synchronise le rect avec la position (centré)."""
         self.rect.center = (int(self.position.x), int(self.position.y))
+
+    def Update(self, dt):
+        from SceneManager import SCENES
+        coll = self.rect.colliderect(Player.player.rect)
+
+        if coll:
+            SCENES[self.destination].load(self.name)
 
     def Render(self, screen: pygame.surface.Surface, debug: bool=False):
         screen_rect=self.rect.copy()
@@ -197,12 +204,6 @@ class Gate(Object):
 
         scaled_sprite = pygame.transform.scale(self.sprite, (int(self.size.x), int(self.size.y)))
         screen.blit(scaled_sprite, screen_rect)
-
-        coll = self.rect.colliderect(Player.player.rect)
-
-        if coll:
-            pass
-
             
 class Enemy(Object):
     def __init__(self, position:Vector2, size:Vector2, sprite:str, baseHealth:float, attackDmg:float, movespeed:float, sightRadius:float):
@@ -245,6 +246,7 @@ class Enemy(Object):
 
     def Update(self, dt):
         from SceneManager import Scene
+        import random
         
         if Scene.currentScene is None:
             return
@@ -257,7 +259,7 @@ class Enemy(Object):
         else:
             if pygame.time.get_ticks()%1000*5 <= 10:
                 print(self.randomDirection)
-                self.randomDirection=Vector2(randint(20, 200), randint(20, 200)).normalize()
+                self.randomDirection=Vector2(random.randint(20, 200), random.randint(20, 200)).normalize()
 
             direction=self.randomDirection
         

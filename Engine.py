@@ -8,7 +8,7 @@ def Run (screen: pygame.surface.Surface, DEBUG: True):
     dt = 0
     running = True
 
-    SceneManager.SCENES["Map"].load()
+    SceneManager.SCENES["carte"].load("SpawnPoint")
 
     Player(pygame.Vector2(100, 100), pygame.Vector2(50, 50), r"data/sprites/toruk_makto.png", speed=800)
 

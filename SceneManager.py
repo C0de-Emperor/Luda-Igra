@@ -1,12 +1,12 @@
-from Objects import Object
 import pygame
 import pyscroll
-from TilemapManager import Tilemap
 
 class Scene:
     currentScene = None
     
-    def __init__(self, name: str): # passer une tilemap ?
+    def __init__(self, name: str):
+        from Objects import Object
+
         self.name: str = name
         self.objects: list["Object"] = []
         
@@ -19,13 +19,29 @@ class Scene:
 
         return colliders
 
-    def load(self):
+    def load(self, point: str):
         """Initialise la Scene"""
         from Main import SCREEN
+        from TilemapManager import Tilemap
+        from Objects import Player
 
         Scene.currentScene = self
 
+        self.objects = []
+
         self.tilemap = Tilemap(f"data/Tilemaps/{self.name}.tmx")
+
+        if point not in self.tilemap.points.keys():
+            print(f"ERROR : '{point}' not in '{self.tilemap.path}' points")
+            return
+
+        if Player.player:
+            print(self.objects)
+            if Player.player not in self.objects:
+                print("s")
+                self.objects.append(Player.player)
+
+            Player.player.position = self.tilemap.points[point]
 
         self.tilemap.map_layer = pyscroll.orthographic.BufferedRenderer(
             self.tilemap.map_data, SCREEN.get_size()
@@ -33,5 +49,6 @@ class Scene:
         self.tilemap.group = pyscroll.PyscrollGroup(self.tilemap.map_layer, default_layer=0)
 
 SCENES = {
-    "Map" : Scene("carte")
+    "carte" : Scene("carte"),
+    "dungeon": Scene("donjon")
 }

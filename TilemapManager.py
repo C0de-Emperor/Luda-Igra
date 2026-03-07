@@ -9,14 +9,16 @@ class Tilemap(Object):
     def __init__(self, path: str):
         super().__init__(pygame.Vector2(0, 0))
 
+        self.path = path
+
         self.tmx_data = pytmx.load_pygame(path)
         self.map_data = pyscroll.data.TiledMapData(self.tmx_data)
         self.collisions: list[pygame.Rect] = []
-        self.gates: list[list[pygame.Rect, int]] = []
+        #self.gates: list[list[pygame.Rect, int]] = []
         
         self._load_collisions()
         self._load_gates()
-        self._load_spawn_point()
+        self._load_points()
 
     def _load_collisions(self):
         """Charge les rects de collision depuis le layer 'Collisions'"""
@@ -28,25 +30,30 @@ class Tilemap(Object):
         except (ValueError, AttributeError):
             print("WARNING: Couche de collision 'Collisions' non trouvée dans le tilemap")
 
-    def _load_spawn_point(self):
+    def _load_points(self):
         try:
-            spawn_obj = self.tmx_data.get_object_by_name("spawnPoint")
-            self.spawn_point = pygame.Vector2(spawn_obj.x, spawn_obj.y)
+            points_layer = self.tmx_data.get_layer_by_name("Points")
+            self.points: dict[str, pygame.Vector2] = {}
+            for point in points_layer:
+                self.points[point.name] = pygame.Vector2(point.x, point.y)
+
+            #spawn_obj = self.tmx_data.get_object_by_name("spawnPoint")
+            #self.spawn_point = pygame.Vector2(spawn_obj.x, spawn_obj.y)
+
         except (ValueError, AttributeError):
             print("WARNING: Spawn point 'spawnPoint' non trouvé dans le tilemap")
             self.spawn_point = pygame.Vector2(0, 0)
     
     def _load_gates(self):
-        if True:
-            gates_layer=self.tmx_data.get_layer_by_name("Gates")
-            for gate in gates_layer:
-                rect=pygame.Rect(gate.x, gate.y, gate.width, gate.height)
-                coordinates=gate.name.rstrip().replace(" ", "").split(",")
-                coordinates[1]=int(coordinates[1])
-                self.gates.append([rect, coordinates])
-                Gate(coordinates, pygame.Vector2(rect.x, rect.y), pygame.Vector2(rect.width, rect.height), "data/sprites/toruk_makto.png")
-        #except:
-        #    print("WARNING: Couche de portails 'Gates' non trouvée dans le tilemap")
+        gates_layer = self.tmx_data.get_layer_by_name("Gates")
+        for gate in gates_layer:
+            rect = pygame.Rect(gate.x, gate.y, gate.width, gate.height)
+
+            destination, name = gate.name.split("/")
+            #self.gates.append([rect, coordinates])
+
+            Gate(name, destination, pygame.Vector2(rect.x, rect.y), pygame.Vector2(rect.width, rect.height), "data/sprites/toruk_makto.png")
+
 
     def Render(self, screen: pygame.surface.Surface, debug: bool = False):
         if hasattr(self, 'group') and hasattr(self, 'map_layer'):
