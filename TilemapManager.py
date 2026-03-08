@@ -19,6 +19,20 @@ class Tilemap(Object):
         self._load_collisions()
         self._load_gates()
         self._load_points()
+        self._load_spawn_Area()
+
+    def _load_spawn_Area(self):
+        from Objects import ENEMIES, SpawnArea
+        areas_layer = self.tmx_data.get_layer_by_name("SpawnArea")
+        for area in areas_layer:
+            rect = pygame.Rect(area.x, area.y, area.width, area.height)
+            print(area.name)
+            entityName, count, delay = area.name.split("-")
+
+            entity = ENEMIES[entityName]
+
+            SpawnArea(entity, int(count), int(delay), pygame.Vector2(rect.x, rect.y), pygame.Vector2(rect.width, rect.height))
+
 
     def _load_collisions(self):
         """Charge les rects de collision depuis le layer 'Collisions'"""
@@ -37,12 +51,9 @@ class Tilemap(Object):
             for point in points_layer:
                 self.points[point.name] = pygame.Vector2(point.x, point.y)
 
-            #spawn_obj = self.tmx_data.get_object_by_name("spawnPoint")
-            #self.spawn_point = pygame.Vector2(spawn_obj.x, spawn_obj.y)
-
         except (ValueError, AttributeError):
-            print("WARNING: Spawn point 'spawnPoint' non trouvé dans le tilemap")
-            self.spawn_point = pygame.Vector2(0, 0)
+            print(f"ERROR: 'Points' layer not found in tilemap '{self.path}'")
+            return
     
     def _load_gates(self):
         gates_layer = self.tmx_data.get_layer_by_name("Gates")
@@ -50,10 +61,8 @@ class Tilemap(Object):
             rect = pygame.Rect(gate.x, gate.y, gate.width, gate.height)
 
             destination, name = gate.name.split("/")
-            #self.gates.append([rect, coordinates])
 
             Gate(name, destination, pygame.Vector2(rect.x, rect.y), pygame.Vector2(rect.width, rect.height), "data/sprites/toruk_makto.png")
-
 
     def Render(self, screen: pygame.surface.Surface, debug: bool = False):
         if hasattr(self, 'group') and hasattr(self, 'map_layer'):

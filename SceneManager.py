@@ -26,7 +26,7 @@ class Scene:
         from Objects import Player
 
         Scene.currentScene = self
-
+        
         self.objects = []
 
         self.tilemap = Tilemap(f"data/Tilemaps/{self.name}.tmx")

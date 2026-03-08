@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="32" tileheight="32" infinite="0" nextlayerid="8" nextobjectid="117">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="32" tileheight="32" infinite="0" nextlayerid="9" nextobjectid="119">
  <editorsettings>
   <export target="../../../../../Downloads/carte..tmx" format="tmx"/>
  </editorsettings>
@@ -172,5 +172,8 @@
   <object id="116" name="door1" x="800" y="1472">
    <point/>
   </object>
+ </objectgroup>
+ <objectgroup id="8" name="SpawnArea">
+  <object id="117" name="CochonTronc-5-4" x="1067" y="784" width="315" height="630"/>
  </objectgroup>
 </map>

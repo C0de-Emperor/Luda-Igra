@@ -56,6 +56,8 @@ class Player(Object):
         self.rect = pygame.Rect(0, 0, size.x, size.y)
         self._update_rect()
 
+        if Player.player != None:
+            print("Error : 2 player in the scene")
         Player.player = self
 
     def _update_rect(self):
@@ -204,7 +206,56 @@ class Gate(Object):
 
         scaled_sprite = pygame.transform.scale(self.sprite, (int(self.size.x), int(self.size.y)))
         screen.blit(scaled_sprite, screen_rect)
-            
+
+class SpawnArea(Object):
+    def __init__(self, entity: type["Enemy"], maxSpawnCount: int, delay: int, position: pygame.Vector2, size: pygame.Vector2):
+        import random
+
+        self.size=size
+        self.entity = entity
+        self.maxSpawnCount = maxSpawnCount
+        self.delay = delay
+        self.count = 0
+
+        self.timer = 0
+
+        super().__init__(position)
+        self.rect = pygame.Rect(self.position.x, self.position.y, self.size.x, self.size.y)
+
+        for i in range(random.randint(0, self.maxSpawnCount)):
+            self._spawn()
+
+    def _spawn(self):
+        import random
+
+        pos = self.position.copy()
+
+        pos.x += random.randint(0, int(self.size.x))
+        pos.y += random.randint(0, int(self.size.y))
+
+        self.entity(pos)
+
+        self.count += 1
+
+    def Update(self, dt):
+        self.timer += dt
+
+        if self.timer >= self.delay and self.count < self.maxSpawnCount:
+            self._spawn()
+            self.timer = 0
+
+    def Render(self, screen: pygame.surface.Surface, debug: bool=False):
+        screen_rect=self.rect.copy()
+
+        from SceneManager import Scene
+
+        if Scene.currentScene.tilemap and hasattr(Scene.currentScene.tilemap, 'camera_offset'):
+            screen_rect.x -= Scene.currentScene.tilemap.camera_offset.x
+            screen_rect.y -= Scene.currentScene.tilemap.camera_offset.y
+        
+        if debug:
+            pygame.draw.rect(screen, (255, 85, 0), screen_rect, 1)
+       
 class Enemy(Object):
     def __init__(self, position:Vector2, size:Vector2, sprite:str, baseHealth:float, attackDmg:float, movespeed:float, sightRadius:float):
         super().__init__(position)
@@ -251,13 +302,13 @@ class Enemy(Object):
         if Scene.currentScene is None:
             return
 
-        deltaPos=Vector2(self.position.x-Player.player.position.x, self.position.y-Player.player.position.y)
+        deltaPos = Vector2(self.position.x - Player.player.position.x, self.position.y - Player.player.position.y)
         self.isChasing = deltaPos.magnitude() <= self.sightRadius
 
         if self.isChasing:
-            direction=-deltaPos.normalize()
+            direction =- deltaPos.normalize()
         else:
-            if pygame.time.get_ticks()%1000*5 <= 10:
+            if pygame.time.get_ticks() % 1000 * 5 <= 10:
                 print(self.randomDirection)
                 self.randomDirection=Vector2(random.randint(20, 200), random.randint(20, 200)).normalize()
 
@@ -303,6 +354,12 @@ class Enemy(Object):
                 return True
         return False
 
+
 class CochonTronc(Enemy):
-    def __init__(self):
-        super().__init__(Vector2(100, 120), Vector2(50, 50), "data/sprites/cochonTronc.png", 100, 10, 60, 400)
+    def __init__(self, position: pygame.Vector2):
+        super().__init__(position, Vector2(50, 50), "data/sprites/toruk_makto.png", 100, 10, 60, 400)
+
+
+ENEMIES: dict[str, type[Enemy]] = {
+    "CochonTronc" : CochonTronc
+}
