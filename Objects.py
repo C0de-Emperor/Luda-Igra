@@ -12,10 +12,12 @@ KEYS_MOVEMENT = {
 
 
 class Object:
-    def __init__(self, position: Vector2):
+    def __init__(self, position: Vector2, destroyOnLoad: bool = True):
         from SceneManager import Scene
 
         self.position: Vector2 = position
+        self.destroyOnLoad: bool = destroyOnLoad
+
         Scene.currentScene.objects.append(self)
 
     def Update(self, dt):
@@ -25,8 +27,10 @@ class Object:
         pass
 
     def Destroy(self):
-        if self in Object.instances:
-            Object.instances.remove(self)
+        from SceneManager import Scene
+
+        if self in Scene.currentScene.objects:
+            Scene.currentScene.objects.remove(self)
             del self
 
     def GetColliders(self) -> list[pygame.rect.Rect]:
@@ -50,7 +54,7 @@ class Player(Object):
         self.speed = speed
         self.size = size
 
-        super().__init__(position)
+        super().__init__(position, False)
         self.LoadSprite(sprite)
         
         self.rect = pygame.Rect(0, 0, size.x, size.y)
@@ -175,7 +179,7 @@ class Gate(Object):
         self.destination = destination
         self.size=size
         
-        super().__init__(position)
+        super().__init__(position, True)
         self.LoadSprite(sprite)
 
         self.rect=pygame.Rect(self.position.x, self.position.y, self.size.x, self.size.y)
@@ -219,7 +223,7 @@ class SpawnArea(Object):
 
         self.timer = 0
 
-        super().__init__(position)
+        super().__init__(position, True)
         self.rect = pygame.Rect(self.position.x, self.position.y, self.size.x, self.size.y)
 
         for i in range(random.randint(0, self.maxSpawnCount)):
@@ -258,7 +262,7 @@ class SpawnArea(Object):
        
 class Enemy(Object):
     def __init__(self, position:Vector2, size:Vector2, sprite:str, baseHealth:float, attackDmg:float, movespeed:float, sightRadius:float):
-        super().__init__(position)
+        super().__init__(position, True)
         self.LoadSprite(sprite)
 
         self.size=size
@@ -353,7 +357,6 @@ class Enemy(Object):
                 self._update_rect()
                 return True
         return False
-
 
 class CochonTronc(Enemy):
     def __init__(self, position: pygame.Vector2):

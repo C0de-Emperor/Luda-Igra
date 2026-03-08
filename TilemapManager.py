@@ -7,7 +7,7 @@ from Objects import Player, Object, Gate
 
 class Tilemap(Object):
     def __init__(self, path: str):
-        super().__init__(pygame.Vector2(0, 0))
+        super().__init__(pygame.Vector2(0, 0), True)
 
         self.path = path
 
@@ -26,7 +26,7 @@ class Tilemap(Object):
         areas_layer = self.tmx_data.get_layer_by_name("SpawnArea")
         for area in areas_layer:
             rect = pygame.Rect(area.x, area.y, area.width, area.height)
-            print(area.name)
+
             entityName, count, delay = area.name.split("-")
 
             entity = ENEMIES[entityName]

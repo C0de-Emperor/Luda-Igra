@@ -25,23 +25,30 @@ class Scene:
         from TilemapManager import Tilemap
         from Objects import Player
 
+        objectsToKeep = []
+
+        if Scene.currentScene:
+            # objets à conserver
+            objectsToKeep = [obj for obj in Scene.currentScene.objects if obj.destroyOnLoad == False]
+
+            Scene.currentScene.objects = []
+
+
         Scene.currentScene = self
         
-        self.objects = []
-
         self.tilemap = Tilemap(f"data/Tilemaps/{self.name}.tmx")
 
-        if point not in self.tilemap.points.keys():
-            print(f"ERROR : '{point}' not in '{self.tilemap.path}' points")
-            return
+        # Mettre le tilemap en premier pour qu'il soit rendu avant les autres objets
+        self.objects.extend(objectsToKeep)
 
         if Player.player:
-            print(self.objects)
-            if Player.player not in self.objects:
-                print("s")
-                self.objects.append(Player.player)
+            if point not in self.tilemap.points.keys():
+                print(f"ERROR : '{point}' not in '{self.tilemap.path}' points")
+                return
 
             Player.player.position = self.tilemap.points[point]
+            Player.player._update_rect()
+
 
         self.tilemap.map_layer = pyscroll.orthographic.BufferedRenderer(
             self.tilemap.map_data, SCREEN.get_size()

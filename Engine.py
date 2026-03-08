@@ -1,7 +1,7 @@
 import pygame
 
 def Run (screen: pygame.surface.Surface, DEBUG: True):
-    from Objects import Player, CochonTronc
+    from Objects import Player
     import SceneManager
 
     clock = pygame.time.Clock()
@@ -10,7 +10,7 @@ def Run (screen: pygame.surface.Surface, DEBUG: True):
 
     SceneManager.SCENES["carte"].load("SpawnPoint")
 
-    Player(pygame.Vector2(100, 100), pygame.Vector2(50, 50), r"data/sprites/toruk_makto.png", speed=800)
+    Player(SceneManager.Scene.currentScene.tilemap.points["SpawnPoint"] , pygame.Vector2(50, 50), r"data/sprites/toruk_makto.png", speed=800)
 
     while running:
         for event in pygame.event.get():
