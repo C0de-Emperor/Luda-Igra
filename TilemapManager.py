@@ -33,7 +33,6 @@ class Tilemap(Object):
 
             SpawnArea(entity, int(count), int(delay), pygame.Vector2(rect.x, rect.y), pygame.Vector2(rect.width, rect.height))
 
-
     def _load_collisions(self):
         """Charge les rects de collision depuis le layer 'Collisions'"""
         try:
@@ -65,7 +64,7 @@ class Tilemap(Object):
             Gate(name, destination, pygame.Vector2(rect.x, rect.y), pygame.Vector2(rect.width, rect.height), "data/sprites/toruk_makto.png")
 
     def Render(self, screen: pygame.surface.Surface, debug: bool = False):
-        if hasattr(self, 'group') and hasattr(self, 'map_layer'):
+        if hasattr(self, 'group'):
 
             # Centre la caméra sur le joueur
             if Player.player:
@@ -84,9 +83,6 @@ class Tilemap(Object):
 
     def GetColliders(self) -> list[pygame.Rect]:
         return self.collisions
-    
-    def GetGates(self) -> list[list[pygame.Rect, int]]:
-        return self.gates
 
 
 

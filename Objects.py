@@ -11,6 +11,17 @@ KEYS_MOVEMENT = {
 }
 
 
+class Camera:
+    @staticmethod
+    def get_screen_rect(world_rect: pygame.Rect) -> pygame.Rect:
+        from SceneManager import Scene
+        screen_rect = world_rect.copy()
+        if Scene.currentScene.tilemap and hasattr(Scene.currentScene.tilemap, 'camera_offset'):
+            screen_rect.x -= Scene.currentScene.tilemap.camera_offset.x
+            screen_rect.y -= Scene.currentScene.tilemap.camera_offset.y
+        return screen_rect
+
+
 class Object:
     def __init__(self, position: Vector2, destroyOnLoad: bool = True):
         from SceneManager import Scene
@@ -132,13 +143,7 @@ class Player(Object):
         # Scale le sprite à la bonne taille
         scaled_sprite = pygame.transform.scale(self.sprite, (int(self.size.x), int(self.size.y)))
         
-        # Applique l'offset de la caméra pour l'affichage (même offset que pyscroll)
-        from SceneManager import Scene
-        screen_rect = self.rect.copy()
-        
-        if Scene.currentScene.tilemap and hasattr(Scene.currentScene.tilemap, 'camera_offset'):
-            screen_rect.x -= Scene.currentScene.tilemap.camera_offset.x
-            screen_rect.y -= Scene.currentScene.tilemap.camera_offset.y
+        screen_rect = Camera.get_screen_rect(self.rect)
         
         screen.blit(scaled_sprite, screen_rect)
 
@@ -162,13 +167,7 @@ class ObjectWithCollider(Object):
         return [self.rect]
     
     def Render(self, screen: pygame.surface.Surface, debug: bool = False):
-        screen_rect = self.rect.copy()
-
-        from SceneManager import Scene
-
-        if Scene.currentScene.tilemap and hasattr(Scene.currentScene.tilemap, 'camera_offset'):
-            screen_rect.x -= Scene.currentScene.tilemap.camera_offset.x
-            screen_rect.y -= Scene.currentScene.tilemap.camera_offset.y
+        screen_rect = Camera.get_screen_rect(self.rect)
         
         if debug:
             pygame.draw.rect(screen, (255, 0, 0), screen_rect, 1)
@@ -197,14 +196,8 @@ class Gate(Object):
             SCENES[self.destination].load(self.name)
 
     def Render(self, screen: pygame.surface.Surface, debug: bool=False):
-        screen_rect=self.rect.copy()
+        screen_rect = Camera.get_screen_rect(self.rect)
 
-        from SceneManager import Scene
-
-        if Scene.currentScene.tilemap and hasattr(Scene.currentScene.tilemap, 'camera_offset'):
-            screen_rect.x -= Scene.currentScene.tilemap.camera_offset.x
-            screen_rect.y -= Scene.currentScene.tilemap.camera_offset.y
-        
         if debug:
             pygame.draw.rect(screen, (0, 0, 255), screen_rect, 1)
 
@@ -249,17 +242,11 @@ class SpawnArea(Object):
             self.timer = 0
 
     def Render(self, screen: pygame.surface.Surface, debug: bool=False):
-        screen_rect=self.rect.copy()
-
-        from SceneManager import Scene
-
-        if Scene.currentScene.tilemap and hasattr(Scene.currentScene.tilemap, 'camera_offset'):
-            screen_rect.x -= Scene.currentScene.tilemap.camera_offset.x
-            screen_rect.y -= Scene.currentScene.tilemap.camera_offset.y
+        screen_rect = Camera.get_screen_rect(self.rect)
         
         if debug:
             pygame.draw.rect(screen, (255, 85, 0), screen_rect, 1)
-       
+            
 class Enemy(Object):
     def __init__(self, position:Vector2, size:Vector2, sprite:str, baseHealth:float, attackDmg:float, movespeed:float, sightRadius:float):
         super().__init__(position, True)
@@ -286,14 +273,7 @@ class Enemy(Object):
         # Scale le sprite à la bonne taille
         scaled_sprite = pygame.transform.scale(self.sprite, (int(self.size.x), int(self.size.y)))
         
-        # Applique l'offset de la caméra pour l'affichage (même offset que pyscroll)
-        from SceneManager import Scene
-        screen_rect = self.rect.copy()
-        
-        if Scene.currentScene.tilemap and hasattr(Scene.currentScene.tilemap, 'camera_offset'):
-            screen_rect.x -= Scene.currentScene.tilemap.camera_offset.x
-            screen_rect.y -= Scene.currentScene.tilemap.camera_offset.y
-        
+        screen_rect = Camera.get_screen_rect(self.rect)
         screen.blit(scaled_sprite, screen_rect)
 
         if debug:
@@ -361,7 +341,6 @@ class Enemy(Object):
 class CochonTronc(Enemy):
     def __init__(self, position: pygame.Vector2):
         super().__init__(position, Vector2(50, 50), "data/sprites/toruk_makto.png", 100, 10, 60, 400)
-
 
 ENEMIES: dict[str, type[Enemy]] = {
     "CochonTronc" : CochonTronc
