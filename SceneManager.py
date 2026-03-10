@@ -1,5 +1,6 @@
 import pygame
 import pyscroll
+from Objects import Object
 
 class Scene:
     currentScene = None
@@ -10,15 +11,17 @@ class Scene:
         self.name: str = name
         self.objects: list["Object"] = []
         
-
-    def GetAllColliders(self) -> list[pygame.rect.Rect]:
+    def GetAllColliders(self, ignoreObjects: list[Object] = None) -> list[pygame.Rect]:
         colliders = []
 
         for obj in self.objects:
+            if obj in ignoreObjects:
+                continue
+
             colliders.extend(obj.GetColliders())
 
         return colliders
-
+    
     def load(self, point: str):
         """Initialise la Scene"""
         from Main import SCREEN
@@ -47,7 +50,6 @@ class Scene:
                 return
 
             Player.player.position = self.tilemap.points[point]
-            Player.player._update_rect()
 
 
         self.tilemap.map_layer = pyscroll.orthographic.BufferedRenderer(

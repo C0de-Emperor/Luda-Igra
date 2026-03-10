@@ -7,7 +7,7 @@ from Objects import Player, Object, Gate
 
 class Tilemap(Object):
     def __init__(self, path: str):
-        super().__init__(pygame.Vector2(0, 0), True)
+        super().__init__(pygame.Vector2(0, 0), pygame.Vector2(0, 0), True)
 
         self.path = path
 
