@@ -61,7 +61,7 @@ class Tilemap(Object):
 
             destination, name = gate.name.split("/")
 
-            Gate(name, destination, pygame.Vector2(rect.x, rect.y), pygame.Vector2(rect.width, rect.height), "data/sprites/toruk_makto.png")
+            Gate(name, destination, pygame.Vector2(rect.x, rect.y), pygame.Vector2(rect.width, rect.height), "data/Sprites/toruk_makto.png")
 
     def Render(self, screen: pygame.surface.Surface, debug: bool = False):
         if hasattr(self, 'group'):

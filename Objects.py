@@ -204,8 +204,8 @@ class SpawnArea(Object):
 
         pos = self.position.copy()
 
-        pos.x += random.randint(0, int(self.size.x))
-        pos.y += random.randint(0, int(self.size.y))
+        pos.x += random.randint(-int(self.size.x/2), int(self.size.x/2))
+        pos.y += random.randint(-int(self.size.y/2), int(self.size.y/2))
 
         self.entity(pos)
 
@@ -230,6 +230,8 @@ class Enemy(Object):
         self.LoadSprite(sprite)
 
         self.baseHealth = baseHealth
+        self.health = baseHealth
+
         self.attackDmg = attackDmg
         self.speed = speed
         self.wanderRadius = wanderRadius
@@ -257,7 +259,6 @@ class Enemy(Object):
 
     def Update(self, dt):
         from SceneManager import Scene
-        import random
         
         if Scene.currentScene is None:
             return
@@ -280,8 +281,6 @@ class Enemy(Object):
                 self._choose_wander_target()
             
             direction = self.wanderTarget.normalize()
-        
-        #colliders = Scene.currentScene.GetAllColliders()+[Player.player.rect]
 
         colliders = Scene.currentScene.GetAllColliders([self, Player.player])
 
@@ -309,10 +308,19 @@ class Enemy(Object):
                     else:
                         self.rect.top = wall.bottom
 
+    def TakeDamage(self, amount: float):
+        self.health -= amount
+        print(self.health)
+
+        if self.health <= 0:
+            self.Die()
+
+    def Die(self):
+        self.Destroy()
 
 class CochonTronc(Enemy):
     def __init__(self, position: pygame.Vector2):
-        super().__init__(position, Vector2(50, 50), "data/sprites/toruk_makto.png", 100, 10, 60, 400, 100, 6)
+        super().__init__(position, Vector2(50, 50), "data/Sprites/toruk_makto.png", 100, 10, 60, 400, 100, 6)
 
 ENEMIES: dict[str, type[Enemy]] = {
     "CochonTronc" : CochonTronc
@@ -320,29 +328,39 @@ ENEMIES: dict[str, type[Enemy]] = {
 
 
 class Weapon(Object):
-    def __init__(self, position, size):
+    def __init__(self, position: Vector2, size: Vector2, sprite:str):
         super().__init__(position, size, False)
+        self.LoadSprite(sprite)
 
-        self.offset_distance = 10
+        self.offset_distance = 20
 
-    def Render(self, screen, debug = False):
+    def Render(self, screen, debug=False):
         screen_rect = Camera.get_screen_rect(self.rect)
+
+        sprite = self.sprite
+
+        # flip si l'arme passe derrière
+        if not (-90 <= self.angle <= 90):
+            sprite = pygame.transform.flip(sprite, False, True)
+
+        # rotation
+        rotated_sprite = pygame.transform.rotozoom(sprite, self.angle, 1)
+        rotated_rect = rotated_sprite.get_rect(center=screen_rect.center)
+
+        screen.blit(rotated_sprite, rotated_rect)
 
         if debug:
             pygame.draw.rect(screen, (0, 0, 255), screen_rect, 1)
 
-        player_screen_pos = Camera.world_to_screen_point(Player.player.position)
-        mouse_pos = pygame.Vector2(pygame.mouse.get_pos())
-        pygame.draw.line(screen, (255, 0, 0), player_screen_pos, mouse_pos, 2)
-
-        #screen.blit(self.sprite, screen_rect)
+            player_screen_pos = Camera.world_to_screen_point(Player.player.position)
+            mouse_pos = pygame.Vector2(pygame.mouse.get_pos())
+            pygame.draw.line(screen, (255, 0, 0), player_screen_pos, mouse_pos, 1)
     
     def Update(self, dt):
         import math
         # position du joueur à l'écran
         player_screen_pos = Camera.world_to_screen_point(Player.player.position)
 
-        # position de la souris
         mouse_pos = pygame.Vector2(pygame.mouse.get_pos())
 
         delta = mouse_pos - player_screen_pos
@@ -352,7 +370,93 @@ class Weapon(Object):
         else:
             direction = Vector2(0,0)
 
-        self.position = Player.player.position + direction * self.offset_distance
+        self.position = Player.player.position + direction * self.offset_distance + Vector2(0, -10)
 
         # rotation
-        self.angle = math.degrees(math.atan2(-delta.y, delta.x))  # pygame y croissant vers le bas
+        self.angle = math.degrees(math.atan2(-delta.y, delta.x))
+
+        if pygame.mouse.get_pressed()[0]:
+            self.Attack()
+
+    def Attack(self):
+        pass
+
+class Sword(Weapon):
+    def __init__(self, position: Vector2, size: Vector2, sprite:str, damage: float, attack_range: float, cooldown: float):
+        super().__init__(position, size, sprite)
+        self.damage = damage
+        self.attack_range = attack_range
+        self.cooldown = cooldown
+        self.attack_timer = 0
+
+    def Update(self, dt):
+        super().Update(dt)
+
+        if self.attack_timer > 0:
+            self.attack_timer -= dt
+
+    def Attack(self):
+        if self.attack_timer > 0:
+            return
+
+        self.attack_timer = self.cooldown
+
+        import math
+
+        # angles du slash
+        slash_angles = [-25, 0, 25]
+
+        for offset in slash_angles:
+            angle = self.angle + offset
+
+            direction = Vector2(
+                math.cos(math.radians(angle)),
+                -math.sin(math.radians(angle))
+            ).normalize()
+
+            hitbox_pos = self.position + direction * self.attack_range
+            hitbox_size = Vector2(30, 25)
+
+            Hitbox(hitbox_pos, hitbox_size, self.damage/3)
+
+class Hitbox(Object):
+    def __init__(self, position: Vector2, size: Vector2, damage: float, lifetime=0.1):
+        super().__init__(position, size, False)
+        self.damage = damage
+        self.lifetime = lifetime
+
+        self.rect.center = (position.x, position.y)
+
+    def Update(self, dt):
+        from SceneManager import Scene
+
+        hitEnemies = set()
+
+        for obj in Scene.currentScene.objects:
+            if isinstance(obj, Enemy):
+                if self.rect.colliderect(obj.rect):
+                    if obj not in hitEnemies:
+                        obj.TakeDamage(self.damage)
+                        hitEnemies.add(obj)
+
+        self.lifetime -= dt
+        if self.lifetime <= 0:
+            self.Destroy()
+
+    def Render(self, screen, debug=False):
+        if debug:
+            screen_rect = Camera.get_screen_rect(self.rect)
+            pygame.draw.rect(screen, (255, 0, 0), screen_rect, 1)
+
+
+
+
+
+
+
+
+
+
+
+
+
