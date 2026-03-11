@@ -65,11 +65,16 @@ class Object:
     def GetColliders(self) -> list[pygame.rect.Rect]:
         return []
 
-    def LoadSprite(self, sprite: str):
+    def LoadSprite(self, sprite: str, scale: bool):
         if isinstance(sprite, str):
             if not os.path.exists(sprite):
                 raise FileNotFoundError(f"Image not found: {sprite}")
-            self.sprite = pygame.transform.scale(pygame.image.load(sprite).convert_alpha(), (int(self.size.x), int(self.size.y)))
+
+            if scale:
+                self.sprite = pygame.transform.scale(pygame.image.load(sprite).convert_alpha(), (int(self.size.x), int(self.size.y)))
+            else:
+                self.sprite = pygame.image.load(sprite).convert_alpha()
+            
         elif isinstance(sprite, pygame.Surface):
             self.sprite = pygame.transform.scale(sprite, (int(self.size.x), int(self.size.y)))
         else:
@@ -81,7 +86,7 @@ class Player(Object):
 
     def __init__(self, position: pygame.Vector2, size: pygame.Vector2, sprite: str, speed: float = 300):
         super().__init__(position, size, False)
-        self.LoadSprite(sprite)
+        self.LoadSprite(sprite, True)
 
         self.speed = speed
 
@@ -164,7 +169,7 @@ class ObjectWithCollider(Object):
 class Gate(Object):
     def __init__(self, name:str, destination:str, position: pygame.Vector2, size: pygame.Vector2, sprite: str):
         super().__init__(position, size, True)
-        self.LoadSprite(sprite)
+        self.LoadSprite(sprite, True)
 
         self.name = name
         self.destination = destination
@@ -227,7 +232,7 @@ class SpawnArea(Object):
 class Enemy(Object):
     def __init__(self, position:Vector2, size:Vector2, sprite:str, baseHealth:float, attackDmg:float, speed:float, sightRadius:float, wanderRadius:float, patrolDelay:float):
         super().__init__(position, size, True)
-        self.LoadSprite(sprite)
+        self.LoadSprite(sprite, True)
 
         self.baseHealth = baseHealth
         self.health = baseHealth
@@ -253,6 +258,8 @@ class Enemy(Object):
     def Render(self, screen, debug=False):
         screen_rect = Camera.get_screen_rect(self.rect)
         screen.blit(self.sprite, screen_rect)
+
+        self._render_health_bar(screen)
 
         if debug:
             pygame.draw.rect(screen, (255, 0, 0), screen_rect, 1)
@@ -318,6 +325,22 @@ class Enemy(Object):
     def Die(self):
         self.Destroy()
 
+    def _render_health_bar(self, screen):
+        # position de l'ennemi à l'écran
+        screen_rect = Camera.get_screen_rect(self.rect)
+
+        bar_width = screen_rect.width
+        bar_height = 5
+        bar_x = screen_rect.centerx - bar_width // 2
+        bar_y = screen_rect.top - 10  # au-dessus de l'ennemi
+
+        # fond rouge
+        pygame.draw.rect(screen, (255,0,0), (bar_x, bar_y, bar_width, bar_height))
+
+        # vert proportionnel à la vie
+        health_ratio = max(self.health, 0) / self.baseHealth
+        pygame.draw.rect(screen, (0,255,0), (bar_x, bar_y, int(bar_width * health_ratio), bar_height))
+
 class CochonTronc(Enemy):
     def __init__(self, position: pygame.Vector2):
         super().__init__(position, Vector2(50, 50), "data/Sprites/toruk_makto.png", 100, 10, 60, 400, 100, 6)
@@ -330,7 +353,7 @@ ENEMIES: dict[str, type[Enemy]] = {
 class Weapon(Object):
     def __init__(self, position: Vector2, size: Vector2, sprite:str):
         super().__init__(position, size, False)
-        self.LoadSprite(sprite)
+        self.LoadSprite(sprite, True)
 
         self.offset_distance = 20
 
@@ -417,35 +440,46 @@ class Sword(Weapon):
             hitbox_pos = self.position + direction * self.attack_range
             hitbox_size = Vector2(30, 25)
 
-            Hitbox(hitbox_pos, hitbox_size, self.damage/3)
+            Hitbox(hitbox_pos, hitbox_size, r"data/Sprites/slash.png", self.damage/3)
 
 class Hitbox(Object):
-    def __init__(self, position: Vector2, size: Vector2, damage: float, lifetime=0.1):
+    def __init__(self, position: Vector2, size: Vector2, sprite: str, damage: float, lifetime=0.1):
+        import math
         super().__init__(position, size, False)
+        self.LoadSprite(sprite, False)
         self.damage = damage
         self.lifetime = lifetime
+
+        self.hitEnemies = set()
+
+        delta = self.position - Player.player.position
+        self.angle = math.degrees(math.atan2(-delta.y, delta.x)) - 90
 
         self.rect.center = (position.x, position.y)
 
     def Update(self, dt):
         from SceneManager import Scene
 
-        hitEnemies = set()
-
         for obj in Scene.currentScene.objects:
             if isinstance(obj, Enemy):
                 if self.rect.colliderect(obj.rect):
-                    if obj not in hitEnemies:
+                    if obj not in self.hitEnemies:
                         obj.TakeDamage(self.damage)
-                        hitEnemies.add(obj)
+                        self.hitEnemies.add(obj)
 
         self.lifetime -= dt
         if self.lifetime <= 0:
             self.Destroy()
 
     def Render(self, screen, debug=False):
+        screen_rect = Camera.get_screen_rect(self.rect)
+
+        rotated_sprite = pygame.transform.rotate(self.sprite, self.angle)
+        rotated_rect = rotated_sprite.get_rect(center=screen_rect.center)
+
+        screen.blit(rotated_sprite, rotated_rect)
+
         if debug:
-            screen_rect = Camera.get_screen_rect(self.rect)
             pygame.draw.rect(screen, (255, 0, 0), screen_rect, 1)
 
 

@@ -12,7 +12,7 @@ def Run (screen: pygame.surface.Surface, DEBUG: True):
 
     Player(SceneManager.Scene.currentScene.tilemap.points["SpawnPoint"] , pygame.Vector2(50, 50), r"data/Sprites/toruk_makto.png", speed=800)
 
-    Sword(Player.player.position, pygame.Vector2(20, 50), r"data/Sprites/sword.png", 10, 50, 0.3)
+    Sword(Player.player.position, pygame.Vector2(20, 50), r"data/Sprites/sword.png", 30, 50, 0.3)
 
     while running:
         for event in pygame.event.get():
