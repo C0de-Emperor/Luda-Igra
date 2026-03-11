@@ -1,7 +1,7 @@
 import pygame
 
 def Run (screen: pygame.surface.Surface, DEBUG: True):
-    from Objects import Player, Sword
+    from Objects import Player, Gun, Sword
     import SceneManager
 
     clock = pygame.time.Clock()
@@ -12,7 +12,7 @@ def Run (screen: pygame.surface.Surface, DEBUG: True):
 
     Player(SceneManager.Scene.currentScene.tilemap.points["SpawnPoint"] , pygame.Vector2(50, 50), r"data/Sprites/toruk_makto.png", speed=800)
 
-    Sword(Player.player.position, pygame.Vector2(20, 50), r"data/Sprites/sword.png", 30, 50, 0.3)
+    Gun(Player.player.position, pygame.Vector2(50, 20), r"data/Sprites/minigun.png", 50, 100, 0.005)
 
     while running:
         for event in pygame.event.get():
