@@ -22,7 +22,9 @@ class Tilemap(Object):
         self._load_spawn_Area()
 
     def _load_spawn_Area(self):
-        from Objects import ENEMIES, SpawnArea
+        from Objects import SpawnArea
+        from Data import ENEMIES
+
         areas_layer = self.tmx_data.get_layer_by_name("SpawnArea")
         for area in areas_layer:
             rect = pygame.Rect(area.x, area.y, area.width, area.height)

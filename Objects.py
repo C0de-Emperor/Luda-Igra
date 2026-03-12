@@ -214,7 +214,6 @@ class SpawnArea(Object):
 
     def _spawn(self):
         import random
-
         pos = self.position.copy()
 
         pos.x += random.randint(-int(self.size.x/2), int(self.size.x/2))
@@ -325,7 +324,6 @@ class Enemy(Object):
 
     def TakeDamage(self, amount: float):
         self.health -= amount
-        print(self.health)
 
         if self.health <= 0:
             self.Die()
@@ -349,13 +347,6 @@ class Enemy(Object):
         health_ratio = max(self.health, 0) / self.baseHealth
         pygame.draw.rect(screen, (0,255,0), (bar_x, bar_y, int(bar_width * health_ratio), bar_height))
 
-class CochonTronc(Enemy):
-    def __init__(self, position: pygame.Vector2):
-        super().__init__(position, Vector2(50, 50), "data/Sprites/cochonTronc.png", 100, 10, 60, 400, 100, 6)
-
-ENEMIES: dict[str, type[Enemy]] = {
-    "CochonTronc" : CochonTronc
-}
 
 
 class Weapon(Object):
@@ -413,7 +404,7 @@ class Weapon(Object):
     def Attack(self):
         pass
 
-class Sword(Weapon):
+class MeleeWeapon(Weapon):
     def __init__(self, position: Vector2, size: Vector2, sprite:str, damage: float, attack_range: float, cooldown: float):
         super().__init__(position, size, sprite, Vector2(0, -10))
         self.damage = damage
@@ -450,12 +441,14 @@ class Sword(Weapon):
 
             Hitbox(hitbox_pos, Vector2(30, 25), self.angle - 90, r"data/Sprites/slash.png", self.damage/3, False)
 
-class Gun(Weapon):
-    def __init__(self, position: Vector2, size: Vector2, sprite:str, damage: float, attack_range: float, cooldown: float):
+class RangedWeapon(Weapon):
+    def __init__(self, position: Vector2, size: Vector2, sprite:str, cooldown: float, angleDeviation: int, bullet: type["Projectile"]):
         super().__init__(position, size, sprite, Vector2(10, 10))
-        self.damage = damage
-        self.attack_range = attack_range
+        self.attack_range = (self.size.x // 2) + 8
         self.cooldown = cooldown
+        self.bullet = bullet
+        self.angleDeviation = angleDeviation
+
         self.attack_timer = 0
 
     def Update(self, dt):
@@ -473,28 +466,28 @@ class Gun(Weapon):
 
         self.attack_timer = self.cooldown
 
-        # convertir la souris en coordonnées monde
         mouse_world = Camera.screen_to_world_point(Vector2(pygame.mouse.get_pos()))
         delta = mouse_world - self.position
         if delta.length() > 0:
             direction = delta.normalize()
         else:
-            direction = Vector2(1, 0)  # valeur par défaut
+            direction = Vector2(1, 0)
 
-        spread_angle = random.uniform(-5, 5)  # écart de -5° à +5°
-        angle_rad = math.atan2(direction.y, direction.x) + math.radians(spread_angle)
-        direction = Vector2(math.cos(angle_rad), math.sin(angle_rad)).normalize()
+        if self.angleDeviation > 0:
+            spread_angle = random.uniform(-self.angleDeviation, self.angleDeviation)
+            angle_rad = math.atan2(direction.y, direction.x) + math.radians(spread_angle)
+            direction = Vector2(math.cos(angle_rad), math.sin(angle_rad)).normalize()
 
-        hitbox_pos = self.position + direction * self.attack_range
-        hitbox_size = Vector2(10, 5)
+        hitbox_pos = self.position + direction * (self.attack_range + 5)
 
-        Bullet(hitbox_pos, hitbox_size, self.angle, r"data/Sprites/bullet.png", self.damage, direction, 1000, lifetime=2)
+        angle = math.degrees(math.atan2(-direction.y, direction.x))
+
+        self.bullet(hitbox_pos, angle, direction)
 
 
 class Hitbox(Object):
     def __init__(self, position: Vector2, size: Vector2, angle: float, sprite: str, damage: float, scale: bool, lifetime=0.1):
         super().__init__(position, size, False)
-        print(scale)
         self.LoadSprite(sprite, scale)
         self.damage = damage
         self.lifetime = lifetime
@@ -529,37 +522,61 @@ class Hitbox(Object):
         if debug:
             pygame.draw.rect(screen, (255, 0, 0), screen_rect, 1)
 
-class Bullet(Hitbox):
-    def __init__(self, position: Vector2, size: Vector2, angle: float, sprite: str, damage: float, direction: Vector2, speed:float, lifetime=0.1):
-        super().__init__(position, size, angle, sprite, damage, True, lifetime)
+class Projectile(Object):
+    def __init__(self, position: Vector2, size: Vector2, angle: float,
+                 sprite: str, damage: float, direction: Vector2,
+                 speed: float, lifetime: float):
 
-        self.direction = direction
+        super().__init__(position, size, True)
+        self.LoadSprite(sprite, True)
+
+        self.rect = pygame.Rect(0, 0, size.x, size.y)
+        self.rect.center = (position.x, position.y)
+
+        self.damage = damage
+        self.direction = direction.normalize()
         self.speed = speed
+        self.lifetime = lifetime
+        self.angle = angle
 
     def Update(self, dt):
         from SceneManager import Scene
 
-        # Vérifier collision avec les colliders de la scène
+        self.position += self.direction * self.speed * dt
+
         colliders = Scene.currentScene.GetAllColliders([])
         for col in colliders:
             if self.rect.colliderect(col):
-                # détruit la bullet dès qu'elle touche un mur
-                self.Destroy()
-                return  # sortir de la fonction pour éviter de toucher deux fois
+                self.OnWallHit()
+                return
 
-        # Vérifier collision avec les ennemis
         for obj in Scene.currentScene.objects:
             if isinstance(obj, Enemy):
                 if self.rect.colliderect(obj.rect):
-                    obj.TakeDamage(self.damage)
-                    self.Destroy()
+                    self.OnEnemyHit(obj)
                     return
 
         self.lifetime -= dt
         if self.lifetime <= 0:
             self.Destroy()
 
-        self.position += self.direction * self.speed * dt
+    def Render(self, screen, debug=False):
+        screen_rect = Camera.get_screen_rect(self.rect)
+
+        rotated_sprite = pygame.transform.rotate(self.sprite, self.angle)
+        rotated_rect = rotated_sprite.get_rect(center=screen_rect.center)
+
+        screen.blit(rotated_sprite, rotated_rect)
+
+        if debug:
+            pygame.draw.rect(screen, (255,0,0), screen_rect, 1)
+
+    def OnEnemyHit(self, enemy: Enemy):
+        enemy.TakeDamage(self.damage)
+        self.Destroy()
+
+    def OnWallHit(self):
+        self.Destroy()
 
 
 
