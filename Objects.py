@@ -1,5 +1,7 @@
 import pygame
 from pygame import Vector2
+from Tools import Queue
+from InventorySystem import ItemStack, Resource
 import os
 
 
@@ -63,6 +65,9 @@ class Object:
     def Render(self, screen: pygame.surface.Surface, debug: bool = False):
         pass
 
+    def HandleEvent(self, event):
+        pass
+
     def Destroy(self):
         from SceneManager import Scene
 
@@ -92,9 +97,12 @@ class Object:
 class Player(Object):
     player = None
 
-    def __init__(self, position: pygame.Vector2, size: pygame.Vector2, sprite: str, speed: float = 300):
+    def __init__(self, position: pygame.Vector2, size: pygame.Vector2, sprite: str, tools: list[type["Weapon"]], speed: float = 300):
         super().__init__(position, size, False)
         self.LoadSprite(sprite, True)
+
+        self.tools: Queue = Queue(*tools)
+        self.currentTool: type[Weapon] = None
 
         self.speed = speed
 
@@ -157,9 +165,42 @@ class Player(Object):
         if debug:
             pygame.draw.rect(screen, (180, 3, 252), screen_rect, 2)
         
+    def HandleEvent(self, event):
+        if event.type == pygame.MOUSEWHEEL:
+            self.ChangeTool(event.y)
+
     def GetColliders(self):
         return [self.rect]
     
+    def ChangeTool(self, direction):
+
+        if self.tools.isEmpty():
+            return
+
+        if direction > 0:
+            # tool suivant
+            self.tools.enqueue(self.tools.dequeue())
+
+        else:
+            # rotation inverse
+            prev = None
+            current = self.tools.front
+
+            while current.next:
+                prev = current
+                current = current.next
+
+            if prev:
+                prev.next = None
+                current.next = self.tools.front
+                self.tools.front = current
+
+        if self.currentTool:
+            self.currentTool.Destroy()
+        self.currentTool = self.tools.peek()()
+
+        
+
 class ObjectWithCollider(Object):
     def __init__(self, position: pygame.Vector2, size: pygame.Vector2, destroyOnLoad: bool = True):
         super().__init__(position, size, destroyOnLoad)
@@ -237,9 +278,10 @@ class SpawnArea(Object):
             pygame.draw.rect(screen, (255, 85, 0), screen_rect, 1)
 
 class Enemy(Object):
-    def __init__(self, position:Vector2, size:Vector2, sprite:str, baseHealth:float, attackDmg:float, speed:float, sightRadius:float, wanderRadius:float, patrolDelay:float):
+    def __init__(self, position:Vector2, size:Vector2, sprite:str, baseHealth:float, attackDmg:float, speed:float, sightRadius:float, wanderRadius:float, patrolDelay:float, stopDuration: float):
         super().__init__(position, size, True)
         self.LoadSprite(sprite, True)
+        import random
 
         self.baseHealth = baseHealth
         self.health = baseHealth
@@ -248,9 +290,11 @@ class Enemy(Object):
         self.speed = speed
         self.wanderRadius = wanderRadius
         self.sightRadius = sightRadius
-        self.patrolDelay = patrolDelay
+        self.patrolDelay = patrolDelay + random.randint(-patrolDelay//5, patrolDelay//5)
+        self.stopDuration = stopDuration + random.randint(-stopDuration//5, stopDuration//5)
 
         self.directionTimer = 0
+        self.stopTimer = -1
         self.isChasing=False
         self._choose_wander_target()
 
@@ -279,22 +323,31 @@ class Enemy(Object):
 
         distanceToPlayer = self.position - Player.player.position
 
-        if distanceToPlayer.magnitude() <= 20:
+        if distanceToPlayer.magnitude() <= 30:
             return
 
         self.isChasing = distanceToPlayer.magnitude() <= self.sightRadius
 
         if self.isChasing:
             direction =- distanceToPlayer.normalize()
-            
-        else:
+        elif self.directionTimer > -1:
             self.directionTimer += dt
 
             if self.directionTimer >= self.patrolDelay:
-                self.directionTimer = 0
+                self.directionTimer = -1
+                self.stopTimer = 0
                 self._choose_wander_target()
-            
+
             direction = self.wanderTarget.normalize()
+        else:
+            self.stopTimer += dt
+
+            if self.stopTimer >= self.stopDuration:
+                self.stopTimer = -1
+                self.directionTimer = 0
+                
+            return  
+           
 
         colliders = Scene.currentScene.GetAllColliders([self, Player.player])
 
@@ -555,6 +608,10 @@ class Projectile(Object):
                 if self.rect.colliderect(obj.rect):
                     self.OnEnemyHit(obj)
                     return
+            if isinstance(obj, Harvestable):
+                if self.rect.colliderect(obj.rect):
+                    self.OnHarvestableHit(obj)
+                    return
 
         self.lifetime -= dt
         if self.lifetime <= 0:
@@ -575,17 +632,95 @@ class Projectile(Object):
         enemy.TakeDamage(self.damage)
         self.Destroy()
 
+    def OnHarvestableHit(self, object: "Harvestable"):
+        object.TakeDamage(self.damage)
+        self.Destroy()
+
     def OnWallHit(self):
         self.Destroy()
 
 
 
+class Harvestable(Object):
+    def __init__(self, position: pygame.Vector2, size: pygame.Vector2, sprite: str, baseHealth:float, stack: ItemStack):
+        super().__init__(position, size, True)
+        self.LoadSprite(sprite, True)
+
+        self.baseHealth = baseHealth
+        self.health = baseHealth
+        self.stack = stack
+
+    def Render(self, screen, debug=False):
+        screen_rect = Camera.get_screen_rect(self.rect)
+        screen.blit(self.sprite, screen_rect)
+
+        self._render_health_bar(screen)
+
+        if debug:
+            pygame.draw.rect(screen, (255, 0, 0), screen_rect, 1)
+
+    def TakeDamage(self, amount: float):
+        self.health -= amount
+
+        if self.health <= 0:
+            self.Die()
+
+    def Die(self):
+        self._spawn_loot()
+        self.Destroy()
+
+    def _render_health_bar(self, screen):
+        # position de l'ennemi à l'écran
+        screen_rect = Camera.get_screen_rect(self.rect)
+
+        bar_width = screen_rect.width
+        bar_height = 5
+        bar_x = screen_rect.centerx - bar_width // 2
+        bar_y = screen_rect.top - 10  # au-dessus de l'ennemi
+
+        # fond rouge
+        pygame.draw.rect(screen, (255,0,0), (bar_x, bar_y, bar_width, bar_height))
+
+        # vert proportionnel à la vie
+        health_ratio = max(self.health, 0) / self.baseHealth
+        pygame.draw.rect(screen, (0,255,0), (bar_x, bar_y, int(bar_width * health_ratio), bar_height))
+
+    def _spawn_loot(self):
+        import random
+        from pygame import Vector2
+
+        num_drops = random.randint(1, self.stack.amount)  # nombre de morceaux de loot
+        for _ in range(num_drops):
+            # direction aléatoire
+            angle = random.uniform(0, 360)
+            distance = random.uniform(15, 45)  # distance depuis le centre
+            offset = Vector2(distance, 0).rotate(angle)
+
+            DroppedStack(self.position + offset, self.stack.resource)
 
 
 
+class DroppedStack(Object):
+    def __init__(self, position, resource: Resource, destroyOnLoad=True):
+        super().__init__(position, pygame.Vector2(40, 40), destroyOnLoad)
+        self.LoadSprite(resource.icon, False)
+        self.resource = resource
 
+    def Render(self, screen, debug=False):
+        screen_rect = Camera.get_screen_rect(self.rect)
+        screen.blit(self.sprite, screen_rect)
 
+        if debug:
+            pygame.draw.rect(screen, (255, 0, 0), screen_rect, 1)
 
+    def Update(self, dt):
+        # Vérifie si la souris est sur l'objet
+        mouse_pos = pygame.Vector2(pygame.mouse.get_pos())
+        screen_rect = Camera.get_screen_rect(self.rect)
+
+        if screen_rect.collidepoint(mouse_pos):
+            
+            self.Destroy()
 
 
 

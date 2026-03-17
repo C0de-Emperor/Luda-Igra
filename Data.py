@@ -6,7 +6,7 @@ from Objects import *
 
 class CochonTronc(Enemy):
     def __init__(self, position: pygame.Vector2):
-        super().__init__(position, Vector2(50, 50), "data/Sprites/cochonTronc.png", 100, 10, 60, 400, 100, 6)
+        super().__init__(position, Vector2(50, 50), "data/Sprites/cochonTronc.png", 100, 10, 60, 400, 100, 6, 2)
 
 
 ENEMIES: dict[str, type[Enemy]] = {
@@ -47,6 +47,17 @@ class RocketLaucher(RangedWeapon):
             0.75,
             1,
             Rocket
+        )
+
+class FlameThrower(RangedWeapon):
+    def __init__(self):
+        super().__init__(
+            Vector2(0, 0), 
+            pygame.Vector2(50, 20), 
+            r"data/Sprites/flameThrower.png",
+            0.05,
+            10,
+            Flame
         )
 
 ##################### PROJECTILE
@@ -93,3 +104,40 @@ class Rocket(Projectile):
         )
 
         self.Destroy()
+
+    def OnHarvestableHit(self, object: Harvestable):
+        import random
+        explosion_radius = 250
+
+        Hitbox(
+            self.position, 
+            Vector2(explosion_radius, explosion_radius), 
+            random.randint(0, 360),
+            r"data/Sprites/explosion.png",
+            self.damage,
+            True,
+            0.05
+        )
+
+        self.Destroy()
+
+class Flame(Projectile):
+    def __init__(self, position, angle, direction):
+        super().__init__(
+            position, 
+            Vector2(30, 20), 
+            angle,
+            r"data/Sprites/flame.png",
+            2, 
+            direction, 
+            300, 
+            2
+        )
+
+    def OnEnemyHit(self, enemy: Enemy):
+        enemy.TakeDamage(self.damage)
+
+
+    def OnHarvestableHit(self, object: Harvestable):
+        object.TakeDamage(self.damage)
+
