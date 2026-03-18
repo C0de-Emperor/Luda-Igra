@@ -23,7 +23,7 @@ class Tilemap(Object):
 
     def _load_spawn_Area(self):
         from Objects import SpawnArea
-        from Data import ENEMIES
+        from Data import ENTITIES
 
         areas_layer = self.tmx_data.get_layer_by_name("SpawnArea")
         for area in areas_layer:
@@ -31,7 +31,7 @@ class Tilemap(Object):
 
             entityName, count, delay = area.name.split("-")
 
-            entity = ENEMIES[entityName]
+            entity = ENTITIES[entityName]
 
             SpawnArea(entity, int(count), int(delay), pygame.Vector2(rect.x, rect.y), pygame.Vector2(rect.width, rect.height))
 

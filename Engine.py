@@ -4,7 +4,7 @@ def Run (screen: pygame.surface.Surface, DEBUG: True):
     from Objects import Player, Harvestable
     from Data import RocketLaucher, MiniGun, FlameThrower
     import SceneManager
-    from InventorySystem import Inventory, WOOD, STONE, ItemStack
+    from InventorySystem import WOOD, ItemStack
 
 
     font = pygame.font.SysFont(None, 24)
@@ -21,16 +21,6 @@ def Run (screen: pygame.surface.Surface, DEBUG: True):
         [RocketLaucher, MiniGun, FlameThrower],
         speed=800
     )
-
-    inventory = Inventory()
-
-    inventory.add(WOOD, 50)
-    inventory.add(WOOD, 70)
-    inventory.add(STONE, 30)
-
-    Harvestable(pygame.Vector2(500, 500), pygame.Vector2(50, 50), r"data/Sprites/log.png", 150, ItemStack(WOOD, 15))
-
-    
 
     while running:
         for event in pygame.event.get():

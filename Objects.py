@@ -1,7 +1,7 @@
 import pygame
 from pygame import Vector2
 from Tools import Queue
-from InventorySystem import ItemStack, Resource
+from InventorySystem import ItemStack, WOOD
 import os
 
 
@@ -94,6 +94,20 @@ class Object:
 
             raise TypeError(f"Unsupported image type: {type(sprite)}")
 
+class Entity(Object):
+    def __init__(self, position: Vector2, size: Vector2, destroyOnLoad: bool = True, baseHealth: float = 1):
+        super().__init__(position, size, destroyOnLoad)
+        self.baseHealth = baseHealth
+        self.health = baseHealth
+
+    def TakeDamage(self, amount: float):
+        self.health -= amount
+        if self.health <= 0:
+            self.Die()
+
+    def Die(self):
+        self.Destroy()
+
 class Player(Object):
     player = None
 
@@ -103,6 +117,9 @@ class Player(Object):
 
         self.tools: Queue = Queue(*tools)
         self.currentTool: type[Weapon] = None
+
+        from InventorySystem import Inventory
+        self.inventory = Inventory()
 
         self.speed = speed
 
@@ -239,7 +256,7 @@ class Gate(Object):
         screen.blit(self.sprite, screen_rect)
 
 class SpawnArea(Object):
-    def __init__(self, entity: type["Enemy"], maxSpawnCount: int, delay: int, position: pygame.Vector2, size: pygame.Vector2):
+    def __init__(self, entity: type["Entity"], maxSpawnCount: int, delay: int, position: pygame.Vector2, size: pygame.Vector2):
         import random
         super().__init__(position, size, True)
 
@@ -277,14 +294,12 @@ class SpawnArea(Object):
         if debug:
             pygame.draw.rect(screen, (255, 85, 0), screen_rect, 1)
 
-class Enemy(Object):
+class Enemy(Entity):
     def __init__(self, position:Vector2, size:Vector2, sprite:str, baseHealth:float, attackDmg:float, speed:float, sightRadius:float, wanderRadius:float, patrolDelay:float, stopDuration: float):
-        super().__init__(position, size, True)
+        super().__init__(position, size, True, baseHealth)
         self.LoadSprite(sprite, True)
         import random
 
-        self.baseHealth = baseHealth
-        self.health = baseHealth
 
         self.attackDmg = attackDmg
         self.speed = speed
@@ -554,11 +569,10 @@ class Hitbox(Object):
         from SceneManager import Scene
 
         for obj in Scene.currentScene.objects:
-            if isinstance(obj, Enemy):
-                if self.rect.colliderect(obj.rect):
-                    if obj not in self.hitEnemies:
-                        obj.TakeDamage(self.damage)
-                        self.hitEnemies.add(obj)
+            if isinstance(obj, Entity) and self.rect.colliderect(obj.rect):
+                if obj not in self.hitEnemies:
+                    obj.TakeDamage(self.damage)
+                    self.hitEnemies.add(obj)
 
         self.lifetime -= dt
         if self.lifetime <= 0:
@@ -604,14 +618,16 @@ class Projectile(Object):
                 return
 
         for obj in Scene.currentScene.objects:
-            if isinstance(obj, Enemy):
-                if self.rect.colliderect(obj.rect):
+            if obj is self:
+                continue
+            if isinstance(obj, Entity) and self.rect.colliderect(obj.rect):
+                if isinstance(obj, Enemy):
                     self.OnEnemyHit(obj)
-                    return
-            if isinstance(obj, Harvestable):
-                if self.rect.colliderect(obj.rect):
+                elif isinstance(obj, Harvestable):
                     self.OnHarvestableHit(obj)
-                    return
+                else:
+                    self.OnEntityHit(obj)
+                return
 
         self.lifetime -= dt
         if self.lifetime <= 0:
@@ -636,18 +652,19 @@ class Projectile(Object):
         object.TakeDamage(self.damage)
         self.Destroy()
 
+    def OnEntityHit(self, entity: Entity):
+        entity.TakeDamage(self.damage)
+        self.Destroy()
+
     def OnWallHit(self):
         self.Destroy()
 
 
 
-class Harvestable(Object):
+class Harvestable(Entity):
     def __init__(self, position: pygame.Vector2, size: pygame.Vector2, sprite: str, baseHealth:float, stack: ItemStack):
-        super().__init__(position, size, True)
+        super().__init__(position, size, True, baseHealth)
         self.LoadSprite(sprite, True)
-
-        self.baseHealth = baseHealth
-        self.health = baseHealth
         self.stack = stack
 
     def Render(self, screen, debug=False):
@@ -696,15 +713,13 @@ class Harvestable(Object):
             distance = random.uniform(15, 45)  # distance depuis le centre
             offset = Vector2(distance, 0).rotate(angle)
 
-            DroppedStack(self.position + offset, self.stack.resource)
-
-
+            DroppedStack(self.position + offset, ItemStack(self.stack.resource, 1))
 
 class DroppedStack(Object):
-    def __init__(self, position, resource: Resource, destroyOnLoad=True):
+    def __init__(self, position, stack: ItemStack, destroyOnLoad=True):
         super().__init__(position, pygame.Vector2(40, 40), destroyOnLoad)
-        self.LoadSprite(resource.icon, False)
-        self.resource = resource
+        self.LoadSprite(stack.resource.icon, False)
+        self.stack = stack
 
     def Render(self, screen, debug=False):
         screen_rect = Camera.get_screen_rect(self.rect)
@@ -719,7 +734,7 @@ class DroppedStack(Object):
         screen_rect = Camera.get_screen_rect(self.rect)
 
         if screen_rect.collidepoint(mouse_pos):
-            
+            Player.player.inventory.add(self.stack.resource, self.stack.amount)
             self.Destroy()
 
 

@@ -1,16 +1,22 @@
 from Objects import *
 
 
-########################## ENEMY
+####################### ENTITIES
 ################################
 
 class CochonTronc(Enemy):
     def __init__(self, position: pygame.Vector2):
-        super().__init__(position, Vector2(50, 50), "data/Sprites/cochonTronc.png", 100, 10, 60, 400, 100, 6, 2)
+        super().__init__(position, Vector2(50, 50), r"data/Sprites/cochonTronc.png", 100, 10, 60, 400, 100, 6, 2)
 
 
-ENEMIES: dict[str, type[Enemy]] = {
-    "CochonTronc" : CochonTronc
+class Tree(Harvestable):
+    def __init__(self, position: pygame.Vector2):
+        super().__init__(position, Vector2(50, 50), r"data/Sprites/log.png", 150, ItemStack(WOOD, 15))
+
+
+ENTITIES: dict[str, type[Entity]] = {
+    "Tree" : Tree,
+    "CochonTronc": CochonTronc
 }
 
 ######################### WEAPON
