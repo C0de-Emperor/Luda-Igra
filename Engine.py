@@ -1,10 +1,9 @@
 import pygame
 
 def Run (screen: pygame.surface.Surface, DEBUG: True):
-    from Objects import Player, Harvestable
+    from Objects import Player
     from Data import RocketLaucher, MiniGun, FlameThrower
     import SceneManager
-    from InventorySystem import WOOD, ItemStack
 
 
     font = pygame.font.SysFont(None, 24)
@@ -18,7 +17,7 @@ def Run (screen: pygame.surface.Surface, DEBUG: True):
         SceneManager.Scene.currentScene.tilemap.points["SpawnPoint"], 
         pygame.Vector2(50, 50), 
         r"data/Sprites/toruk_makto.png",
-        [RocketLaucher, MiniGun, FlameThrower],
+        [MiniGun, FlameThrower],
         speed=800
     )
 

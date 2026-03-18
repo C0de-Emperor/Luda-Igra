@@ -1,8 +1,12 @@
 import pygame
 from pygame import Vector2
 from Tools import Queue
-from InventorySystem import ItemStack, WOOD
 import os
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from InventorySystem import ItemStack
 
 
 KEYS_MOVEMENT = {
@@ -390,15 +394,6 @@ class Enemy(Entity):
                     else:
                         self.rect.top = wall.bottom
 
-    def TakeDamage(self, amount: float):
-        self.health -= amount
-
-        if self.health <= 0:
-            self.Die()
-
-    def Die(self):
-        self.Destroy()
-
     def _render_health_bar(self, screen):
         # position de l'ennemi à l'écran
         screen_rect = Camera.get_screen_rect(self.rect)
@@ -662,7 +657,7 @@ class Projectile(Object):
 
 
 class Harvestable(Entity):
-    def __init__(self, position: pygame.Vector2, size: pygame.Vector2, sprite: str, baseHealth:float, stack: ItemStack):
+    def __init__(self, position: pygame.Vector2, size: pygame.Vector2, sprite: str, baseHealth:float, stack: "ItemStack"):
         super().__init__(position, size, True, baseHealth)
         self.LoadSprite(sprite, True)
         self.stack = stack
@@ -675,12 +670,6 @@ class Harvestable(Entity):
 
         if debug:
             pygame.draw.rect(screen, (255, 0, 0), screen_rect, 1)
-
-    def TakeDamage(self, amount: float):
-        self.health -= amount
-
-        if self.health <= 0:
-            self.Die()
 
     def Die(self):
         self._spawn_loot()
@@ -705,18 +694,17 @@ class Harvestable(Entity):
     def _spawn_loot(self):
         import random
         from pygame import Vector2
+        from InventorySystem import ItemStack
 
-        num_drops = random.randint(1, self.stack.amount)  # nombre de morceaux de loot
-        for _ in range(num_drops):
-            # direction aléatoire
+        for _ in range(self.stack.amount + random.randint(-1, 1)):
             angle = random.uniform(0, 360)
-            distance = random.uniform(15, 45)  # distance depuis le centre
+            distance = random.uniform(15, 45)
             offset = Vector2(distance, 0).rotate(angle)
 
             DroppedStack(self.position + offset, ItemStack(self.stack.resource, 1))
 
 class DroppedStack(Object):
-    def __init__(self, position, stack: ItemStack, destroyOnLoad=True):
+    def __init__(self, position, stack: "ItemStack", destroyOnLoad=True):
         super().__init__(position, pygame.Vector2(40, 40), destroyOnLoad)
         self.LoadSprite(stack.resource.icon, False)
         self.stack = stack

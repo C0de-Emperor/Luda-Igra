@@ -1,7 +1,6 @@
 from Objects import *
 
-
-####################### ENTITIES
+######################### ENTITY
 ################################
 
 class CochonTronc(Enemy):
@@ -11,7 +10,9 @@ class CochonTronc(Enemy):
 
 class Tree(Harvestable):
     def __init__(self, position: pygame.Vector2):
-        super().__init__(position, Vector2(50, 50), r"data/Sprites/log.png", 150, ItemStack(WOOD, 15))
+        from InventorySystem import WOOD, ItemStack
+
+        super().__init__(position, Vector2(50, 50), r"data/Sprites/log.png", 150, ItemStack(WOOD, 12))
 
 
 ENTITIES: dict[str, type[Entity]] = {
@@ -23,6 +24,8 @@ ENTITIES: dict[str, type[Entity]] = {
 ################################
 
 class Sword(MeleeWeapon):
+    icon = r"data/Sprites/icon_sword.png"
+
     def __init__(self):
         super().__init__(
             Vector2(0, 0), 
@@ -34,6 +37,8 @@ class Sword(MeleeWeapon):
         )
 
 class MiniGun(RangedWeapon):
+    icon = r"data/Sprites/icon_minigun.png"
+
     def __init__(self):
         super().__init__(
             Vector2(0, 0), 
@@ -45,6 +50,8 @@ class MiniGun(RangedWeapon):
         )
 
 class RocketLaucher(RangedWeapon):
+    icon = r"data/Sprites/icon_rocketLauncher.png"
+
     def __init__(self):
         super().__init__(
             Vector2(0, 0), 
@@ -56,6 +63,8 @@ class RocketLaucher(RangedWeapon):
         )
 
 class FlameThrower(RangedWeapon):
+    icon = r"data/Sprites/icon_flameThrower.png"
+
     def __init__(self):
         super().__init__(
             Vector2(0, 0), 

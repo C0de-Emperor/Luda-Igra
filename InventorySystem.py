@@ -1,4 +1,10 @@
 import pygame
+from Data import RocketLaucher
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from Objects import Weapon
 
 class ResourceManager:
     resources = []
@@ -32,10 +38,12 @@ class Inventory:
     padding = 5
 
     def __init__(self):
-        from UI import InventoryUI
+        from UI import InventoryUI, CraftingUI
 
         self.resources = {}
-        self.UI = InventoryUI(self, pygame.Vector2(0, 0))
+        self.UI = InventoryUI(self, pygame.Vector2(20, 20))
+        print(pygame.display.Info().current_w - 500)
+        self.craftingUI = CraftingUI(pygame.Vector2(pygame.display.Info().current_w - 400 - 10, 10))
 
     def add(self, resource, amount):
         self.resources[resource] = self.resources.get(resource, 0) + amount
@@ -57,5 +65,99 @@ class Resource:
 
 WOOD = Resource("Wood", r"data/Sprites/log.png")
 STONE = Resource("Stone", r"data/Sprites/stone.png")
-IRON = Resource("Iron", r"data/Sprites/bullet.png")
+IRON = Resource("Iron", r"data/Sprites/iron.png")
+
+class CraftingManager:
+    recipes: list["Recipe"] = []
+
+    @classmethod
+    def register(cls, recipe):
+        cls.recipes.append(recipe)
+
+    @classmethod
+    def get_craftable(cls):
+        return [r for r in cls.recipes if r.can_craft()]
+
+class Recipe:
+    def __init__(self, inputs: list[ItemStack]):
+        self.inputs = inputs
+
+        self.isCraftable = True
+
+        CraftingManager.register(self)
+
+    def can_craft(self):
+        from Objects import Player
+
+        for stack in self.inputs:
+            if Player.player.inventory.get(stack.resource) < stack.amount:
+                return False
+        return True
+
+    def craft(self):
+        pass
+
+
+class ItemRecipe(Recipe):
+    def __init__(self, inputs: list[ItemStack], output: ItemStack):
+        super().__init__(inputs)
+
+        self.output = output
+
+    def craft(self):
+        from Objects import Player
+
+        if not self.can_craft():
+            return False
+
+        # retirer les ressources
+        for stack in self.inputs:
+
+            Player.player.inventory.remove(stack.resource, stack.amount)
+
+        # ajouter le résultat
+        Player.player.inventory.add(self.output.resource, self.output.amount)
+
+        return True
+ 
+class WeaponRecipe(Recipe):
+    def __init__(self, inputs: list[ItemStack], output: type["Weapon"]):
+        super().__init__(inputs)
+
+        self.output = output
+    
+    def craft(self):
+        from Objects import Player
+
+        if not self.can_craft() or not self.isCraftable:
+            return False
+
+        # retirer les ressources
+        for stack in self.inputs:
+            Player.player.inventory.remove(stack.resource, stack.amount)
+
+        # ajouter le résultat
+        Player.player.tools.enqueue(self.output)
+
+        self.isCraftable = False
+
+        return True
+
+IRON_FROM_WOOD = ItemRecipe([
+        ItemStack(WOOD, 24)
+    ],
+    ItemStack(IRON, 3980)
+)
+
+ROCKETLAUNCHER_FROM_IRON = WeaponRecipe([
+        ItemStack(IRON, 24)
+    ],
+    RocketLaucher
+)
+
+
+
+
+
+
 

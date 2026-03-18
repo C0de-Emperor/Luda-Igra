@@ -174,7 +174,7 @@
   </object>
  </objectgroup>
  <objectgroup id="8" name="SpawnArea">
-  <object id="117" name="CochonTronc-50-1" x="1067" y="784" width="315" height="630"/>
+  <object id="117" name="CochonTronc-15-4" x="1067" y="784" width="315" height="630"/>
   <object id="119" name="Tree-10-10" x="128" y="1344" width="512" height="128"/>
  </objectgroup>
 </map>
