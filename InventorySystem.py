@@ -41,9 +41,11 @@ class Inventory:
         from UI import InventoryUI, CraftingUI
 
         self.resources = {}
-        self.UI = InventoryUI(self, pygame.Vector2(20, 20))
-        print(pygame.display.Info().current_w - 500)
-        self.craftingUI = CraftingUI(pygame.Vector2(pygame.display.Info().current_w - 400 - 10, 10))
+        # Position inventory en haut à gauche avec marge
+        self.UI = InventoryUI(self, pygame.Vector2(30, 50))
+        # Position crafting en haut à droite, ajustée pour la nouvelle taille avec marges uniformes
+        screen_width = pygame.display.get_window_size()[0]
+        self.craftingUI = CraftingUI(pygame.Vector2(screen_width - 470, 50))
 
     def add(self, resource, amount):
         self.resources[resource] = self.resources.get(resource, 0) + amount

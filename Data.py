@@ -3,9 +3,22 @@ from Objects import *
 ######################### ENTITY
 ################################
 
-class CochonTronc(Enemy):
+class CochonTronc(MeleeEnemy):
     def __init__(self, position: pygame.Vector2):
-        super().__init__(position, Vector2(50, 50), r"data/Sprites/cochonTronc.png", 100, 10, 60, 400, 100, 6, 2)
+        super().__init__(
+            position, 
+            size = Vector2(50, 50), 
+            sprite = r"data/Sprites/cochonTronc.png", 
+            baseHealth = 100, 
+            attackDmg = 5, 
+            speed = 60, 
+            sightRadius = 400, 
+            wanderRadius = 100, 
+            patrolDelay = 6, 
+            stopDuration = 2,
+            attackCooldown = 2,
+            attackRange = 50
+        )
 
 
 class Tree(Harvestable):
@@ -24,7 +37,7 @@ ENTITIES: dict[str, type[Entity]] = {
 ################################
 
 class Sword(MeleeWeapon):
-    icon = r"data/Sprites/icon_sword.png"
+    icon =  r"data/Sprites/icon_sword.png"
 
     def __init__(self):
         super().__init__(
@@ -79,7 +92,7 @@ class FlameThrower(RangedWeapon):
 ################################
 
 class Bullet(Projectile):
-    def __init__(self, position, angle, direction):
+    def __init__(self, position, angle, direction, owner):
         super().__init__(
             position, 
             Vector2(8, 4), 
@@ -88,11 +101,12 @@ class Bullet(Projectile):
             50, 
             direction, 
             800, 
-            2
+            2,
+            owner
         )
 
 class Rocket(Projectile):
-    def __init__(self, position, angle, direction):
+    def __init__(self, position, angle, direction, owner):
         super().__init__(
             position, 
             Vector2(30, 10), 
@@ -101,7 +115,8 @@ class Rocket(Projectile):
             75, 
             direction, 
             1000, 
-            2
+            2,
+            owner
         )
 
     def OnEnemyHit(self, enemy: Enemy):
@@ -115,7 +130,8 @@ class Rocket(Projectile):
             r"data/Sprites/explosion.png",
             self.damage,
             True,
-            0.05
+            0.05,
+            self.owner
         )
 
         self.Destroy()
@@ -131,13 +147,14 @@ class Rocket(Projectile):
             r"data/Sprites/explosion.png",
             self.damage,
             True,
-            0.05
+            0.05,
+            self.owner
         )
 
         self.Destroy()
 
 class Flame(Projectile):
-    def __init__(self, position, angle, direction):
+    def __init__(self, position, angle, direction, owner):
         super().__init__(
             position, 
             Vector2(30, 20), 
@@ -146,7 +163,8 @@ class Flame(Projectile):
             2, 
             direction, 
             300, 
-            2
+            2,
+            owner
         )
 
     def OnEnemyHit(self, enemy: Enemy):

@@ -75,9 +75,12 @@ class Object:
     def Destroy(self):
         from SceneManager import Scene
 
-        if self in Scene.currentScene.objects:
-            Scene.currentScene.objects.remove(self)
-            del self
+        scene = Scene.currentScene
+        if scene is None:
+            return
+
+        if self in scene.objects:
+            scene.objects.remove(self)
 
     def GetColliders(self) -> list[pygame.rect.Rect]:
         return []
@@ -104,19 +107,40 @@ class Entity(Object):
         self.baseHealth = baseHealth
         self.health = baseHealth
 
+    def _render_health_bar(self, screen):
+        # position de l'ennemi à l'écran
+        screen_rect = Camera.get_screen_rect(self.rect)
+
+        bar_width = screen_rect.width
+        bar_height = 5
+        bar_x = screen_rect.centerx - bar_width // 2
+        bar_y = screen_rect.top - 10  # au-dessus de l'ennemi
+
+        # fond rouge
+        pygame.draw.rect(screen, (255,0,0), (bar_x, bar_y, bar_width, bar_height))
+
+        # vert proportionnel à la vie
+        health_ratio = max(self.health, 0) / self.baseHealth
+        pygame.draw.rect(screen, (0,255,0), (bar_x, bar_y, int(bar_width * health_ratio), bar_height))
+
     def TakeDamage(self, amount: float):
         self.health -= amount
         if self.health <= 0:
             self.Die()
 
+    def Heal(self, amount: float):
+        self.health += amount
+        if self.health > self.baseHealth:
+            self.health = self.baseHealth
+
     def Die(self):
         self.Destroy()
 
-class Player(Object):
+class Player(Entity):
     player = None
 
-    def __init__(self, position: pygame.Vector2, size: pygame.Vector2, sprite: str, tools: list[type["Weapon"]], speed: float = 300):
-        super().__init__(position, size, False)
+    def __init__(self, position: pygame.Vector2, size: pygame.Vector2, sprite: str, tools: list[type["Weapon"]], baseHealth: float, speed: float = 300):
+        super().__init__(position, size, False, baseHealth)
         self.LoadSprite(sprite, True)
 
         self.tools: Queue = Queue(*tools)
@@ -183,6 +207,8 @@ class Player(Object):
         
         screen.blit(self.sprite, screen_rect)
 
+        self._render_health_bar(screen)
+
         if debug:
             pygame.draw.rect(screen, (180, 3, 252), screen_rect, 2)
         
@@ -220,21 +246,73 @@ class Player(Object):
             self.currentTool.Destroy()
         self.currentTool = self.tools.peek()()
 
-        
+    def _render_health_bar(self, screen):
+        # --- PARAMÈTRES UI ---
+        bar_width = 300
+        bar_height = 30
 
-class ObjectWithCollider(Object):
-    def __init__(self, position: pygame.Vector2, size: pygame.Vector2, destroyOnLoad: bool = True):
-        super().__init__(position, size, destroyOnLoad)
-        
+        margin = 20  # distance au bord écran
+        padding = 8  # espace intérieur
 
-    def GetColliders(self):
-        return [self.rect]
-    
-    def Render(self, screen: pygame.surface.Surface, debug: bool = False):
-        screen_rect = Camera.get_screen_rect(self.rect)
-        
-        if debug:
-            pygame.draw.rect(screen, (255, 0, 0), screen_rect, 1)
+        bar_x = margin
+        bar_y = pygame.display.Info().current_h - bar_height - margin
+
+        # fond du conteneur
+        container_rect = pygame.Rect(bar_x - padding, bar_y - padding, bar_width + padding * 2, bar_height + padding * 2)
+        pygame.draw.rect(screen, (20, 20, 35), container_rect, border_radius=12)
+
+        # --- BACKGROUND ---
+        bar_rect = pygame.Rect(bar_x, bar_y, bar_width, bar_height)
+        pygame.draw.rect(screen, (40, 40, 40), bar_rect, border_radius=10)
+
+        # --- HEALTH ---
+        health_ratio = max(self.health, 0) / self.baseHealth
+        current_width = int(bar_width * health_ratio)
+
+        if health_ratio > 0.6:
+            color = (0, 200, 0)
+        elif health_ratio > 0.3:
+            color = (200, 150, 0)
+        else:
+            color = (200, 0, 0)
+
+        pygame.draw.rect(screen, color, (bar_x, bar_y, current_width, bar_height), border_radius=10)
+
+        # --- BORDER ---
+        pygame.draw.rect(screen, (200, 200, 220), bar_rect, 2, border_radius=10)
+
+        # --- TEXTE ---
+        font = pygame.font.SysFont("Arial", 20, bold=True)
+        text = font.render(f"{int(self.health)} / {int(self.baseHealth)}", True, (240, 240, 240))
+
+        text_rect = text.get_rect(center=bar_rect.center)
+        screen.blit(text, text_rect)
+
+    def Destroy(self):
+        if getattr(self, 'currentTool', None):
+            self.currentTool.Destroy()
+            self.currentTool = None
+
+        if getattr(self, 'inventory', None):
+            if getattr(self.inventory, 'UI', None):
+                self.inventory.UI.Destroy()
+                self.inventory.UI = None
+            if getattr(self.inventory, 'craftingUI', None):
+                self.inventory.craftingUI.Destroy()
+                self.inventory.craftingUI = None
+
+        if Player.player is self:
+            Player.player = None
+
+        super().Destroy()
+
+    def Die(self):
+        from Engine import trigger_game_over
+        super().Die()
+
+        trigger_game_over()
+
+
 
 class Gate(Object):
     def __init__(self, name:str, destination:str, position: pygame.Vector2, size: pygame.Vector2, sprite: str):
@@ -297,6 +375,8 @@ class SpawnArea(Object):
         
         if debug:
             pygame.draw.rect(screen, (255, 85, 0), screen_rect, 1)
+
+
 
 class Enemy(Entity):
     def __init__(self, position:Vector2, size:Vector2, sprite:str, baseHealth:float, attackDmg:float, speed:float, sightRadius:float, wanderRadius:float, patrolDelay:float, stopDuration: float):
@@ -394,21 +474,66 @@ class Enemy(Entity):
                     else:
                         self.rect.top = wall.bottom
 
-    def _render_health_bar(self, screen):
-        # position de l'ennemi à l'écran
-        screen_rect = Camera.get_screen_rect(self.rect)
+class MeleeEnemy (Enemy):
+    def __init__(self, position:Vector2, size:Vector2, sprite:str, baseHealth:float, attackDmg:float, speed:float, sightRadius:float, wanderRadius:float, patrolDelay:float, stopDuration: float, attackCooldown: float, attackRange: float):
+        super().__init__(
+            position, 
+            size,
+            sprite, 
+            baseHealth, 
+            attackDmg, 
+            speed, 
+            sightRadius, 
+            wanderRadius, 
+            patrolDelay, 
+            stopDuration
+        )
 
-        bar_width = screen_rect.width
-        bar_height = 5
-        bar_x = screen_rect.centerx - bar_width // 2
-        bar_y = screen_rect.top - 10  # au-dessus de l'ennemi
+        self.attackCooldown = attackCooldown
+        self.attackRange = attackRange   
+        self.attackTimer = attackCooldown
 
-        # fond rouge
-        pygame.draw.rect(screen, (255,0,0), (bar_x, bar_y, bar_width, bar_height))
+    def Update(self, dt):
+        super().Update(dt)
 
-        # vert proportionnel à la vie
-        health_ratio = max(self.health, 0) / self.baseHealth
-        pygame.draw.rect(screen, (0,255,0), (bar_x, bar_y, int(bar_width * health_ratio), bar_height))
+        if self.attackTimer > 0:
+            self.attackTimer -= dt
+
+        if (Player.player.position - self.position).magnitude() <= self.attackRange and self.attackTimer <= 0:
+                self.Attack()
+
+    def Attack(self):
+        if self.attackTimer > 0:
+            return
+
+        from pygame import Vector2
+        import math
+
+        self.attackTimer = self.attackCooldown
+
+        delta = Player.player.position - self.position
+
+        if delta.length() == 0:
+            direction = Vector2(1, 0)
+        else:
+            direction = delta.normalize()
+
+        # angle pour la rotation
+        angle = math.degrees(math.atan2(-direction.y, direction.x))
+
+        # position devant l’ennemi
+        hitbox_pos = self.position + direction * 25
+
+        Hitbox(
+            hitbox_pos,
+            Vector2(30, 20),
+            angle,
+            r"data/Sprites/slash.png",
+            self.attackDmg,
+            True,
+            0.1,
+            Enemy
+        )
 
 
 
@@ -502,7 +627,7 @@ class MeleeWeapon(Weapon):
 
             hitbox_pos = self.position + direction * self.attack_range
 
-            Hitbox(hitbox_pos, Vector2(30, 25), self.angle - 90, r"data/Sprites/slash.png", self.damage/3, False)
+            Hitbox(hitbox_pos, Vector2(30, 25), self.angle - 90, r"data/Sprites/slash.png", self.damage/3, False, 0.1, Player)
 
 class RangedWeapon(Weapon):
     def __init__(self, position: Vector2, size: Vector2, sprite:str, cooldown: float, angleDeviation: int, bullet: type["Projectile"]):
@@ -545,15 +670,17 @@ class RangedWeapon(Weapon):
 
         angle = math.degrees(math.atan2(-direction.y, direction.x))
 
-        self.bullet(hitbox_pos, angle, direction)
+        self.bullet(hitbox_pos, angle, direction, Player)
+
 
 
 class Hitbox(Object):
-    def __init__(self, position: Vector2, size: Vector2, angle: float, sprite: str, damage: float, scale: bool, lifetime=0.1):
+    def __init__(self, position: Vector2, size: Vector2, angle: float, sprite: str, damage: float, scale: bool, lifetime: float, owner):
         super().__init__(position, size, False)
         self.LoadSprite(sprite, scale)
         self.damage = damage
         self.lifetime = lifetime
+        self.owner = owner
 
         self.hitEnemies = set()
 
@@ -564,7 +691,7 @@ class Hitbox(Object):
         from SceneManager import Scene
 
         for obj in Scene.currentScene.objects:
-            if isinstance(obj, Entity) and self.rect.colliderect(obj.rect):
+            if isinstance(obj, Entity) and self.rect.colliderect(obj.rect) and not isinstance(obj, self.owner):
                 if obj not in self.hitEnemies:
                     obj.TakeDamage(self.damage)
                     self.hitEnemies.add(obj)
@@ -587,7 +714,7 @@ class Hitbox(Object):
 class Projectile(Object):
     def __init__(self, position: Vector2, size: Vector2, angle: float,
                  sprite: str, damage: float, direction: Vector2,
-                 speed: float, lifetime: float):
+                 speed: float, lifetime: float, owner):
 
         super().__init__(position, size, True)
         self.LoadSprite(sprite, True)
@@ -600,6 +727,8 @@ class Projectile(Object):
         self.speed = speed
         self.lifetime = lifetime
         self.angle = angle
+
+        self.owner = owner
 
     def Update(self, dt):
         from SceneManager import Scene
@@ -615,7 +744,7 @@ class Projectile(Object):
         for obj in Scene.currentScene.objects:
             if obj is self:
                 continue
-            if isinstance(obj, Entity) and self.rect.colliderect(obj.rect):
+            if isinstance(obj, Entity) and self.rect.colliderect(obj.rect) and not isinstance(obj, self.owner):
                 if isinstance(obj, Enemy):
                     self.OnEnemyHit(obj)
                 elif isinstance(obj, Harvestable):
@@ -675,22 +804,6 @@ class Harvestable(Entity):
         self._spawn_loot()
         self.Destroy()
 
-    def _render_health_bar(self, screen):
-        # position de l'ennemi à l'écran
-        screen_rect = Camera.get_screen_rect(self.rect)
-
-        bar_width = screen_rect.width
-        bar_height = 5
-        bar_x = screen_rect.centerx - bar_width // 2
-        bar_y = screen_rect.top - 10  # au-dessus de l'ennemi
-
-        # fond rouge
-        pygame.draw.rect(screen, (255,0,0), (bar_x, bar_y, bar_width, bar_height))
-
-        # vert proportionnel à la vie
-        health_ratio = max(self.health, 0) / self.baseHealth
-        pygame.draw.rect(screen, (0,255,0), (bar_x, bar_y, int(bar_width * health_ratio), bar_height))
-
     def _spawn_loot(self):
         import random
         from pygame import Vector2
@@ -702,6 +815,8 @@ class Harvestable(Entity):
             offset = Vector2(distance, 0).rotate(angle)
 
             DroppedStack(self.position + offset, ItemStack(self.stack.resource, 1))
+
+
 
 class DroppedStack(Object):
     def __init__(self, position, stack: "ItemStack", destroyOnLoad=True):
