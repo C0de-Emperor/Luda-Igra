@@ -1,10 +1,14 @@
+from typing import Generic, TypeVar
+
+T = TypeVar("T")
+
 class Node:
     def __init__(self, value):
         self.value = value
         self.next = None
 
-class Queue:
-    def __init__(self, *elements):
+class Queue(Generic[T]):
+    def __init__(self, *elements: T):
         self.front = None
         self.rear = None
 
@@ -21,7 +25,7 @@ class Queue:
 
         return "Queue(" + ", ".join(values) + ")"
 
-    def enqueue(self, value):
+    def enqueue(self, value: T):
         new_node = Node(value)
 
         if self.rear is None:
@@ -31,7 +35,7 @@ class Queue:
         self.rear.next = new_node
         self.rear = new_node
 
-    def dequeue(self):
+    def dequeue(self) -> T:
         if self.isEmpty():
             raise IndexError("Queue is empty")
 
@@ -43,7 +47,7 @@ class Queue:
 
         return value
 
-    def isEmpty(self):
+    def isEmpty(self) -> bool:
         return self.front is None
     
     def rotate(self):

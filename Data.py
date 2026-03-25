@@ -23,9 +23,19 @@ class CochonTronc(MeleeEnemy):
 
 class Tree(Harvestable):
     def __init__(self, position: pygame.Vector2):
-        from InventorySystem import WOOD, ItemStack
+        from InventorySystem import WOOD
 
-        super().__init__(position, Vector2(50, 50), r"data/Sprites/log.png", 150, ItemStack(WOOD, 12))
+        super().__init__(
+            position, 
+            Vector2(50, 50), 
+            r"data/Sprites/log.png", 
+            150, 
+            LootTable(
+                LootEntry(WOOD, 2, 4, 3),
+                LootEntry(WOOD, 1, 3, 7),
+                rolls=1
+            )
+        )
 
 
 ENTITIES: dict[str, type[Entity]] = {
@@ -163,13 +173,12 @@ class Flame(Projectile):
             2, 
             direction, 
             300, 
-            2,
+            0.7,
             owner
         )
 
     def OnEnemyHit(self, enemy: Enemy):
         enemy.TakeDamage(self.damage)
-
 
     def OnHarvestableHit(self, object: Harvestable):
         object.TakeDamage(self.damage)

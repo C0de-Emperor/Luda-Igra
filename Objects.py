@@ -2,11 +2,13 @@ import pygame
 from pygame import Vector2
 from Tools import Queue
 import os
+import random
 
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from InventorySystem import ItemStack
+
 
 
 KEYS_MOVEMENT = {
@@ -15,6 +17,7 @@ KEYS_MOVEMENT = {
     pygame.K_q: Vector2(-1, 0),
     pygame.K_d: Vector2(1, 0),
 }
+
 
 
 class Camera:
@@ -42,6 +45,7 @@ class Camera:
         if Scene.currentScene.tilemap and hasattr(Scene.currentScene.tilemap, 'camera_offset'):
             world_pos += Scene.currentScene.tilemap.camera_offset
         return world_pos
+
 
 
 class Object:
@@ -142,17 +146,20 @@ class Player(Entity):
     def __init__(self, position: pygame.Vector2, size: pygame.Vector2, sprite: str, tools: list[type["Weapon"]], baseHealth: float, speed: float = 300):
         super().__init__(position, size, False, baseHealth)
         self.LoadSprite(sprite, True)
+        self.speed = speed
 
         self.tools: Queue = Queue(*tools)
         self.currentTool: type[Weapon] = None
 
-        from InventorySystem import Inventory
+        from InventorySystem import Inventory, Recipe
         self.inventory = Inventory()
 
-        self.speed = speed
+        self.recipeToProcess: Recipe = None
+        self.recipeProcessTimer = 0
 
         if Player.player != None:
             print("Error : 2 player in the scene")
+
         Player.player = self
 
     def _get_movement_direction(self) -> Vector2:
@@ -187,6 +194,7 @@ class Player(Entity):
 
     def Update(self, dt):
         from SceneManager import Scene
+        from InventorySystem import CraftingManager
         
         if Scene.currentScene is None:
             return
@@ -201,6 +209,20 @@ class Player(Entity):
         if direction.y != 0:
             self.rect.y += direction.y * self.speed * dt
             self._check_collision(colliders, "y")
+
+
+        if self.recipeToProcess != None:
+            self.recipeProcessTimer += dt
+            if self.recipeProcessTimer >= self.recipeToProcess.duration:
+                self.recipeToProcess.craft()
+                self.recipeToProcess = None
+                self.recipeProcessTimer = 0
+
+        elif not CraftingManager.craftingQueue.isEmpty():
+            self.recipeToProcess = CraftingManager.craftingQueue.dequeue()
+            self.recipeProcessTimer = 0
+
+
 
     def Render(self, screen: pygame.surface.Surface, debug: bool = False):
         screen_rect = Camera.get_screen_rect(self.rect)
@@ -246,7 +268,7 @@ class Player(Entity):
             self.currentTool.Destroy()
         self.currentTool = self.tools.peek()()
 
-    def _render_health_bar(self, screen):
+    def _render_health_bar(self, screen: pygame.surface.Surface):
         # --- PARAMÈTRES UI ---
         bar_width = 300
         bar_height = 30
@@ -300,6 +322,9 @@ class Player(Entity):
             if getattr(self.inventory, 'craftingUI', None):
                 self.inventory.craftingUI.Destroy()
                 self.inventory.craftingUI = None
+            if getattr(self.inventory, 'craftingQueueUI', None):
+                self.inventory.craftingQueueUI.Destroy()
+                self.inventory.craftingQueueUI = None
 
         if Player.player is self:
             Player.player = None
@@ -437,7 +462,9 @@ class Enemy(Entity):
                 self.stopTimer = 0
                 self._choose_wander_target()
 
-            direction = self.wanderTarget.normalize()
+            if self.wanderTarget.magnitude() > 0:
+                direction = self.wanderTarget.normalize()
+            
         else:
             self.stopTimer += dt
 
@@ -785,11 +812,46 @@ class Projectile(Object):
 
 
 
+class LootEntry:
+    def __init__(self, resource, min_amount, max_amount, weight):
+        self.resource = resource
+        self.min_amount = min_amount
+        self.max_amount = max_amount
+        self.weight = weight
+
+class LootTable:
+    def __init__(self, *entries: LootEntry, rolls=1):
+        self.entries = list(entries)
+        self.rolls = rolls
+
+    def roll(self):
+        from InventorySystem import ItemStack
+        drops = []
+
+        total_weight = sum(e.weight for e in self.entries)
+
+        for _ in range(self.rolls):
+            r = random.uniform(0, total_weight)
+
+            current = 0
+            for entry in self.entries:
+                current += entry.weight
+
+                if r <= current:
+                    amount = random.randint(entry.min_amount, entry.max_amount)
+                    drops.append(ItemStack(entry.resource, amount))
+                    break
+
+        return drops
+
+
+
 class Harvestable(Entity):
-    def __init__(self, position: pygame.Vector2, size: pygame.Vector2, sprite: str, baseHealth:float, stack: "ItemStack"):
+    def __init__(self, position: pygame.Vector2, size: pygame.Vector2, sprite: str, baseHealth:float, lootTable: LootTable):
         super().__init__(position, size, True, baseHealth)
         self.LoadSprite(sprite, True)
-        self.stack = stack
+        
+        self.lootTable = lootTable
 
     def Render(self, screen, debug=False):
         screen_rect = Camera.get_screen_rect(self.rect)
@@ -801,20 +863,23 @@ class Harvestable(Entity):
             pygame.draw.rect(screen, (255, 0, 0), screen_rect, 1)
 
     def Die(self):
-        self._spawn_loot()
+        drops = self.lootTable.roll()
+
+        for drop in drops:
+            self._spawn_drop(drop)
+
         self.Destroy()
 
-    def _spawn_loot(self):
+    def _spawn_drop(self, stack):
         import random
         from pygame import Vector2
-        from InventorySystem import ItemStack
 
-        for _ in range(self.stack.amount + random.randint(-1, 1)):
-            angle = random.uniform(0, 360)
-            distance = random.uniform(15, 45)
-            offset = Vector2(distance, 0).rotate(angle)
+        angle = random.uniform(0, 360)
+        distance = random.uniform(5, 20)
 
-            DroppedStack(self.position + offset, ItemStack(self.stack.resource, 1))
+        offset = Vector2(distance, 0).rotate(angle)
+
+        DroppedStack(self.position + offset, stack)
 
 
 
@@ -824,9 +889,26 @@ class DroppedStack(Object):
         self.LoadSprite(stack.resource.icon, False)
         self.stack = stack
 
+        self.font = pygame.font.SysFont(None, 20)
+
     def Render(self, screen, debug=False):
         screen_rect = Camera.get_screen_rect(self.rect)
         screen.blit(self.sprite, screen_rect)
+
+        # --- TEXTE QUANTITÉ ---
+        amount_text = self.font.render(str(self.stack.amount), True, (255, 255, 255))
+
+        text_rect = amount_text.get_rect()
+        text_rect.bottomright = screen_rect.bottomright
+
+        text_rect.x -= 2
+        text_rect.y -= 2
+
+        # optionnel : fond noir pour lisibilité
+        bg_rect = text_rect.inflate(4, 2)
+        pygame.draw.rect(screen, (0, 0, 0), bg_rect)
+
+        screen.blit(amount_text, text_rect)
 
         if debug:
             pygame.draw.rect(screen, (255, 0, 0), screen_rect, 1)
@@ -838,6 +920,11 @@ class DroppedStack(Object):
 
         if screen_rect.collidepoint(mouse_pos):
             Player.player.inventory.add(self.stack.resource, self.stack.amount)
+            
+            # Créer une notification
+            from UI import ItemNotification
+            ItemNotification(self.stack.resource, self.stack.amount)
+            
             self.Destroy()
 
 

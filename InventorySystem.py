@@ -1,4 +1,5 @@
 import pygame
+from Tools import Queue
 from Data import RocketLaucher
 
 from typing import TYPE_CHECKING
@@ -38,14 +39,15 @@ class Inventory:
     padding = 5
 
     def __init__(self):
-        from UI import InventoryUI, CraftingUI
+        from UI import InventoryUI, CraftingUI, CraftingQueueUI
 
         self.resources = {}
-        # Position inventory en haut à gauche avec marge
         self.UI = InventoryUI(self, pygame.Vector2(30, 50))
-        # Position crafting en haut à droite, ajustée pour la nouvelle taille avec marges uniformes
+        
         screen_width = pygame.display.get_window_size()[0]
         self.craftingUI = CraftingUI(pygame.Vector2(screen_width - 470, 50))
+        
+        self.craftingQueueUI = CraftingQueueUI(pygame.Vector2(screen_width - 350, 0), self.craftingUI)
 
     def add(self, resource, amount):
         self.resources[resource] = self.resources.get(resource, 0) + amount
@@ -71,6 +73,7 @@ IRON = Resource("Iron", r"data/Sprites/iron.png")
 
 class CraftingManager:
     recipes: list["Recipe"] = []
+    craftingQueue: Queue["Recipe"] = Queue()
 
     @classmethod
     def register(cls, recipe):
@@ -80,9 +83,11 @@ class CraftingManager:
     def get_craftable(cls):
         return [r for r in cls.recipes if r.can_craft()]
 
+
 class Recipe:
-    def __init__(self, inputs: list[ItemStack]):
+    def __init__(self, inputs: list[ItemStack], duration: float):
         self.inputs = inputs
+        self.duration = duration
 
         self.isCraftable = True
 
@@ -99,36 +104,49 @@ class Recipe:
     def craft(self):
         pass
 
+    def addToQueue(self):
+        pass
+
 
 class ItemRecipe(Recipe):
-    def __init__(self, inputs: list[ItemStack], output: ItemStack):
-        super().__init__(inputs)
+    def __init__(self, inputs: list[ItemStack], output: ItemStack, duration: float):
+        super().__init__(inputs, duration)
 
         self.output = output
 
     def craft(self):
         from Objects import Player
 
-        if not self.can_craft():
-            return False
-
-        # retirer les ressources
-        for stack in self.inputs:
-
-            Player.player.inventory.remove(stack.resource, stack.amount)
-
         # ajouter le résultat
         Player.player.inventory.add(self.output.resource, self.output.amount)
+    
+    def addToQueue(self):
+        from Objects import Player
+
+        if not self.can_craft() or not self.isCraftable:
+            return False
+        
+        # retirer les ressources
+        for stack in self.inputs:
+            Player.player.inventory.remove(stack.resource, stack.amount)
+
+        CraftingManager.craftingQueue.enqueue(self)
 
         return True
  
 class WeaponRecipe(Recipe):
-    def __init__(self, inputs: list[ItemStack], output: type["Weapon"]):
-        super().__init__(inputs)
+    def __init__(self, inputs: list[ItemStack], output: type["Weapon"], duration: float):
+        super().__init__(inputs, duration)
 
         self.output = output
     
     def craft(self):
+        from Objects import Player
+
+        # ajouter le résultat
+        Player.player.tools.enqueue(self.output)
+
+    def addToQueue(self):
         from Objects import Player
 
         if not self.can_craft() or not self.isCraftable:
@@ -138,28 +156,46 @@ class WeaponRecipe(Recipe):
         for stack in self.inputs:
             Player.player.inventory.remove(stack.resource, stack.amount)
 
-        # ajouter le résultat
-        Player.player.tools.enqueue(self.output)
-
+        CraftingManager.craftingQueue.enqueue(self)
         self.isCraftable = False
 
         return True
 
+
 IRON_FROM_WOOD = ItemRecipe([
-        ItemStack(WOOD, 24)
+        ItemStack(WOOD, 2)
     ],
-    ItemStack(IRON, 3980)
+    ItemStack(IRON, 3980),
+    duration=1
 )
 
 ROCKETLAUNCHER_FROM_IRON = WeaponRecipe([
         ItemStack(IRON, 24)
     ],
-    RocketLaucher
+    RocketLaucher,
+    duration=2
 )
 
+IRON_FROM_IRON = ItemRecipe([
+        ItemStack(IRON, 2)
+    ],
+    ItemStack(IRON, 1),
+    duration=3
+)
 
+IRON_FROM_IRON = ItemRecipe([
+        ItemStack(IRON, 2)
+    ],
+    ItemStack(IRON, 1),
+    duration=3
+)
 
-
+IRON_FROM_IRON = ItemRecipe([
+        ItemStack(IRON, 2)
+    ],
+    ItemStack(IRON, 1),
+    duration=3
+)
 
 
 
