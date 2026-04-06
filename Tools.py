@@ -2,59 +2,35 @@ from typing import Generic, TypeVar
 
 T = TypeVar("T")
 
-class Node:
-    def __init__(self, value):
-        self.value = value
-        self.next = None
-
 class Queue(Generic[T]):
     def __init__(self, *elements: T):
-        self.front = None
-        self.rear = None
-
-        for element in elements:
-            self.enqueue(element)
+        self.elements=list(elements)
 
     def __repr__(self):
-        values = []
-        current = self.front
-
-        while current:
-            values.append(str(current.value))
-            current = current.next
-
-        return "Queue(" + ", ".join(values) + ")"
+        return "Queue(" + ", ".join(self.elements) + ")"
 
     def enqueue(self, value: T):
-        new_node = Node(value)
-
-        if self.rear is None:
-            self.front = self.rear = new_node
-            return
-
-        self.rear.next = new_node
-        self.rear = new_node
+        self.elements.append(value)
 
     def dequeue(self) -> T:
         if self.isEmpty():
             raise IndexError("Queue is empty")
 
-        value = self.front.value
-        self.front = self.front.next
-
-        if self.front is None:
-            self.rear = None
-
-        return value
+        return self.elements.pop(0)
+    
+    def getLen(self) -> int:
+        return len(self.elements)
 
     def isEmpty(self) -> bool:
-        return self.front is None
+        return len(self.elements) == 0
     
     def rotate(self):
-        if not self.isEmpty():
-            self.enqueue(self.dequeue())
+        elements=[self.dequeue() for k in range(self.getLen())]
+
+        for k in range(len(elements)-1, 0, -1):
+            self.enqueue(elements[k])
 
     def peek(self):
-        if self.front:
-            return self.front.value
+        if not self.isEmpty():
+            return self.elements[0]
         return None

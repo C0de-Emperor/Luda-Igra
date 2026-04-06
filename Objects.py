@@ -252,17 +252,8 @@ class Player(Entity):
 
         else:
             # rotation inverse
-            prev = None
-            current = self.tools.front
-
-            while current.next:
-                prev = current
-                current = current.next
-
-            if prev:
-                prev.next = None
-                current.next = self.tools.front
-                self.tools.front = current
+            for k in range(self.tools.getLen()-1):
+                self.tools.enqueue(self.tools.dequeue())
 
         if self.currentTool:
             self.currentTool.Destroy()

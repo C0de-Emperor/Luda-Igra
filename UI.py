@@ -345,10 +345,7 @@ class CraftingQueueUI(UIElement):
             cur_progress = min(1.0, Player.player.recipeProcessTimer / total_time)
 
         queue_items = [current_recipe] if current_recipe != None else []
-        cur = CraftingManager.craftingQueue.front
-        while cur:
-            queue_items.append(cur.value)
-            cur = cur.next
+        queue_items.extend(CraftingManager.craftingQueue.elements)
 
         if len(queue_items) > 6:
             queue_items = queue_items[: 6]
