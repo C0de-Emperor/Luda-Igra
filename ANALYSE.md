@@ -1,466 +1,463 @@
-# Document d'analyse du projet
+# Document d'Analyse du Projet
 _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ## Fichier : Data.py
 
-### Type de données : `Bullet`
+### <a name='Bullet'></a>Type de données : `Bullet`
 
-**Attributs :**
-* (Aucun attribut détecté)
+**Hérite de :** [Projectile](#Projectile)
 
-**Méthodes :**
-* Destroy()
-* GetColliders() -> list[pygame.rect.Rect]
-* HandleEvent(event)
-* LoadSprite(sprite: str, scale: bool)
-* OnEnemyHit(enemy: Objects.Enemy)
-* OnEntityHit(entity: Objects.Entity)
-* OnHarvestableHit(object: 'Harvestable')
-* OnWallHit()
-* Render(screen, debug=False)
-* Update(dt)
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
+* (Aucune méthode spécifique)
 
 ---
 
-### Type de données : `CochonTronc`
+### <a name='CochonTronc'></a>Type de données : `CochonTronc`
 
-**Attributs :**
-* (Aucun attribut détecté)
+**Hérite de :** [MeleeEnemy](#MeleeEnemy)
 
-**Méthodes :**
-* Attack()
-* Destroy()
-* Die()
-* GetColliders() -> list[pygame.rect.Rect]
-* HandleEvent(event)
-* Heal(amount: float)
-* LoadSprite(sprite: str, scale: bool)
-* Render(screen, debug=False)
-* TakeDamage(amount: float)
-* Update(dt)
-* _check_collision(walls, axis)
-* _choose_wander_target()
-* _render_health_bar(screen)
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
+* (Aucune méthode spécifique)
 
 ---
 
-### Type de données : `Flame`
+### <a name='Flame'></a>Type de données : `Flame`
 
-**Attributs :**
-* (Aucun attribut détecté)
+**Hérite de :** [Projectile](#Projectile)
 
-**Méthodes :**
-* Destroy()
-* GetColliders() -> list[pygame.rect.Rect]
-* HandleEvent(event)
-* LoadSprite(sprite: str, scale: bool)
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
 * OnEnemyHit(enemy: Objects.Enemy)
-* OnEntityHit(entity: Objects.Entity)
 * OnHarvestableHit(object: Objects.Harvestable)
-* OnWallHit()
-* Render(screen, debug=False)
-* Update(dt)
 
 ---
 
-### Type de données : `FlameThrower`
+### <a name='FlameThrower'></a>Type de données : `FlameThrower`
 
-**Attributs :**
-* (Aucun attribut détecté)
+**Hérite de :** [RangedWeapon](#RangedWeapon)
 
-**Méthodes :**
-* Attack()
-* Destroy()
-* GetColliders() -> list[pygame.rect.Rect]
-* HandleEvent(event)
-* LoadSprite(sprite: str, scale: bool)
-* Render(screen, debug=False)
-* Update(dt)
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
+* (Aucune méthode spécifique)
 
 ---
 
-### Type de données : `MiniGun`
+### <a name='MiniGun'></a>Type de données : `MiniGun`
 
-**Attributs :**
-* (Aucun attribut détecté)
+**Hérite de :** [RangedWeapon](#RangedWeapon)
 
-**Méthodes :**
-* Attack()
-* Destroy()
-* GetColliders() -> list[pygame.rect.Rect]
-* HandleEvent(event)
-* LoadSprite(sprite: str, scale: bool)
-* Render(screen, debug=False)
-* Update(dt)
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
+* (Aucune méthode spécifique)
 
 ---
 
-### Type de données : `Rocket`
+### <a name='Rocket'></a>Type de données : `Rocket`
 
-**Attributs :**
-* (Aucun attribut détecté)
+**Hérite de :** [Projectile](#Projectile)
 
-**Méthodes :**
-* Destroy()
-* GetColliders() -> list[pygame.rect.Rect]
-* HandleEvent(event)
-* LoadSprite(sprite: str, scale: bool)
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
 * OnEnemyHit(enemy: Objects.Enemy)
-* OnEntityHit(entity: Objects.Entity)
 * OnHarvestableHit(object: Objects.Harvestable)
-* OnWallHit()
-* Render(screen, debug=False)
-* Update(dt)
 
 ---
 
-### Type de données : `RocketLaucher`
+### <a name='RocketLaucher'></a>Type de données : `RocketLaucher`
 
-**Attributs :**
-* (Aucun attribut détecté)
+**Hérite de :** [RangedWeapon](#RangedWeapon)
 
-**Méthodes :**
-* Attack()
-* Destroy()
-* GetColliders() -> list[pygame.rect.Rect]
-* HandleEvent(event)
-* LoadSprite(sprite: str, scale: bool)
-* Render(screen, debug=False)
-* Update(dt)
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
+* (Aucune méthode spécifique)
 
 ---
 
-### Type de données : `Sword`
+### <a name='Sword'></a>Type de données : `Sword`
 
-**Attributs :**
-* (Aucun attribut détecté)
+**Hérite de :** [MeleeWeapon](#MeleeWeapon)
 
-**Méthodes :**
-* Attack()
-* Destroy()
-* GetColliders() -> list[pygame.rect.Rect]
-* HandleEvent(event)
-* LoadSprite(sprite: str, scale: bool)
-* Render(screen, debug=False)
-* Update(dt)
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
+* (Aucune méthode spécifique)
 
 ---
 
-### Type de données : `Tree`
+### <a name='Tree'></a>Type de données : `Tree`
 
-**Attributs :**
-* (Aucun attribut détecté)
+**Hérite de :** [Harvestable](#Harvestable)
 
-**Méthodes :**
-* Destroy()
-* Die()
-* GetColliders() -> list[pygame.rect.Rect]
-* HandleEvent(event)
-* Heal(amount: float)
-* LoadSprite(sprite: str, scale: bool)
-* Render(screen, debug=False)
-* TakeDamage(amount: float)
-* Update(dt)
-* _render_health_bar(screen)
-* _spawn_drop(stack)
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
+* (Aucune méthode spécifique)
 
 ---
 
 ## Fichier : Engine.py
 
-**Erreur sur InventorySystem** : cannot convert without pygame.display initialized
+## Fichier : InventorySystem.py
+
+### <a name='CraftingManager'></a>Type de données : `CraftingManager`
+
+**Attributs (propres) :**
+* recipes : `list`
+* craftingQueue : `Queue`
+
+**Méthodes (propres) :**
+* register(cls, recipe)
+* get_craftable(cls)
+
+---
+
+### <a name='Inventory'></a>Type de données : `Inventory`
+
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
+* add(resource, amount)
+* remove(resource, amount)
+* get(resource)
+
+---
+
+### <a name='ItemRecipe'></a>Type de données : `ItemRecipe`
+
+**Hérite de :** `Recipe`
+
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
+* craft()
+* addToQueue()
+
+---
+
+### <a name='ItemStack'></a>Type de données : `ItemStack`
+
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
+* add(quantity: int)
+* remove(quantity: int)
+* is_empty()
+
+---
+
+### <a name='Recipe'></a>Type de données : `Recipe`
+
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
+* can_craft()
+* craft()
+* addToQueue()
+
+---
+
+### <a name='Resource'></a>Type de données : `Resource`
+
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
+* (Aucune méthode spécifique)
+
+---
+
+### <a name='ResourceManager'></a>Type de données : `ResourceManager`
+
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
+* register(cls, resource)
+
+---
+
+### <a name='WeaponRecipe'></a>Type de données : `WeaponRecipe`
+
+**Hérite de :** `Recipe`
+
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
+* craft()
+* addToQueue()
+
+---
 
 ## Fichier : Main.py
 
 ## Fichier : Objects.py
 
-### Type de données : `Camera`
+### <a name='Camera'></a>Type de données : `Camera`
 
-**Attributs :**
-* (Aucun attribut détecté)
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
 
-**Méthodes :**
+**Méthodes (propres) :**
 * get_screen_rect(world_rect: pygame.rect.Rect) -> pygame.rect.Rect
-* screen_to_world_point(screen_pos: pygame.math.Vector2) -> pygame.math.Vector2
 * world_to_screen_point(world_pos: pygame.math.Vector2) -> pygame.math.Vector2
+* screen_to_world_point(screen_pos: pygame.math.Vector2) -> pygame.math.Vector2
 
 ---
 
-### Type de données : `DroppedStack`
+### <a name='DroppedStack'></a>Type de données : `DroppedStack`
 
-**Attributs :**
-* (Aucun attribut détecté)
+**Hérite de :** [Object](#Object)
 
-**Méthodes :**
-* Destroy()
-* GetColliders() -> list[pygame.rect.Rect]
-* HandleEvent(event)
-* LoadSprite(sprite: str, scale: bool)
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
 * Render(screen, debug=False)
 * Update(dt)
 
 ---
 
-### Type de données : `Enemy`
+### <a name='Enemy'></a>Type de données : `Enemy`
 
-**Attributs :**
-* (Aucun attribut détecté)
+**Hérite de :** [Entity](#Entity)
 
-**Méthodes :**
-* Destroy()
-* Die()
-* GetColliders() -> list[pygame.rect.Rect]
-* HandleEvent(event)
-* Heal(amount: float)
-* LoadSprite(sprite: str, scale: bool)
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
+* _choose_wander_target()
 * Render(screen, debug=False)
-* TakeDamage(amount: float)
 * Update(dt)
 * _check_collision(walls, axis)
-* _choose_wander_target()
-* _render_health_bar(screen)
 
 ---
 
-### Type de données : `Entity`
+### <a name='Entity'></a>Type de données : `Entity`
 
-**Attributs :**
-* (Aucun attribut détecté)
+**Hérite de :** [Object](#Object)
 
-**Méthodes :**
-* Destroy()
-* Die()
-* GetColliders() -> list[pygame.rect.Rect]
-* HandleEvent(event)
-* Heal(amount: float)
-* LoadSprite(sprite: str, scale: bool)
-* Render(screen: pygame.surface.Surface, debug: bool = False)
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
+* _render_health_bar(screen)
 * TakeDamage(amount: float)
-* Update(dt)
-* _render_health_bar(screen)
-
----
-
-### Type de données : `Gate`
-
-**Attributs :**
-* (Aucun attribut détecté)
-
-**Méthodes :**
-* Destroy()
-* GetColliders() -> list[pygame.rect.Rect]
-* HandleEvent(event)
-* LoadSprite(sprite: str, scale: bool)
-* Render(screen: pygame.surface.Surface, debug: bool = False)
-* Update(dt)
-
----
-
-### Type de données : `Harvestable`
-
-**Attributs :**
-* (Aucun attribut détecté)
-
-**Méthodes :**
-* Destroy()
-* Die()
-* GetColliders() -> list[pygame.rect.Rect]
-* HandleEvent(event)
 * Heal(amount: float)
-* LoadSprite(sprite: str, scale: bool)
+* Die()
+
+---
+
+### <a name='Gate'></a>Type de données : `Gate`
+
+**Hérite de :** [Object](#Object)
+
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
+* Update(dt)
+* Render(screen: pygame.surface.Surface, debug: bool = False)
+
+---
+
+### <a name='Harvestable'></a>Type de données : `Harvestable`
+
+**Hérite de :** [Entity](#Entity)
+
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
 * Render(screen, debug=False)
-* TakeDamage(amount: float)
-* Update(dt)
-* _render_health_bar(screen)
+* Die()
 * _spawn_drop(stack)
 
 ---
 
-### Type de données : `Hitbox`
+### <a name='Hitbox'></a>Type de données : `Hitbox`
 
-**Attributs :**
-* (Aucun attribut détecté)
+**Hérite de :** [Object](#Object)
 
-**Méthodes :**
-* Destroy()
-* GetColliders() -> list[pygame.rect.Rect]
-* HandleEvent(event)
-* LoadSprite(sprite: str, scale: bool)
-* Render(screen, debug=False)
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
 * Update(dt)
+* Render(screen, debug=False)
 
 ---
 
-### Type de données : `LootEntry`
+### <a name='LootEntry'></a>Type de données : `LootEntry`
 
-**Attributs :**
-* (Aucun attribut détecté)
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
 
-**Méthodes :**
-* (Aucune méthode publique)
+**Méthodes (propres) :**
+* (Aucune méthode spécifique)
 
 ---
 
-### Type de données : `LootTable`
+### <a name='LootTable'></a>Type de données : `LootTable`
 
-**Attributs :**
-* (Aucun attribut détecté)
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
 
-**Méthodes :**
+**Méthodes (propres) :**
 * roll()
 
 ---
 
-### Type de données : `MeleeEnemy`
+### <a name='MeleeEnemy'></a>Type de données : `MeleeEnemy`
 
-**Attributs :**
-* (Aucun attribut détecté)
+**Hérite de :** [Enemy](#Enemy)
 
-**Méthodes :**
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
+* Update(dt)
 * Attack()
-* Destroy()
-* Die()
-* GetColliders() -> list[pygame.rect.Rect]
-* HandleEvent(event)
-* Heal(amount: float)
-* LoadSprite(sprite: str, scale: bool)
-* Render(screen, debug=False)
-* TakeDamage(amount: float)
-* Update(dt)
-* _check_collision(walls, axis)
-* _choose_wander_target()
-* _render_health_bar(screen)
 
 ---
 
-### Type de données : `MeleeWeapon`
+### <a name='MeleeWeapon'></a>Type de données : `MeleeWeapon`
 
-**Attributs :**
-* (Aucun attribut détecté)
+**Hérite de :** [Weapon](#Weapon)
 
-**Méthodes :**
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
+* Update(dt)
 * Attack()
-* Destroy()
-* GetColliders() -> list[pygame.rect.Rect]
-* HandleEvent(event)
-* LoadSprite(sprite: str, scale: bool)
-* Render(screen, debug=False)
-* Update(dt)
 
 ---
 
-### Type de données : `Object`
+### <a name='Object'></a>Type de données : `Object`
 
-**Attributs :**
-* (Aucun attribut détecté)
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
 
-**Méthodes :**
+**Méthodes (propres) :**
+* Update(dt)
+* Render(screen: pygame.surface.Surface, debug: bool = False)
+* HandleEvent(event)
 * Destroy()
 * GetColliders() -> list[pygame.rect.Rect]
-* HandleEvent(event)
 * LoadSprite(sprite: str, scale: bool)
-* Render(screen: pygame.surface.Surface, debug: bool = False)
-* Update(dt)
 
 ---
 
-### Type de données : `Player`
+### <a name='Player'></a>Type de données : `Player`
 
-**Attributs :**
-* (Aucun attribut détecté)
+**Hérite de :** [Entity](#Entity)
 
-**Méthodes :**
-* ChangeTool(direction)
-* Destroy()
-* Die()
-* GetColliders()
-* HandleEvent(event)
-* Heal(amount: float)
-* LoadSprite(sprite: str, scale: bool)
-* Render(screen: pygame.surface.Surface, debug: bool = False)
-* TakeDamage(amount: float)
-* Update(dt)
-* _check_collision(walls, axis)
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
 * _get_movement_direction() -> pygame.math.Vector2
-* _render_health_bar(screen: pygame.surface.Surface)
-
----
-
-### Type de données : `Projectile`
-
-**Attributs :**
-* (Aucun attribut détecté)
-
-**Méthodes :**
-* Destroy()
-* GetColliders() -> list[pygame.rect.Rect]
-* HandleEvent(event)
-* LoadSprite(sprite: str, scale: bool)
-* OnEnemyHit(enemy: Objects.Enemy)
-* OnEntityHit(entity: Objects.Entity)
-* OnHarvestableHit(object: 'Harvestable')
-* OnWallHit()
-* Render(screen, debug=False)
+* _check_collision(walls, axis)
 * Update(dt)
-
----
-
-### Type de données : `RangedWeapon`
-
-**Attributs :**
-* (Aucun attribut détecté)
-
-**Méthodes :**
-* Attack()
-* Destroy()
-* GetColliders() -> list[pygame.rect.Rect]
-* HandleEvent(event)
-* LoadSprite(sprite: str, scale: bool)
-* Render(screen, debug=False)
-* Update(dt)
-
----
-
-### Type de données : `SpawnArea`
-
-**Attributs :**
-* (Aucun attribut détecté)
-
-**Méthodes :**
-* Destroy()
-* GetColliders() -> list[pygame.rect.Rect]
-* HandleEvent(event)
-* LoadSprite(sprite: str, scale: bool)
 * Render(screen: pygame.surface.Surface, debug: bool = False)
-* Update(dt)
-* _spawn()
+* HandleEvent(event)
+* GetColliders()
+* ChangeTool(direction)
+* _render_health_bar(screen: pygame.surface.Surface)
+* Destroy()
+* Die()
 
 ---
 
-### Type de données : `Weapon`
+### <a name='Projectile'></a>Type de données : `Projectile`
 
-**Attributs :**
-* (Aucun attribut détecté)
+**Hérite de :** [Object](#Object)
 
-**Méthodes :**
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
+* Update(dt)
+* Render(screen, debug=False)
+* OnEnemyHit(enemy: Objects.Enemy)
+* OnHarvestableHit(object: 'Harvestable')
+* OnEntityHit(entity: Objects.Entity)
+* OnWallHit()
+
+---
+
+### <a name='RangedWeapon'></a>Type de données : `RangedWeapon`
+
+**Hérite de :** [Weapon](#Weapon)
+
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
+* Update(dt)
 * Attack()
-* Destroy()
-* GetColliders() -> list[pygame.rect.Rect]
-* HandleEvent(event)
-* LoadSprite(sprite: str, scale: bool)
+
+---
+
+### <a name='SpawnArea'></a>Type de données : `SpawnArea`
+
+**Hérite de :** [Object](#Object)
+
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
+* _spawn()
+* Update(dt)
+* Render(screen: pygame.surface.Surface, debug: bool = False)
+
+---
+
+### <a name='Weapon'></a>Type de données : `Weapon`
+
+**Hérite de :** [Object](#Object)
+
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
 * Render(screen, debug=False)
 * Update(dt)
+* Attack()
 
 ---
 
 ## Fichier : SceneManager.py
 
-### Type de données : `Scene`
+### <a name='Scene'></a>Type de données : `Scene`
 
-**Attributs :**
-* (Aucun attribut détecté)
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
 
-**Méthodes :**
+**Méthodes (propres) :**
 * GetAllColliders(ignoreObjects: list[Objects.Object] = None) -> list[pygame.rect.Rect]
 * load(point: str)
 
@@ -468,118 +465,108 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ## Fichier : TilemapManager.py
 
-### Type de données : `Tilemap`
+### <a name='Tilemap'></a>Type de données : `Tilemap`
 
-**Attributs :**
-* (Aucun attribut détecté)
+**Hérite de :** [Object](#Object)
 
-**Méthodes :**
-* Destroy()
-* GetColliders() -> list[pygame.rect.Rect]
-* HandleEvent(event)
-* LoadSprite(sprite: str, scale: bool)
-* Render(screen: pygame.surface.Surface, debug: bool = False)
-* Update(dt)
-* _load_collisions()
-* _load_gates()
-* _load_points()
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
 * _load_spawn_Area()
+* _load_collisions()
+* _load_points()
+* _load_gates()
+* Render(screen: pygame.surface.Surface, debug: bool = False)
+* GetColliders() -> list[pygame.rect.Rect]
 
 ---
 
 ## Fichier : Tools.py
 
-### Type de données : `Queue`
+### <a name='Queue'></a>Type de données : `Queue`
 
-**Attributs :**
-* (Aucun attribut détecté)
+**Hérite de :** `Generic`
 
-**Méthodes :**
-* dequeue() -> ~T
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
 * enqueue(value: ~T)
+* dequeue() -> ~T
 * getLen() -> int
 * isEmpty() -> bool
-* peek()
 * rotate()
+* peek()
 
 ---
 
 ## Fichier : UI.py
 
-### Type de données : `CraftingQueueUI`
+### <a name='CraftingQueueUI'></a>Type de données : `CraftingQueueUI`
 
-**Attributs :**
-* (Aucun attribut détecté)
+**Hérite de :** [UIElement](#UIElement)
 
-**Méthodes :**
-* Destroy()
-* GetColliders() -> list[pygame.rect.Rect]
-* HandleEvent(event)
-* LoadSprite(sprite: str, scale: bool)
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
 * Render(screen, debug=False)
-* Update(dt)
 
 ---
 
-### Type de données : `CraftingUI`
+### <a name='CraftingUI'></a>Type de données : `CraftingUI`
 
-**Attributs :**
-* (Aucun attribut détecté)
+**Hérite de :** [UIElement](#UIElement)
 
-**Méthodes :**
-* Destroy()
-* GetColliders() -> list[pygame.rect.Rect]
-* HandleEvent(event)
-* LoadSprite(sprite: str, scale: bool)
-* Render(screen, debug=False)
-* Update(dt)
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
 * get_height()
+* HandleEvent(event)
+* Update(dt)
+* Render(screen, debug=False)
 
 ---
 
-### Type de données : `InventoryUI`
+### <a name='InventoryUI'></a>Type de données : `InventoryUI`
 
-**Attributs :**
-* (Aucun attribut détecté)
+**Hérite de :** [UIElement](#UIElement)
 
-**Méthodes :**
-* Destroy()
-* GetColliders() -> list[pygame.rect.Rect]
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
 * HandleEvent(event)
-* LoadSprite(sprite: str, scale: bool)
 * Render(screen: pygame.surface.Surface, debug: bool = False)
-* Update(dt)
 
 ---
 
-### Type de données : `ItemNotification`
+### <a name='ItemNotification'></a>Type de données : `ItemNotification`
 
-**Attributs :**
-* (Aucun attribut détecté)
+**Hérite de :** [UIElement](#UIElement)
 
-**Méthodes :**
-* Destroy()
-* GetColliders() -> list[pygame.rect.Rect]
-* HandleEvent(event)
-* LoadSprite(sprite: str, scale: bool)
-* Render(screen, DEBUG)
-* Update(dt)
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
 * get_offset_y(index)
+* Update(dt)
+* Render(screen, DEBUG)
+* Destroy()
 
 ---
 
-### Type de données : `UIElement`
+### <a name='UIElement'></a>Type de données : `UIElement`
 
-**Attributs :**
-* (Aucun attribut détecté)
+**Hérite de :** [Object](#Object)
 
-**Méthodes :**
-* Destroy()
-* GetColliders() -> list[pygame.rect.Rect]
-* HandleEvent(event)
-* LoadSprite(sprite: str, scale: bool)
-* Render(screen: pygame.surface.Surface, debug: bool = False)
-* Update(dt)
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
+* (Aucune méthode spécifique)
 
 ---
 
