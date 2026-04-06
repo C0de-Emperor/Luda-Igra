@@ -1,23 +1,11 @@
 # Document d'Analyse du Projet
-_réalisé à l'aide de la bibliothèque inspect et d'une IA_
+_réalisé avec la bibliothèque inspect et une IA_
 
 ## Fichier : Data.py
 
-### <a name='Bullet'></a>Type de données : `Bullet`
+### Bullet
 
-**Hérite de :** [Projectile](#Projectile)
-
-**Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
-
-**Méthodes (propres) :**
-* (Aucune méthode spécifique)
-
----
-
-### <a name='CochonTronc'></a>Type de données : `CochonTronc`
-
-**Hérite de :** [MeleeEnemy](#MeleeEnemy)
+**Hérite de :** [Projectile](#projectile)
 
 **Attributs (propres) :**
 * (Aucun attribut spécifique détecté)
@@ -27,9 +15,21 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ---
 
-### <a name='Flame'></a>Type de données : `Flame`
+### CochonTronc
 
-**Hérite de :** [Projectile](#Projectile)
+**Hérite de :** [MeleeEnemy](#meleeenemy)
+
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
+* (Aucune méthode spécifique)
+
+---
+
+### Flame
+
+**Hérite de :** [Projectile](#projectile)
 
 **Attributs (propres) :**
 * (Aucun attribut spécifique détecté)
@@ -40,21 +40,9 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ---
 
-### <a name='FlameThrower'></a>Type de données : `FlameThrower`
+### FlameThrower
 
-**Hérite de :** [RangedWeapon](#RangedWeapon)
-
-**Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
-
-**Méthodes (propres) :**
-* (Aucune méthode spécifique)
-
----
-
-### <a name='MiniGun'></a>Type de données : `MiniGun`
-
-**Hérite de :** [RangedWeapon](#RangedWeapon)
+**Hérite de :** [RangedWeapon](#rangedweapon)
 
 **Attributs (propres) :**
 * (Aucun attribut spécifique détecté)
@@ -64,9 +52,21 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ---
 
-### <a name='Rocket'></a>Type de données : `Rocket`
+### MiniGun
 
-**Hérite de :** [Projectile](#Projectile)
+**Hérite de :** [RangedWeapon](#rangedweapon)
+
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
+* (Aucune méthode spécifique)
+
+---
+
+### Rocket
+
+**Hérite de :** [Projectile](#projectile)
 
 **Attributs (propres) :**
 * (Aucun attribut spécifique détecté)
@@ -77,21 +77,9 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ---
 
-### <a name='RocketLaucher'></a>Type de données : `RocketLaucher`
+### RocketLaucher
 
-**Hérite de :** [RangedWeapon](#RangedWeapon)
-
-**Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
-
-**Méthodes (propres) :**
-* (Aucune méthode spécifique)
-
----
-
-### <a name='Sword'></a>Type de données : `Sword`
-
-**Hérite de :** [MeleeWeapon](#MeleeWeapon)
+**Hérite de :** [RangedWeapon](#rangedweapon)
 
 **Attributs (propres) :**
 * (Aucun attribut spécifique détecté)
@@ -101,9 +89,21 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ---
 
-### <a name='Tree'></a>Type de données : `Tree`
+### Sword
 
-**Hérite de :** [Harvestable](#Harvestable)
+**Hérite de :** [MeleeWeapon](#meleeweapon)
+
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
+* (Aucune méthode spécifique)
+
+---
+
+### Tree
+
+**Hérite de :** [Harvestable](#harvestable)
 
 **Attributs (propres) :**
 * (Aucun attribut spécifique détecté)
@@ -117,7 +117,7 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ## Fichier : InventorySystem.py
 
-### <a name='CraftingManager'></a>Type de données : `CraftingManager`
+### CraftingManager
 
 **Attributs (propres) :**
 * recipes : `list`
@@ -129,7 +129,7 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ---
 
-### <a name='Inventory'></a>Type de données : `Inventory`
+### Inventory
 
 **Attributs (propres) :**
 * (Aucun attribut spécifique détecté)
@@ -141,7 +141,7 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ---
 
-### <a name='ItemRecipe'></a>Type de données : `ItemRecipe`
+### ItemRecipe
 
 **Hérite de :** `Recipe`
 
@@ -154,7 +154,7 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ---
 
-### <a name='ItemStack'></a>Type de données : `ItemStack`
+### ItemStack
 
 **Attributs (propres) :**
 * (Aucun attribut spécifique détecté)
@@ -166,7 +166,7 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ---
 
-### <a name='Recipe'></a>Type de données : `Recipe`
+### Recipe
 
 **Attributs (propres) :**
 * (Aucun attribut spécifique détecté)
@@ -178,7 +178,7 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ---
 
-### <a name='Resource'></a>Type de données : `Resource`
+### Resource
 
 **Attributs (propres) :**
 * (Aucun attribut spécifique détecté)
@@ -188,7 +188,7 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ---
 
-### <a name='ResourceManager'></a>Type de données : `ResourceManager`
+### ResourceManager
 
 **Attributs (propres) :**
 * (Aucun attribut spécifique détecté)
@@ -198,7 +198,7 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ---
 
-### <a name='WeaponRecipe'></a>Type de données : `WeaponRecipe`
+### WeaponRecipe
 
 **Hérite de :** `Recipe`
 
@@ -215,7 +215,7 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ## Fichier : Objects.py
 
-### <a name='Camera'></a>Type de données : `Camera`
+### Camera
 
 **Attributs (propres) :**
 * (Aucun attribut spécifique détecté)
@@ -227,9 +227,9 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ---
 
-### <a name='DroppedStack'></a>Type de données : `DroppedStack`
+### DroppedStack
 
-**Hérite de :** [Object](#Object)
+**Hérite de :** [Object](#object)
 
 **Attributs (propres) :**
 * (Aucun attribut spécifique détecté)
@@ -240,9 +240,9 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ---
 
-### <a name='Enemy'></a>Type de données : `Enemy`
+### Enemy
 
-**Hérite de :** [Entity](#Entity)
+**Hérite de :** [Entity](#entity)
 
 **Attributs (propres) :**
 * (Aucun attribut spécifique détecté)
@@ -255,9 +255,9 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ---
 
-### <a name='Entity'></a>Type de données : `Entity`
+### Entity
 
-**Hérite de :** [Object](#Object)
+**Hérite de :** [Object](#object)
 
 **Attributs (propres) :**
 * (Aucun attribut spécifique détecté)
@@ -270,9 +270,9 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ---
 
-### <a name='Gate'></a>Type de données : `Gate`
+### Gate
 
-**Hérite de :** [Object](#Object)
+**Hérite de :** [Object](#object)
 
 **Attributs (propres) :**
 * (Aucun attribut spécifique détecté)
@@ -283,9 +283,9 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ---
 
-### <a name='Harvestable'></a>Type de données : `Harvestable`
+### Harvestable
 
-**Hérite de :** [Entity](#Entity)
+**Hérite de :** [Entity](#entity)
 
 **Attributs (propres) :**
 * (Aucun attribut spécifique détecté)
@@ -297,9 +297,9 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ---
 
-### <a name='Hitbox'></a>Type de données : `Hitbox`
+### Hitbox
 
-**Hérite de :** [Object](#Object)
+**Hérite de :** [Object](#object)
 
 **Attributs (propres) :**
 * (Aucun attribut spécifique détecté)
@@ -310,7 +310,7 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ---
 
-### <a name='LootEntry'></a>Type de données : `LootEntry`
+### LootEntry
 
 **Attributs (propres) :**
 * (Aucun attribut spécifique détecté)
@@ -320,7 +320,7 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ---
 
-### <a name='LootTable'></a>Type de données : `LootTable`
+### LootTable
 
 **Attributs (propres) :**
 * (Aucun attribut spécifique détecté)
@@ -330,22 +330,9 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ---
 
-### <a name='MeleeEnemy'></a>Type de données : `MeleeEnemy`
+### MeleeEnemy
 
-**Hérite de :** [Enemy](#Enemy)
-
-**Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
-
-**Méthodes (propres) :**
-* Update(dt)
-* Attack()
-
----
-
-### <a name='MeleeWeapon'></a>Type de données : `MeleeWeapon`
-
-**Hérite de :** [Weapon](#Weapon)
+**Hérite de :** [Enemy](#enemy)
 
 **Attributs (propres) :**
 * (Aucun attribut spécifique détecté)
@@ -356,7 +343,20 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ---
 
-### <a name='Object'></a>Type de données : `Object`
+### MeleeWeapon
+
+**Hérite de :** [Weapon](#weapon)
+
+**Attributs (propres) :**
+* (Aucun attribut spécifique détecté)
+
+**Méthodes (propres) :**
+* Update(dt)
+* Attack()
+
+---
+
+### Object
 
 **Attributs (propres) :**
 * (Aucun attribut spécifique détecté)
@@ -371,9 +371,9 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ---
 
-### <a name='Player'></a>Type de données : `Player`
+### Player
 
-**Hérite de :** [Entity](#Entity)
+**Hérite de :** [Entity](#entity)
 
 **Attributs (propres) :**
 * (Aucun attribut spécifique détecté)
@@ -392,9 +392,9 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ---
 
-### <a name='Projectile'></a>Type de données : `Projectile`
+### Projectile
 
-**Hérite de :** [Object](#Object)
+**Hérite de :** [Object](#object)
 
 **Attributs (propres) :**
 * (Aucun attribut spécifique détecté)
@@ -409,9 +409,9 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ---
 
-### <a name='RangedWeapon'></a>Type de données : `RangedWeapon`
+### RangedWeapon
 
-**Hérite de :** [Weapon](#Weapon)
+**Hérite de :** [Weapon](#weapon)
 
 **Attributs (propres) :**
 * (Aucun attribut spécifique détecté)
@@ -422,9 +422,9 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ---
 
-### <a name='SpawnArea'></a>Type de données : `SpawnArea`
+### SpawnArea
 
-**Hérite de :** [Object](#Object)
+**Hérite de :** [Object](#object)
 
 **Attributs (propres) :**
 * (Aucun attribut spécifique détecté)
@@ -436,9 +436,9 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ---
 
-### <a name='Weapon'></a>Type de données : `Weapon`
+### Weapon
 
-**Hérite de :** [Object](#Object)
+**Hérite de :** [Object](#object)
 
 **Attributs (propres) :**
 * (Aucun attribut spécifique détecté)
@@ -452,7 +452,7 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ## Fichier : SceneManager.py
 
-### <a name='Scene'></a>Type de données : `Scene`
+### Scene
 
 **Attributs (propres) :**
 * (Aucun attribut spécifique détecté)
@@ -465,9 +465,9 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ## Fichier : TilemapManager.py
 
-### <a name='Tilemap'></a>Type de données : `Tilemap`
+### Tilemap
 
-**Hérite de :** [Object](#Object)
+**Hérite de :** [Object](#object)
 
 **Attributs (propres) :**
 * (Aucun attribut spécifique détecté)
@@ -484,7 +484,7 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ## Fichier : Tools.py
 
-### <a name='Queue'></a>Type de données : `Queue`
+### Queue
 
 **Hérite de :** `Generic`
 
@@ -503,9 +503,9 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ## Fichier : UI.py
 
-### <a name='CraftingQueueUI'></a>Type de données : `CraftingQueueUI`
+### CraftingQueueUI
 
-**Hérite de :** [UIElement](#UIElement)
+**Hérite de :** [UIElement](#uielement)
 
 **Attributs (propres) :**
 * (Aucun attribut spécifique détecté)
@@ -515,9 +515,9 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ---
 
-### <a name='CraftingUI'></a>Type de données : `CraftingUI`
+### CraftingUI
 
-**Hérite de :** [UIElement](#UIElement)
+**Hérite de :** [UIElement](#uielement)
 
 **Attributs (propres) :**
 * (Aucun attribut spécifique détecté)
@@ -530,9 +530,9 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ---
 
-### <a name='InventoryUI'></a>Type de données : `InventoryUI`
+### InventoryUI
 
-**Hérite de :** [UIElement](#UIElement)
+**Hérite de :** [UIElement](#uielement)
 
 **Attributs (propres) :**
 * (Aucun attribut spécifique détecté)
@@ -543,9 +543,9 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ---
 
-### <a name='ItemNotification'></a>Type de données : `ItemNotification`
+### ItemNotification
 
-**Hérite de :** [UIElement](#UIElement)
+**Hérite de :** [UIElement](#uielement)
 
 **Attributs (propres) :**
 * (Aucun attribut spécifique détecté)
@@ -558,9 +558,9 @@ _réalisé à l'aide de la bibliothèque inspect et d'une IA_
 
 ---
 
-### <a name='UIElement'></a>Type de données : `UIElement`
+### UIElement
 
-**Hérite de :** [Object](#Object)
+**Hérite de :** [Object](#object)
 
 **Attributs (propres) :**
 * (Aucun attribut spécifique détecté)
