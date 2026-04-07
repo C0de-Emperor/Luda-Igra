@@ -26,7 +26,7 @@ class Scene:
         """Initialise la Scene"""
         from Main import SCREEN
         from TilemapManager import Tilemap
-        from Objects import Player
+        from Objects import Player, Camera
 
         objectsToKeep = []
 
@@ -53,7 +53,7 @@ class Scene:
 
 
         self.tilemap.map_layer = pyscroll.orthographic.BufferedRenderer(
-            self.tilemap.map_data, SCREEN.get_size(), zoom=1
+            self.tilemap.map_data, SCREEN.get_size(), zoom = Camera.zoom
         )
         self.tilemap.group = pyscroll.PyscrollGroup(self.tilemap.map_layer, default_layer=0)
 
