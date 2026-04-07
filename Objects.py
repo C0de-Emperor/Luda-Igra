@@ -581,9 +581,8 @@ class NPC(Entity):
 
         self.interactRadius:float = interactRadius
         self.dialogueQueue:Queue = dialogueQueue
-        print(self.dialogueQueue.elements)
 
-        self.dialogueTimer:float = 0
+        self.wasTalking:bool = False
 
     def Update(self, dt):
         from SceneManager import Scene
@@ -593,8 +592,10 @@ class NPC(Entity):
 
         distanceToPlayer = self.position - Player.player.position
 
-        if distanceToPlayer.magnitude() <= self.interactRadius:
+        if not self.wasTalking and distanceToPlayer.magnitude() <= self.interactRadius:
             DialogueManager.loadNPC(self)
+        
+        self.wasTalking = distanceToPlayer.magnitude() <= self.interactRadius
 
     
     def Render(self, screen, debug = False):

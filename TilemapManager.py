@@ -27,8 +27,7 @@ class Tilemap(Object):
         try:
             NPC_layer = self.tmx_data.get_layer_by_name("NPC")
             for NPC_point in NPC_layer:
-                NPCS[NPC_point.name](pygame.Vector2(NPC_point.x, NPC_point.y))
-
+                self.collisions.append(NPCS[NPC_point.name](pygame.Vector2(NPC_point.x, NPC_point.y)).rect)
         except (ValueError, AttributeError):
             print(f"ERROR: 'NPC' layer not found in tilemap '{self.path}'")
             return
@@ -54,6 +53,8 @@ class Tilemap(Object):
             for collision in collision_layer:
                 rect = pygame.Rect(collision.x, collision.y, collision.width, collision.height)
                 self.collisions.append(rect)
+            
+
         except (ValueError, AttributeError):
             print("WARNING: Couche de collision 'Collisions' non trouvée dans le tilemap")
 
