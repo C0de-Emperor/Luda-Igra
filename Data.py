@@ -202,3 +202,67 @@ class NPC1(NPC):
 NPCS: dict[str, type[NPC]] ={
     "NPC1":NPC1
 }
+
+######################## EFFECTS
+################################
+
+class HealEffect(Effect):
+    def __init__(self, amount: float):
+        super().__init__(0, (235, 64, 52))
+        self.amount = amount
+
+    def Apply(self, target: Entity):
+        target.Heal(self.amount)
+
+class RegenEffect(Effect):
+    def __init__(self, amount_per_sec, duration):
+        super().__init__(duration, (224, 43, 200))
+        self.amount_per_sec = amount_per_sec
+
+    def Update(self, target: Entity, dt):
+        target.Heal(self.amount_per_sec * dt)
+        self.duration -= dt
+
+class SpeedEffect(Effect):
+    def __init__(self, multiplier, duration):
+        super().__init__(duration, (28, 133, 232))
+        self.multiplier = multiplier
+
+    def Apply(self, target: Entity):
+        target.speed *= self.multiplier
+
+    def Update(self, target: Entity, dt):
+        self.duration -= dt
+
+        if self.is_finished():
+            target.speed /= self.multiplier
+
+######################## POTIONS
+################################
+
+class HealthPotion(Potion):
+    effect = HealEffect(20)
+
+    def __init__(self):
+        super().__init__(
+            Vector2(0, 0),
+            HealthPotion.effect
+        )
+
+class RegenPotion(Potion):
+    effect = RegenEffect(2, 10)
+
+    def __init__(self):
+        super().__init__(
+            Vector2(0, 0),
+            RegenPotion.effect
+        )
+
+class SpeedPotion(Potion):
+    effect = SpeedEffect(1.2, 15)
+
+    def __init__(self):
+        super().__init__(
+            Vector2(0, 0),
+            SpeedPotion.effect
+        )

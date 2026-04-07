@@ -204,6 +204,7 @@ class CraftingUI(UIElement):
         if not self.show:
             return
 
+        from Objects import Potion
         from InventorySystem import CraftingManager, ItemRecipe, WeaponRecipe
 
         x, y = self.position
@@ -304,14 +305,24 @@ class CraftingUI(UIElement):
                 
             elif isinstance(recipe, WeaponRecipe):
                 # Weapon icon
-                weapon_icon = pygame.image.load(recipe.output.icon).convert_alpha()
-                weapon_icon = pygame.transform.scale(weapon_icon, (32, 32))
-                
+
                 out_bg = pygame.Rect(offset_x, center_y - 16, 32, 32)
                 pygame.draw.circle(screen, (100, 80, 60), out_bg.center, 18)
+
                 
-                out_rect = weapon_icon.get_rect(center=out_bg.center)
-                screen.blit(weapon_icon, out_rect)
+
+                if issubclass(recipe.output, Potion):
+                    potion_icon = Potion.tint_surface(Potion.liquid_sprite, recipe.output.effect.color)
+
+                    out_rect = potion_icon.get_rect(center=out_bg.center)
+                    screen.blit(potion_icon, out_rect)
+                    screen.blit(recipe.output.bottle_sprite, out_rect)
+                else:
+                    weapon_icon = pygame.image.load(recipe.output.icon).convert_alpha()
+                    weapon_icon = pygame.transform.scale(weapon_icon, (32, 32))
+                
+                    out_rect = weapon_icon.get_rect(center=out_bg.center)
+                    screen.blit(weapon_icon, out_rect)
 
             # --- CLICK HANDLING ---
             if rect.collidepoint(mouse_pos) and click and self.delay == -1:
@@ -335,6 +346,7 @@ class CraftingQueueUI(UIElement):
         if not self.crafting_ui.show:
             return
 
+        from Objects import Potion
         from InventorySystem import CraftingManager, ItemRecipe, WeaponRecipe
 
 
@@ -366,11 +378,21 @@ class CraftingQueueUI(UIElement):
             if isinstance(recipe, ItemRecipe):
                 icon = pygame.transform.scale(recipe.output.resource.icon, (self.icon_size - 8, self.icon_size - 8))
             elif isinstance(recipe, WeaponRecipe):
-                icon = pygame.image.load(recipe.output.icon).convert_alpha()
-                icon = pygame.transform.scale(icon, (self.icon_size - 8, self.icon_size - 8))
+                if issubclass(recipe.output, Potion):
+                    potion_icon = Potion.tint_surface(Potion.liquid_sprite, recipe.output.effect.color)
+
+                    icon_pos = potion_icon.get_rect(center=cell.center)
+                    screen.blit(potion_icon, icon_pos)
+                    screen.blit(recipe.output.bottle_sprite, icon_pos)
+                else:
+                    icon = pygame.image.load(recipe.output.icon).convert_alpha()
+                    icon = pygame.transform.scale(icon, (32, 32))
+                
+                    icon_pos = icon.get_rect(center=cell.center)
+                    screen.blit(icon, icon_pos)
             
-            icon_pos = icon.get_rect(center=cell.center)
-            screen.blit(icon, icon_pos)
+            
+            
 
             if i == 0 and current_recipe is not None:
                 # cercle de progression

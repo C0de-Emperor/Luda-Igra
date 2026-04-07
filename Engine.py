@@ -11,8 +11,8 @@ def reset_game():
     game_over = False
 
     """Nettoie et réinitialise le jeu sans relancer la boucle."""
-    from Objects import Player, NPC, DialogueManager
-    from Data import MiniGun, FlameThrower
+    from Objects import Player, DialogueManager
+    from Data import MiniGun, FlameThrower, HealthPotion, SpeedPotion, RegenPotion
     import SceneManager
     from InventorySystem import CraftingManager
 
@@ -26,9 +26,9 @@ def reset_game():
         SceneManager.Scene.currentScene.tilemap.points["SpawnPoint"], 
         pygame.Vector2(50, 50), 
         r"data/Sprites/toruk_makto.png",
-        [MiniGun, FlameThrower],  # Assure-toi que ces imports sont disponibles
+        [MiniGun, FlameThrower, HealthPotion, RegenPotion, SpeedPotion],  # Assure-toi que ces imports sont disponibles
         100,
-        speed=800
+        800
     )
 
     DialogueManager()

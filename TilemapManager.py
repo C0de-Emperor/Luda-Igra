@@ -14,7 +14,6 @@ class Tilemap(Object):
         self.tmx_data:Tilemap = pytmx.load_pygame(path)
         self.map_data:pyscroll.data.TiledMapData = pyscroll.data.TiledMapData(self.tmx_data)
         self.collisions: list[pygame.Rect] = []
-        #self.gates: list[list[pygame.Rect, int]] = []  
         
         self._load_collisions()
         self._load_gates()
