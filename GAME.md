@@ -8,8 +8,8 @@
 - le personnage peut se déplacer en  respectant un système de colisions avec son environnement
 - le personnage peut transiter entre plusieurs régions
 - le personnage peut attaquer des ennemis avec différentes armes
-- le personnage peut récolter des ressources déposées par des éléments de l'environnement ou ses ennemis, et les stocker via un système d'inventaire
-- le personnage peut faire usage de ses ressources pour fabriquer différents objets (armes, potions, etc...)
+- le personnage peut récolter des ressources déposées par des éléments de l'environnement ou ses ennemis, et les stocker via un système d'inventaire [appuyer sur E]
+- le personnage peut faire usage de ses ressources pour fabriquer différents objets [appuyer sur C] (armes, potions, etc...)
 
 
 ### Lore :
