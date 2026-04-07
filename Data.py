@@ -193,9 +193,11 @@ class NPC1(NPC):
             position=position,
             size=Vector2(50, 50),
             sprite=r"data/sprites/toruk_makto.png",
-            baseHealth=100,
             interactRadius=100,
-            dialogueQueue=Queue(Dialogue("Bonjour à toi, jeune aventurier !!", 2), Dialogue("J'adore les sushis grillés, ainsi que les bananes flambées au rhum !", 5)),
+            dialogueQueue=Queue(
+                Dialogue("Bonjour à toi, jeune aventurier !!", 2), 
+                Dialogue("J'adore les sushis grillés, ainsi que les bananes flambées au rhum !", 5)
+            ),
             name="Jean Claude Montparnasse"
         )
 

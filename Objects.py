@@ -572,9 +572,9 @@ class MeleeEnemy (Enemy):
         )
 
 
-class NPC(Entity):
-    def __init__(self, position:Vector2, size:Vector2, sprite:str, baseHealth:float, interactRadius:float, dialogueQueue:Queue, name:str):
-        super().__init__(position, size, True, baseHealth)
+class NPC(Object):
+    def __init__(self, position:Vector2, size:Vector2, sprite:str, interactRadius:float, dialogueQueue:Queue, name:str):
+        super().__init__(position, size, True)
         self.LoadSprite(sprite, True)
 
         self.name:str = name
@@ -583,6 +583,9 @@ class NPC(Entity):
         self.dialogueQueue:Queue = dialogueQueue
 
         self.wasTalking:bool = False
+
+    def GetColliders(self):
+        return []
 
     def Update(self, dt):
         from SceneManager import Scene
