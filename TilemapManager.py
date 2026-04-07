@@ -27,7 +27,7 @@ class Tilemap(Object):
         try:
             NPC_layer = self.tmx_data.get_layer_by_name("NPC")
             for NPC_point in NPC_layer:
-                self.collisions.append(NPCS[NPC_point.name](pygame.Vector2(NPC_point.x, NPC_point.y)).rect)
+                NPCS[NPC_point.name](pygame.Vector2(NPC_point.x, NPC_point.y))
         except (ValueError, AttributeError):
             print(f"ERROR: 'NPC' layer not found in tilemap '{self.path}'")
             return
