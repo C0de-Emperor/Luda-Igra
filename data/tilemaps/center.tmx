@@ -438,7 +438,7 @@
   </object>
  </objectgroup>
  <objectgroup id="10" name="Gates">
-  <object id="29" name="moutain/door1" x="0" y="544" width="16" height="32"/>
+  <object id="29" name="mountain/door1" x="0" y="544" width="16" height="32"/>
   <object id="30" name="cave/door1" x="256" y="0" width="80" height="16"/>
   <object id="31" name="farm/door1" x="704" y="496" width="16" height="32"/>
   <object id="32" name="town/door1" x="208" y="944" width="368" height="16"/>
