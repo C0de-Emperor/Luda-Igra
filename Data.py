@@ -191,14 +191,15 @@ class NPC1(NPC):
     def __init__(self, position:Vector2):
         super().__init__(
             position=position,
-            size=Vector2(50, 50),
-            sprite=r"data/sprites/toruk_makto.png",
-            interactRadius=100,
+            size=Vector2(20, 20),
+            sprite=r"data/sprites/paysan.png",
+            interactRadius=30,
             dialogueQueue=Queue(
                 Dialogue("Bonjour à toi, jeune aventurier !!", 2), 
-                Dialogue("J'adore les sushis grillés, ainsi que les bananes flambées au rhum !", 5)
+                Dialogue("Les cochons troncs ont ravagés mes cultures, et menacent de m'attaquer !", 4),
+                Dialogue("Pour la survie de ma famille, je te supplie de les pourfendre.", 3)
             ),
-            name="Jean Claude Montparnasse"
+            name="Paysan"
         )
 
 NPCS: dict[str, type[NPC]] ={

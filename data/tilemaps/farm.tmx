@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.1" orientation="orthogonal" renderorder="right-down" width="80" height="160" tilewidth="16" tileheight="16" infinite="0" nextlayerid="27" nextobjectid="70">
+<map version="1.10" tiledversion="1.12.1" orientation="orthogonal" renderorder="right-down" width="80" height="160" tilewidth="16" tileheight="16" infinite="0" nextlayerid="27" nextobjectid="73">
  <tileset firstgid="1" source="../tilesets/free_pixel_16_woods.tsx"/>
  <tileset firstgid="265" source="../tilesets/Outdoor_Decor_Free.tsx"/>
  <tileset firstgid="349" source="../tilesets/barrières.tsx"/>
@@ -2804,8 +2804,14 @@
    <point/>
   </object>
  </objectgroup>
- <objectgroup id="25" name="NPC"/>
- <objectgroup id="26" name="SpawnArea"/>
+ <objectgroup id="25" name="NPC">
+  <object id="71" name="NPC1" x="873.375" y="1015.63">
+   <point/>
+  </object>
+ </objectgroup>
+ <objectgroup id="26" name="SpawnArea">
+  <object id="70" name="CochonTronc-30-4" x="264" y="226" width="812" height="346"/>
+ </objectgroup>
  <objectgroup id="23" name="Collisions">
   <object id="69" x="1666" y="1350"/>
  </objectgroup>
