@@ -8,7 +8,7 @@ class CochonTronc(MeleeEnemy):
     def __init__(self, position: pygame.Vector2):
         super().__init__(
             position, 
-            size = Vector2(50, 50), 
+            size = Vector2(20, 20), 
             sprite = r"data/Sprites/cochonTronc.png", 
             baseHealth = 100, 
             attackDmg = 5, 
@@ -26,9 +26,9 @@ class Dragon(RangeEnemy):
     def __init__(self, position: pygame.Vector2):
         super().__init__(
             position, 
-            size = Vector2(50, 50), 
+            size = Vector2(30, 30), 
             sprite = r"data/Sprites/dragon2.png", 
-            baseHealth = 500, 
+            baseHealth = 5000, 
             attackDmg = 10, 
             speed = 60, 
             sightRadius = 400, 
@@ -47,7 +47,7 @@ class Tree(Harvestable):
 
         super().__init__(
             position, 
-            Vector2(50, 50), 
+            Vector2(20, 20), 
             r"data/Sprites/log.png", 
             150, 
             LootTable(
@@ -73,10 +73,10 @@ class Sword(MeleeWeapon):
     def __init__(self):
         super().__init__(
             Vector2(0, 0), 
-            pygame.Vector2(20, 50),
+            pygame.Vector2(10, 20),
             r"data/Sprites/sword.png", 
             30, 
-            50,
+            20,
             0.3
         )
 
@@ -86,7 +86,7 @@ class MiniGun(RangedWeapon):
     def __init__(self):
         super().__init__(
             Vector2(0, 0), 
-            pygame.Vector2(50, 20), 
+            pygame.Vector2(20, 7), 
             r"data/Sprites/minigun.png",
             0.05,
             5,
@@ -99,7 +99,7 @@ class RocketLaucher(RangedWeapon):
     def __init__(self):
         super().__init__(
             Vector2(0, 0), 
-            pygame.Vector2(50, 20), 
+            pygame.Vector2(20, 10), 
             r"data/Sprites/rocketLauncher.png",
             0.75,
             1,
@@ -112,7 +112,7 @@ class FlameThrower(RangedWeapon):
     def __init__(self):
         super().__init__(
             Vector2(0, 0), 
-            pygame.Vector2(50, 20), 
+            pygame.Vector2(20, 10), 
             r"data/Sprites/flameThrower.png",
             0.05,
             10,
@@ -126,12 +126,12 @@ class Bullet(Projectile):
     def __init__(self, position, angle, direction, owner):
         super().__init__(
             position, 
-            Vector2(8, 4), 
+            Vector2(4, 2), 
             angle,
             r"data/Sprites/bullet.png", 
-            50, 
+            10, 
             direction, 
-            800, 
+            250, 
             2,
             owner
         )
@@ -140,19 +140,19 @@ class Rocket(Projectile):
     def __init__(self, position, angle, direction, owner):
         super().__init__(
             position, 
-            Vector2(30, 10), 
+            Vector2(12, 5), 
             angle,
             r"data/Sprites/rocket.png",
             75, 
             direction, 
-            1000, 
+            350, 
             2,
             owner
         )
 
     def OnEnemyHit(self, enemy: Enemy):
         import random
-        explosion_radius = 250
+        explosion_radius = 100
 
         Hitbox(
             self.position, 
@@ -169,7 +169,7 @@ class Rocket(Projectile):
 
     def OnHarvestableHit(self, object: Harvestable):
         import random
-        explosion_radius = 250
+        explosion_radius = 100
 
         Hitbox(
             self.position, 
@@ -188,13 +188,13 @@ class Flame(Projectile):
     def __init__(self, position, angle, direction, owner):
         super().__init__(
             position, 
-            Vector2(30, 20), 
+            Vector2(12, 5), 
             angle,
             r"data/Sprites/flame.png",
             2, 
             direction, 
-            300, 
-            0.7,
+            200, 
+            0.3,
             owner
         )
 
@@ -211,7 +211,7 @@ class NPC1(NPC):
     def __init__(self, position:Vector2):
         super().__init__(
             position=position,
-            size=Vector2(20, 20),
+            size=Vector2(15, 15),
             sprite=r"data/sprites/paysan.png",
             interactRadius=30,
             dialogueQueue=Queue(
