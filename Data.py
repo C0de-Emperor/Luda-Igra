@@ -93,7 +93,7 @@ class Rock(Harvestable):
             LootTable(
                 LootEntry(GOLD_ORE, 1, 3, 1),
                 LootEntry(IRON_ORE, 2, 4, 3),
-                LootEntry(IRON_ORE, 3, 5, 7),
+                LootEntry(STONE, 3, 5, 7),
                 rolls=2
             )
         )

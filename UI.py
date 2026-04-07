@@ -376,7 +376,10 @@ class CraftingQueueUI(UIElement):
             pygame.draw.rect(screen, (80, 80, 80), cell)
 
             if isinstance(recipe, ItemRecipe):
-                icon = pygame.transform.scale(recipe.output.resource.icon, (self.icon_size - 8, self.icon_size - 8))
+                icon = pygame.transform.scale(recipe.output.resource.icon, (self.icon_size, self.icon_size ))
+
+                icon_pos = icon.get_rect(center=cell.center)
+                screen.blit(icon, icon_pos)
             elif isinstance(recipe, WeaponRecipe):
                 if issubclass(recipe.output, Potion):
                     potion_icon = Potion.tint_surface(Potion.liquid_sprite, recipe.output.effect.color)

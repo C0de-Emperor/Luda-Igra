@@ -951,21 +951,16 @@ class RangedWeapon(Weapon):
 
         self.attack_timer = self.cooldown
 
-        mouse_world = target
-        delta = mouse_world - self.position
-        if delta.length() > 0:
-            direction = delta.normalize()
-        else:
-            direction = Vector2(1, 0)
+        direction = Vector2(math.cos(math.radians(self.angle)), math.sin(math.radians(self.angle)))
 
         if self.angleDeviation > 0:
             spread_angle = random.uniform(-self.angleDeviation, self.angleDeviation)
-            angle_rad = math.atan2(direction.y, direction.x) + math.radians(spread_angle)
-            direction = Vector2(math.cos(angle_rad), math.sin(angle_rad)).normalize()
+            angle_rad = math.radians(self.angle) + math.radians(spread_angle)
+            direction = Vector2(math.cos(angle_rad), -math.sin(angle_rad))
 
-        hitbox_pos = self.position + direction * (self.attack_range + 5)
+        hitbox_pos = Player.player.position + direction * (self.attack_range + 5)
 
-        angle = math.degrees(math.atan2(-direction.y, direction.x))
+        angle = self.angle
 
         self.bullet(hitbox_pos, angle, direction, Player)
 

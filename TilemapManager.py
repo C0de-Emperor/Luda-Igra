@@ -79,18 +79,21 @@ class Tilemap(Object):
 
             Gate(name, destination, pygame.Vector2(rect.x, rect.y), pygame.Vector2(rect.width, rect.height), "data/Sprites/gate.png")
 
-    def Render(self, screen: pygame.surface.Surface, debug: bool = False):
+    def Update(self, dt):
         if hasattr(self, 'group'):
-
             # Centre la caméra sur le joueur
             if Player.player:
                 self.group.center(Player.player.rect)
-            # Dessine le tilemap
-            self.group.draw(screen)
-
+            
             # Récupère l'offset de la caméra
             view_rect = self.group.view
             self.camera_offset = pygame.Vector2(view_rect.x, view_rect.y)
+
+    def Render(self, screen: pygame.surface.Surface, debug: bool = False):
+        if hasattr(self, 'group'):
+
+            # Dessine le tilemap
+            self.group.draw(screen)
             
             if debug:
                 from Objects import Camera
