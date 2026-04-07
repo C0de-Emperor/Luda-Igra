@@ -41,6 +41,24 @@ class Dragon(RangeEnemy):
             angleDeviation=40
         )
 
+class Taupe(MeleeEnemy):
+    def __init__(self, position: pygame.Vector2):
+        super().__init__(
+            position, 
+            size = Vector2(20, 20), 
+            sprite = r"data/Sprites/taupe.png", 
+            baseHealth = 80, 
+            attackDmg = 8, 
+            speed = 30, 
+            sightRadius = 300, 
+            wanderRadius = 400, 
+            patrolDelay = 6, 
+            stopDuration = 2,
+            attackCooldown = 2,
+            attackRange = 50,
+            attackSprite=r"data/Sprites/slash.png"
+        )
+
 class Tree(Harvestable):
     def __init__(self, position: pygame.Vector2):
         from InventorySystem import WOOD

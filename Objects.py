@@ -377,6 +377,8 @@ class Gate(Object):
         self.name:str = name
         self.destination:str = destination
 
+        self.sprite = pygame.transform.scale(pygame.transform.rotate(self.sprite, random.randint(1,4)*90), size*Camera.zoom)
+
     def Update(self, dt):
         from SceneManager import SCENES
         coll = self.rect.colliderect(Player.player.rect)
