@@ -106,10 +106,22 @@ class Object:
             raise TypeError(f"Unsupported image type: {type(sprite)}")
 
 class Entity(Object):
-    def __init__(self, position: Vector2, size: Vector2, destroyOnLoad: bool = True, baseHealth: float = 1):
+    def __init__(self, position: Vector2, size: Vector2, speed:float, destroyOnLoad: bool = True, baseHealth: float = 1):
         super().__init__(position, size, destroyOnLoad)
         self.baseHealth:float = baseHealth
         self.health:float = baseHealth
+        self.speed = speed
+
+        self.effects: list["Effect"] = []
+
+    def Update(self, dt):
+        super().Update(dt)
+
+        for effect in self.effects[:]:
+            effect.Update(self, dt)
+
+            if effect.is_finished():
+                self.effects.remove(effect)
 
     def _render_health_bar(self, screen):
         # position de l'ennemi à l'écran
@@ -140,13 +152,16 @@ class Entity(Object):
     def Die(self):
         self.Destroy()
 
+    def AddEffect(self, effect: "Effect"):
+        effect.Apply(self)
+        self.effects.append(effect)
+
 class Player(Entity):
     player:"Player" = None
 
-    def __init__(self, position: pygame.Vector2, size: pygame.Vector2, sprite: str, tools: list[type["Weapon"]], baseHealth: float, speed: float = 300):
-        super().__init__(position, size, False, baseHealth)
+    def __init__(self, position: pygame.Vector2, size: pygame.Vector2, sprite: str, tools: list[type["Weapon"]], baseHealth: float, speed: float):
+        super().__init__(position, size, speed, False, baseHealth)
         self.LoadSprite(sprite, True)
-        self.speed:float = speed
 
         self.tools: Queue = Queue(*tools)
         self.currentTool: type[Weapon] = None
@@ -198,6 +213,8 @@ class Player(Entity):
         
         if Scene.currentScene is None:
             return
+
+        super().Update(dt)
         
         direction = self._get_movement_direction()
         colliders = Scene.currentScene.GetAllColliders([self])
@@ -396,13 +413,11 @@ class SpawnArea(Object):
 
 class Enemy(Entity):
     def __init__(self, position:Vector2, size:Vector2, sprite:str, baseHealth:float, attackDmg:float, speed:float, sightRadius:float, wanderRadius:float, patrolDelay:float, stopDuration: float):
-        super().__init__(position, size, True, baseHealth)
+        super().__init__(position, size, speed, True, baseHealth)
         self.LoadSprite(sprite, True)
         import random
 
-
         self.attackDmg:float = attackDmg
-        self.speed:float = speed
         self.wanderRadius:float = wanderRadius
         self.sightRadius:float = sightRadius
         self.patrolDelay:float = patrolDelay + random.randint(-patrolDelay//5, patrolDelay//5)
@@ -435,6 +450,8 @@ class Enemy(Entity):
         
         if Scene.currentScene is None:
             return
+        
+        super().Update(dt)
 
         distanceToPlayer = self.position - Player.player.position
 
@@ -552,6 +569,131 @@ class MeleeEnemy (Enemy):
             0.1,
             Enemy
         )
+
+
+
+
+
+
+
+
+class Consumable(Object):
+    def __init__(self, position: Vector2, size: Vector2, sprite:str, offset: Vector2):
+        super().__init__(position, size, False)
+        self.LoadSprite(sprite, True)
+
+        self.offset:Vector2 = offset
+        self.offset_distance:float = 20
+
+    def Render(self, screen, debug=False):
+        screen_rect = Camera.get_screen_rect(self.rect)
+
+        sprite = self.sprite
+
+        # flip si l'arme passe derrière
+        if not (-90 <= self.angle <= 90):
+            sprite = pygame.transform.flip(sprite, False, True)
+
+        # rotation
+        rotated_sprite = pygame.transform.rotozoom(sprite, self.angle, 1)
+        rotated_rect = rotated_sprite.get_rect(center=screen_rect.center)
+
+        screen.blit(rotated_sprite, rotated_rect)
+
+        if debug:
+            pygame.draw.rect(screen, (0, 0, 255), screen_rect, 1)
+
+            player_screen_pos = Camera.world_to_screen_point(Player.player.position)
+            mouse_pos = pygame.Vector2(pygame.mouse.get_pos())
+            pygame.draw.line(screen, (255, 0, 0), player_screen_pos, mouse_pos, 1)
+    
+    def Update(self, dt):
+        import math
+        # position du joueur à l'écran
+        player_screen_pos = Camera.world_to_screen_point(Player.player.position)
+
+        mouse_pos = pygame.Vector2(pygame.mouse.get_pos())
+
+        delta = mouse_pos - player_screen_pos
+
+        if delta.length() > 0:
+            direction = delta.normalize()
+        else:
+            direction = Vector2(0,0)
+
+        self.position = Player.player.position + direction * self.offset_distance + self.offset
+
+        # rotation
+        self.angle = math.degrees(math.atan2(-delta.y, delta.x))
+
+        if pygame.mouse.get_pressed()[0]:
+            self.Use()
+
+    def Use(self):
+        pass
+
+class Potion(Consumable):
+    def __init__(self, position: Vector2, effect: "Effect"):
+        super().__init__(position, Vector2(30, 30), r"data/Sprites/potionFlask.png", Vector2(0, -10))
+
+        self.effect = effect
+
+        self.liquid_sprite = pygame.transform.scale(pygame.image.load(r"data/Sprites/potionLiquid.png").convert_alpha(), (int(self.size.x), int(self.size.y)))
+
+
+    def Use(self):
+        Player.player.AddEffect(self.effect)
+
+        # consomme la potion
+        Player.player.tools.dequeue()
+        self.Destroy()
+
+    @staticmethod
+    def tint_surface(surface, color):
+        tinted = surface.copy()
+        tinted.fill(color, special_flags=pygame.BLEND_RGBA_MULT)
+        return tinted
+
+    def Render(self, screen, debug=False):
+        screen_rect = Camera.get_screen_rect(self.rect)
+
+        # recolorer le liquide
+        liquid = Potion.tint_surface(self.liquid_sprite, self.effect.color)
+
+        sprite_flask = self.sprite
+
+        # flip
+        if not (-90 <= self.angle <= 90):
+            sprite_flask = pygame.transform.flip(sprite_flask, False, True)
+            liquid = pygame.transform.flip(liquid, False, True)
+
+        # rotation
+        rotated_flask = pygame.transform.rotozoom(sprite_flask, self.angle, 1)
+        rotated_liquid = pygame.transform.rotozoom(liquid, self.angle, 1)
+
+        rect = rotated_flask.get_rect(center=screen_rect.center)
+
+        screen.blit(rotated_liquid, rect)
+        screen.blit(rotated_flask, rect)
+
+        if debug:
+            pygame.draw.rect(screen, (0, 0, 255), screen_rect, 1)
+
+
+class Effect:
+    def __init__(self, duration: float, color: pygame.Color):
+        self.duration = duration
+        self.color = color
+
+    def Apply(self, target: Entity):
+        pass
+
+    def Update(self, target: Entity, dt: float):
+        """appelé chaque frame si durée > 0"""
+        pass
+
+    def is_finished(self):
+        return self.duration <= 0
 
 
 
@@ -839,7 +981,7 @@ class LootTable:
 
 class Harvestable(Entity):
     def __init__(self, position: pygame.Vector2, size: pygame.Vector2, sprite: str, baseHealth:float, lootTable: LootTable):
-        super().__init__(position, size, True, baseHealth)
+        super().__init__(position, size, 0, True, baseHealth)
         self.LoadSprite(sprite, True)
         
         self.lootTable:LootTable = lootTable

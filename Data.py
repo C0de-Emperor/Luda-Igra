@@ -183,3 +183,66 @@ class Flame(Projectile):
     def OnHarvestableHit(self, object: Harvestable):
         object.TakeDamage(self.damage)
 
+######################## EFFECTS
+################################
+
+class HealEffect(Effect):
+    def __init__(self, amount: float):
+        super().__init__(0, (235, 64, 52))
+        self.amount = amount
+
+    def Apply(self, target: Entity):
+        target.Heal(self.amount)
+
+class RegenEffect(Effect):
+    def __init__(self, amount_per_sec, duration):
+        super().__init__(duration, (224, 43, 200))
+        self.amount_per_sec = amount_per_sec
+
+    def Update(self, target: Entity, dt):
+        target.Heal(self.amount_per_sec * dt)
+        self.duration -= dt
+
+class SpeedEffect(Effect):
+    def __init__(self, multiplier, duration):
+        super().__init__(duration, (28, 133, 232))
+        self.multiplier = multiplier
+
+    def Apply(self, target: Entity):
+        target.speed *= self.multiplier
+
+    def Update(self, target: Entity, dt):
+        self.duration -= dt
+
+        if self.is_finished():
+            target.speed /= self.multiplier
+
+######################## POTIONS
+################################
+
+class HealthPotion(Potion):
+    icon:str =  r"data/Sprites/icon_sword.png"
+
+    def __init__(self):
+        super().__init__(
+            Vector2(0, 0),
+            HealEffect(20)
+        )
+
+class RegenPotion(Potion):
+    icon:str =  r"data/Sprites/icon_sword.png"
+
+    def __init__(self):
+        super().__init__(
+            Vector2(0, 0),
+            RegenEffect(2, 10)
+        )
+
+class SpeedPotion(Potion):
+    icon:str =  r"data/Sprites/icon_sword.png"
+
+    def __init__(self):
+        super().__init__(
+            Vector2(0, 0),
+            SpeedEffect(1.2, 15)
+        )

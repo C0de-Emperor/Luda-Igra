@@ -1,5 +1,5 @@
 # Document d'Analyse du Projet
-_réalisé avec la bibliothèque inspect et une IA_
+_réalisé avec la bibliothèque inspect_
 
 ## Fichier : Data.py
 
