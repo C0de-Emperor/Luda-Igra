@@ -2653,7 +2653,7 @@
  </objectgroup>
  <objectgroup id="26" name="SpawnArea">
   <object id="70" name="CochonTronc-30-4" x="264" y="226" width="812" height="346"/>
-  <object id="77" name="Tree-3-20" x="416" y="2416" width="80" height="48"/>
+  <object id="77" name="Tree-5-5" x="416" y="2416" width="80" height="48"/>
  </objectgroup>
  <objectgroup id="23" name="Collisions">
   <object id="69" x="1666" y="1350"/>
