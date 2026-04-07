@@ -39,7 +39,7 @@ class Scene:
 
         Scene.currentScene = self
         
-        self.tilemap = Tilemap(f"data/Tilemaps/{self.name}.tmx")
+        self.tilemap = Tilemap(f"data/tilemaps/{self.name}.tmx")
 
         # Mettre le tilemap en premier pour qu'il soit rendu avant les autres objets
         self.objects.extend(objectsToKeep)
@@ -60,5 +60,6 @@ class Scene:
 SCENES = {
     "carte" : Scene("carte"),
     "dungeon": Scene("donjon"),
-    "farm": Scene("farm")
+    "farm": Scene("farm"),
+    "grotte": Scene("grotte")
 }
