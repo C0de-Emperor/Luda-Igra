@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from InventorySystem import Resource, Inventory
+    from DialogueSystem import DialogueManager
 
 class UIElement(Object):
     def __init__(self, position, destroyOnLoad = True):
@@ -109,12 +110,12 @@ class InventoryUI(UIElement):
         self.font:pygame.font.Font = pygame.font.SysFont("Arial", 20, bold=True)
         self.title_font:pygame.font.Font = pygame.font.SysFont("Arial", 24, bold=True)
 
-        self.show = False
+        self.show:bool = False
 
     def HandleEvent(self, event):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_e:
-                    self.show = not self.show
+                    self.show:bool = not self.show
     
     def Render(self, screen: pygame.surface.Surface, debug: bool = False):
         if not self.show:
@@ -190,7 +191,7 @@ class CraftingUI(UIElement):
     def HandleEvent(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_c:
-                self.show = not self.show
+                self.show:bool = not self.show
 
     def Update(self, dt):
         if self.delay > -1:
@@ -391,7 +392,56 @@ class CraftingQueueUI(UIElement):
             pygame.draw.rect(screen, (255, 0, 0), debug_rect, 1)
 
 
+class DialogueUI(UIElement):
+    def __init__(self, dialogueManager:"DialogueManager", position:pygame.Vector2, dialogueBoxDimensions:pygame.Vector2):
+        super().__init__(position, False)
+        self.position:pygame.Vector2 = position
+        self.font:pygame.font.Font = pygame.font.SysFont("Arial", 20, bold=True)
 
+        self.dialogueManager:"DialogueManager" = dialogueManager
+        self.dimensions:pygame.Vector2 = dialogueBoxDimensions
+
+        self.show:bool = False
+    
+    def Render(self, screen: pygame.surface.Surface, debug: bool = False):
+        if not self.show:
+            return
+
+        from DialogueSystem import Dialogue
+
+        x, y = self.position
+        currentDialogueData = self.dialogueManager.getCurrentDialogueData()
+
+        if not currentDialogueData:
+            return
+        
+        NPCSprite:pygame.surface.Surface = currentDialogueData[0]
+        currentDialogueText:str = currentDialogueData[1]
+
+        # --- BACKGROUND PANEL ---
+        panel_width = self.dimensions.x
+        panel_height = self.dimensions.y
+        panel_rect = pygame.Rect(x-20, y-20, panel_width, panel_height)
+        
+        # Shadow
+        shadow_rect = panel_rect.copy()
+        shadow_rect.x += 4
+        shadow_rect.y += 4
+        pygame.draw.rect(screen, (0, 0, 0, 100), shadow_rect, border_radius=15)
+        
+        # Main panel
+        pygame.draw.rect(screen, (30, 30, 50), panel_rect, border_radius=15)
+        pygame.draw.rect(screen, (60, 60, 80), panel_rect, border_radius=15, width=3)
+        
+        # text
+        text = self.font.render(currentDialogueText, True, (200, 220, 255))
+        text_rect = text.get_rect(topleft=(panel_rect.left+100, panel_rect.top+20))
+        screen.blit(text, text_rect)
+
+        # NPC
+        NPCRect=pygame.Rect(x-20, y-20, 0, 0)
+        NPCSprite=pygame.transform.scale(NPCSprite, (100, 100*NPCSprite.get_width()/NPCSprite.get_height()))
+        screen.blit(NPCSprite, NPCRect)
 
 
 

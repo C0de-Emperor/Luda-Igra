@@ -7,7 +7,7 @@ class Queue(Generic[T]):
         self.elements:list=list(elements)
 
     def __repr__(self):
-        return "Queue(" + ", ".join(self.elements) + ")"
+        return "Queue(" + ", ".join([str(element) for element in self.elements]) + ")"
 
     def enqueue(self, value: T):
         self.elements.append(value)
@@ -34,3 +34,10 @@ class Queue(Generic[T]):
         if not self.isEmpty():
             return self.elements[0]
         return None
+    
+    def copy(self):
+        a = Queue()
+        for k in self.elements:
+            a.enqueue(k)
+        
+        return a

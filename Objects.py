@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from InventorySystem import ItemStack, Resource
+    from DialogueSystem import Dialogue
 
 
 
@@ -554,6 +555,41 @@ class MeleeEnemy (Enemy):
         )
 
 
+class NPC(Entity):
+    def __init__(self, position:Vector2, size:Vector2, sprite:str, baseHealth:float, interactRadius:float, dialogueQueue:Queue, name:str):
+        super().__init__(position, size, True, baseHealth)
+        self.LoadSprite(sprite, True)
+
+        self.name:str = name
+
+        self.interactRadius:float = interactRadius
+        self.dialogueQueue:Queue = dialogueQueue
+        print(self.dialogueQueue.elements)
+
+        self.dialogueTimer:float = 0
+
+    def Update(self, dt):
+        from SceneManager import Scene
+        
+        if Scene.currentScene is None:
+            return
+
+        distanceToPlayer = self.position - Player.player.position
+
+        if distanceToPlayer.magnitude() <= self.interactRadius:
+            DialogueManager.loadNPC(self)
+
+    
+    def Render(self, screen, debug = False):
+        screen_rect = Camera.get_screen_rect(self.rect)
+        screen.blit(self.sprite, screen_rect)
+
+        if debug:
+            pygame.draw.rect(screen, (255, 0, 0), screen_rect, 1)
+
+            pygame.draw.circle(screen, (255, 255, 0), screen_rect.center, self.interactRadius, 1)
+
+
 
 class Weapon(Object):
     def __init__(self, position: Vector2, size: Vector2, sprite:str, offset: Vector2):
@@ -919,5 +955,58 @@ class DroppedStack(Object):
             self.Destroy()
 
 
+class DialogueManager(Object):
+    dialogueManager:"DialogueManager" = None
 
+    def __init__(self):
+        super().__init__(Vector2(0,0), Vector2(0,0), False)
 
+        self.currentNPC:"NPC" = None
+        self.currentDialogueQueue:"Queue" = None
+        self.currentDialogue:Dialogue = None
+
+        self.dialogueTimer = 0
+
+        position = Vector2(400, pygame.display.Info().current_h-100)
+        dimensions = Vector2(pygame.display.Info().current_w-400-20, 100)
+
+        from UI import DialogueUI
+        self.dialogueUI:DialogueUI = DialogueUI(self, position, dimensions)
+
+        DialogueManager.dialogueManager=self
+    
+    def getCurrentDialogueData(self):
+        if not self.currentDialogue:
+            return None
+        
+        return (self.currentNPC.sprite, self.currentNPC.name+" : "+self.currentDialogue.dialogueContent)
+    
+    def nextDialogue(self):
+        if not self.currentDialogueQueue or self.currentDialogueQueue.isEmpty():
+            self.currentNPC=None
+            self.currentDialogueQueue=None
+            self.currentDialogue=None
+
+            self.dialogueUI.show=False
+        else:
+            self.currentDialogue=self.currentDialogueQueue.dequeue()
+            self.dialogueTimer=0
+
+            self.dialogueUI.show=True
+    
+    def Update(self, dt):
+        if (self.currentDialogue and self.dialogueTimer > self.currentDialogue.dialogueTime) or (not self.currentDialogue and self.currentDialogueQueue):
+            self.nextDialogue()
+
+        self.dialogueTimer += dt
+    
+    def HandleEvent(self, event):
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+            self.nextDialogue()
+    
+    @staticmethod
+    def loadNPC(newNPC:"NPC"):
+        if newNPC != DialogueManager.dialogueManager.currentNPC:
+            DialogueManager.dialogueManager.currentNPC = newNPC
+            DialogueManager.dialogueManager.currentDialogueQueue = newNPC.dialogueQueue.copy()
+            DialogueManager.dialogueManager.dialogueTimer = 0

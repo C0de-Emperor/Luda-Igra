@@ -1,7 +1,7 @@
 import pygame
 import pytmx
 import pyscroll
-from Objects import Player, Object, Gate
+from Objects import Player, Object, Gate, NPC
 
 
 
@@ -20,6 +20,19 @@ class Tilemap(Object):
         self._load_gates()
         self._load_points()
         self._load_spawn_Area()
+        self._load_NPC()
+    
+    def _load_NPC(self):
+        from Data import NPCS
+
+        try:
+            NPC_layer = self.tmx_data.get_layer_by_name("NPC")
+            for NPC_point in NPC_layer:
+                NPCS[NPC_point.name](pygame.Vector2(NPC_point.x, NPC_point.y))
+
+        except (ValueError, AttributeError):
+            print(f"ERROR: 'NPC' layer not found in tilemap '{self.path}'")
+            return
 
     def _load_spawn_Area(self):
         from Objects import SpawnArea

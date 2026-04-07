@@ -11,7 +11,7 @@ def reset_game():
     game_over = False
 
     """Nettoie et réinitialise le jeu sans relancer la boucle."""
-    from Objects import Player
+    from Objects import Player, NPC, DialogueManager
     from Data import MiniGun, FlameThrower
     import SceneManager
     from InventorySystem import CraftingManager
@@ -30,6 +30,8 @@ def reset_game():
         100,
         speed=800
     )
+
+    DialogueManager()
 
     for recipe in CraftingManager.recipes:
         recipe.isCraftable = True
