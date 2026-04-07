@@ -792,9 +792,12 @@ class Potion(Consumable):
 
         sprite_flask = self.sprite
 
-        if not (-90 <= self.angle <= 90):
-            sprite_flask = pygame.transform.flip(sprite_flask, False, True)
-            liquid = pygame.transform.flip(liquid, False, True)
+        try:
+            if not (-90 <= self.angle <= 90):
+                sprite_flask = pygame.transform.flip(sprite_flask, False, True)
+                liquid = pygame.transform.flip(liquid, False, True)
+        except:
+            pass
 
         rotated_flask = pygame.transform.rotozoom(sprite_flask, self.angle, 1)
         rotated_liquid = pygame.transform.rotozoom(liquid, self.angle, 1)
