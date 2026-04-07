@@ -59,5 +59,6 @@ class Scene:
 
 SCENES = {
     "carte" : Scene("carte"),
-    "dungeon": Scene("donjon")
+    "dungeon": Scene("donjon"),
+    "farm": Scene("farm")
 }

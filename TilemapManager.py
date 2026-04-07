@@ -53,10 +53,19 @@ class Tilemap(Object):
             for collision in collision_layer:
                 rect = pygame.Rect(collision.x, collision.y, collision.width, collision.height)
                 self.collisions.append(rect)
-            
-
         except (ValueError, AttributeError):
             print("WARNING: Couche de collision 'Collisions' non trouvée dans le tilemap")
+        
+        try:
+            collisionLayer2=self.tmx_data.get_layer_by_name("Collision (barrière centrale)")
+            for x, y, image in collisionLayer2.tiles():
+                pixel_x = x * self.tmx_data.tilewidth
+                pixel_y = y * self.tmx_data.tileheight
+
+                rect = pygame.Rect(pixel_x, pixel_y, self.tmx_data.tilewidth, self.tmx_data.tileheight)
+                self.collisions.append(rect)
+        except:
+            pass
 
     def _load_points(self):
         try:
