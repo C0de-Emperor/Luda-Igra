@@ -92,8 +92,9 @@ class Tilemap(Object):
             self.camera_offset = pygame.Vector2(view_rect.x, view_rect.y)
             
             if debug:
+                from Objects import Camera
                 for collision_rect in self.collisions:
-                    screen_rect = collision_rect.move(-self.camera_offset.x, -self.camera_offset.y)
+                    screen_rect = Camera.get_screen_rect(collision_rect)
                     pygame.draw.rect(screen, (0, 255, 0), screen_rect, 2)
 
     def GetColliders(self) -> list[pygame.Rect]:

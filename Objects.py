@@ -22,29 +22,48 @@ KEYS_MOVEMENT = {
 
 
 class Camera:
+    zoom = 2
+
     @staticmethod
     def get_screen_rect(world_rect: pygame.Rect) -> pygame.Rect:
         from SceneManager import Scene
+
         screen_rect = world_rect.copy()
+
         if Scene.currentScene.tilemap and hasattr(Scene.currentScene.tilemap, 'camera_offset'):
             screen_rect.x -= Scene.currentScene.tilemap.camera_offset.x
             screen_rect.y -= Scene.currentScene.tilemap.camera_offset.y
+
+        # appliquer le zoom
+        screen_rect.x *= Camera.zoom
+        screen_rect.y *= Camera.zoom
+        screen_rect.width *= Camera.zoom
+        screen_rect.height *= Camera.zoom
+
         return screen_rect
     
     @staticmethod
     def world_to_screen_point(world_pos: Vector2) -> Vector2:
         from SceneManager import Scene
+
         screen_pos = Vector2(world_pos.x, world_pos.y)
+
         if Scene.currentScene.tilemap and hasattr(Scene.currentScene.tilemap, 'camera_offset'):
             screen_pos -= Scene.currentScene.tilemap.camera_offset
-        return screen_pos
+
+        return screen_pos * Camera.zoom
     
     @staticmethod
     def screen_to_world_point(screen_pos: Vector2) -> Vector2:
         from SceneManager import Scene
+
         world_pos = Vector2(screen_pos.x, screen_pos.y)
+
+        world_pos /= Camera.zoom
+
         if Scene.currentScene.tilemap and hasattr(Scene.currentScene.tilemap, 'camera_offset'):
             world_pos += Scene.currentScene.tilemap.camera_offset
+
         return world_pos
 
 
@@ -95,15 +114,13 @@ class Object:
             if not os.path.exists(sprite):
                 raise FileNotFoundError(f"Image not found: {sprite}")
 
-            if scale:
-                self.sprite = pygame.transform.scale(pygame.image.load(sprite).convert_alpha(), (int(self.size.x), int(self.size.y)))
-            else:
-                self.sprite = pygame.image.load(sprite).convert_alpha()
+            image = pygame.image.load(sprite).convert_alpha()
+            # Charger à la taille zoomée pour que le sprite remplisse correctement la hitbox
+            self.sprite = pygame.transform.scale(image, (int(self.size.x * Camera.zoom), int(self.size.y * Camera.zoom)))
             
         elif isinstance(sprite, pygame.Surface):
-            self.sprite = pygame.transform.scale(sprite, (int(self.size.x), int(self.size.y)))
+            self.sprite = pygame.transform.scale(sprite, (int(self.size.x * Camera.zoom), int(self.size.y * Camera.zoom)))
         else:
-
             raise TypeError(f"Unsupported image type: {type(sprite)}")
 
 class Entity(Object):
@@ -131,7 +148,7 @@ class Entity(Object):
         bar_width = screen_rect.width
         bar_height = 5
         bar_x = screen_rect.centerx - bar_width // 2
-        bar_y = screen_rect.top - 10  # au-dessus de l'ennemi
+        bar_y = screen_rect.top - int(10 * Camera.zoom)  # au-dessus de l'ennemi
 
         # fond rouge
         pygame.draw.rect(screen, (255,0,0), (bar_x, bar_y, bar_width, bar_height))
@@ -610,7 +627,7 @@ class NPC(Object):
         if debug:
             pygame.draw.rect(screen, (255, 0, 0), screen_rect, 1)
 
-            pygame.draw.circle(screen, (255, 255, 0), screen_rect.center, self.interactRadius, 1)
+            pygame.draw.circle(screen, (255, 255, 0), screen_rect.center, int(self.interactRadius * Camera.zoom), 1)
 
 
 
@@ -700,8 +717,9 @@ class Potion(Consumable):
     def Render(self, screen, debug=False):
         screen_rect = Camera.get_screen_rect(self.rect)
 
-        # recolorer le liquide
-        liquid = Potion.tint_surface(Potion.liquid_sprite, self.effect.color)
+        # Redimensionner le liquide à la même taille que la bouteille (zoomée)
+        liquid_base = Potion.tint_surface(Potion.liquid_sprite, self.effect.color)
+        liquid = pygame.transform.scale(liquid_base, (int(self.size.x * Camera.zoom), int(self.size.y * Camera.zoom)))
 
         sprite_flask = self.sprite
 
@@ -885,7 +903,7 @@ class Hitbox(Object):
         self.lifetime:float = lifetime
         self.owner:Object = owner
 
-        self.hitEnemies:list[Object] = set()
+        self.hitEnemies: set = set()
 
         self.angle:float = angle
         self.rect.center = (position.x, position.y)
@@ -906,7 +924,7 @@ class Hitbox(Object):
     def Render(self, screen, debug=False):
         screen_rect = Camera.get_screen_rect(self.rect)
 
-        rotated_sprite = pygame.transform.rotate(self.sprite, self.angle)
+        rotated_sprite = pygame.transform.rotozoom(self.sprite, self.angle, 1)
         rotated_rect = rotated_sprite.get_rect(center=screen_rect.center)
 
         screen.blit(rotated_sprite, rotated_rect)
@@ -963,7 +981,7 @@ class Projectile(Object):
     def Render(self, screen, debug=False):
         screen_rect = Camera.get_screen_rect(self.rect)
 
-        rotated_sprite = pygame.transform.rotate(self.sprite, self.angle)
+        rotated_sprite = pygame.transform.rotozoom(self.sprite, self.angle, 1)
         rotated_rect = rotated_sprite.get_rect(center=screen_rect.center)
 
         screen.blit(rotated_sprite, rotated_rect)
