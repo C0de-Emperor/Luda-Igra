@@ -40,6 +40,12 @@ class Dragon(RangeEnemy):
             bullet = FireBall,
             angleDeviation=40
         )
+    
+    def Die(self):
+        self.Destroy()
+        
+        from Engine import trigger_game_won
+        trigger_game_won()
 
 class Taupe(MeleeEnemy):
     def __init__(self, position: pygame.Vector2):

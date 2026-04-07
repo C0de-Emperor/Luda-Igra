@@ -1,14 +1,21 @@
 import pygame
 
 game_over = False
+game_won = False
 
 def trigger_game_over():
     global game_over
     game_over = True
 
+def trigger_game_won():
+    global game_won, game_over
+    game_won = True
+    game_over = True
+
 def reset_game():
-    global game_over
+    global game_over, game_won
     game_over = False
+    game_won = False
 
     """Nettoie et réinitialise le jeu sans relancer la boucle."""
     from Objects import Player, DialogueManager
@@ -45,7 +52,7 @@ def get_game_over_buttons(screen):
     return restart_rect, quit_rect
 
 
-def draw_game_over(screen):
+def draw_game_over(screen, message):
     width, height = screen.get_size()
     overlay = pygame.Surface((width, height), pygame.SRCALPHA)
     overlay.fill((0, 0, 0, 180))
@@ -54,7 +61,7 @@ def draw_game_over(screen):
     font_title = pygame.font.SysFont("Arial", 60, bold=True)
     font_btn = pygame.font.SysFont("Arial", 24, bold=True)
 
-    title_text = font_title.render("GAME OVER", True, (255, 50, 50))
+    title_text = font_title.render(message, True, (255, 50, 50))
     title_rect = title_text.get_rect(center=(width // 2, height // 2 - 60))
     screen.blit(title_text, title_rect)
 
@@ -111,24 +118,28 @@ def Run (screen: pygame.surface.Surface, DEBUG: bool):
                     obj.HandleEvent(event)
 
         screen.fill(pygame.Color(0, 0, 0))
-
-        if not game_over:
-            # UPDATE
-            for obj in SceneManager.Scene.currentScene.objects:
-                obj.Update(dt)
-
-            # RENDER
-            # Objects
-            for obj in SceneManager.Scene.currentScene.objects:
-                if not isinstance(obj, UIElement):
-                    obj.Render(screen, DEBUG)
-
-            # UI
-            for obj in SceneManager.Scene.currentScene.objects:
-                if isinstance(obj, UIElement):
-                    obj.Render(screen, DEBUG)
+            
+        if game_won:
+            draw_game_over(screen, "GAME WON")
         else:
-            draw_game_over(screen)
+            if game_over:
+                draw_game_over(screen, "GAME OVER")
+            else:
+            # UPDATE
+                for obj in SceneManager.Scene.currentScene.objects:
+                    obj.Update(dt)
+
+                # RENDER
+                # Objects
+                for obj in SceneManager.Scene.currentScene.objects:
+                    if not isinstance(obj, UIElement):
+                        obj.Render(screen, DEBUG)
+
+                # UI
+                for obj in SceneManager.Scene.currentScene.objects:
+                    if isinstance(obj, UIElement):
+                        obj.Render(screen, DEBUG)
+
 
         fps_text = font.render(f"FPS: {int(clock.get_fps())}", True, (255,255,255))
         screen.blit(fps_text, pygame.Vector2(20, pygame.display.Info().current_h - 75))
