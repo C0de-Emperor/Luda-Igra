@@ -20,7 +20,7 @@ def reset_game():
     if SceneManager.Scene.currentScene:
         SceneManager.Scene.currentScene.objects.clear()
 
-    SceneManager.SCENES["farm"].load("SpawnPoint")
+    SceneManager.SCENES["center"].load("SpawnPoint")
 
     Player(
         SceneManager.Scene.currentScene.tilemap.points["SpawnPoint"], 
