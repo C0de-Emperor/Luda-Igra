@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from Objects import Weapon
 
 class ResourceManager:
-    resources = []
+    resources:list["Resource"] = []
 
     @classmethod
     def register(cls, resource):
@@ -16,8 +16,8 @@ class ResourceManager:
 
 class ItemStack:
     def __init__(self, resource: "Resource", amount: int):
-        self.resource = resource
-        self.amount = amount
+        self.resource:"Resource" = resource
+        self.amount:int = amount
 
     def add(self, quantity: int):
         space = self.resource.max_stack - self.amount
@@ -35,19 +35,19 @@ class ItemStack:
         return self.amount <= 0
 
 class Inventory:
-    slot_size = 50
-    padding = 5
+    slot_size:int = 50
+    padding:float = 5
 
     def __init__(self):
         from UI import InventoryUI, CraftingUI, CraftingQueueUI
 
-        self.resources = {}
-        self.UI = InventoryUI(self, pygame.Vector2(30, 50))
+        self.resources:dict[int, "Resource"] = {}
+        self.UI:InventoryUI = InventoryUI(self, pygame.Vector2(30, 50))
         
-        screen_width = pygame.display.get_window_size()[0]
-        self.craftingUI = CraftingUI(pygame.Vector2(screen_width - 470, 50))
+        screen_width:int = pygame.display.get_window_size()[0]
+        self.craftingUI:CraftingUI = CraftingUI(pygame.Vector2(screen_width - 470, 50))
         
-        self.craftingQueueUI = CraftingQueueUI(pygame.Vector2(screen_width - 350, 0), self.craftingUI)
+        self.craftingQueueUI:CraftingQueueUI = CraftingQueueUI(pygame.Vector2(screen_width - 350, 0), self.craftingUI)
 
     def add(self, resource, amount):
         self.resources[resource] = self.resources.get(resource, 0) + amount
@@ -60,10 +60,10 @@ class Inventory:
     
 class Resource:
     def __init__(self, name: str, icon: str):
-        self.name = name
-        self.icon = pygame.image.load(icon).convert_alpha()
+        self.name:str = name
+        self.icon:str = pygame.image.load(icon).convert_alpha()
 
-        self.icon = pygame.transform.scale(self.icon, (Inventory.slot_size - 10, Inventory.slot_size - 10))
+        self.icon:pygame.surface.Surface = pygame.transform.scale(self.icon, (Inventory.slot_size - 10, Inventory.slot_size - 10))
 
         ResourceManager.register(self)
 
@@ -86,10 +86,10 @@ class CraftingManager:
 
 class Recipe:
     def __init__(self, inputs: list[ItemStack], duration: float):
-        self.inputs = inputs
-        self.duration = duration
+        self.inputs:list[ItemStack] = inputs
+        self.duration:float = duration
 
-        self.isCraftable = True
+        self.isCraftable:bool = True
 
         CraftingManager.register(self)
 
@@ -112,7 +112,7 @@ class ItemRecipe(Recipe):
     def __init__(self, inputs: list[ItemStack], output: ItemStack, duration: float):
         super().__init__(inputs, duration)
 
-        self.output = output
+        self.output:ItemStack = output
 
     def craft(self):
         from Objects import Player
@@ -138,7 +138,7 @@ class WeaponRecipe(Recipe):
     def __init__(self, inputs: list[ItemStack], output: type["Weapon"], duration: float):
         super().__init__(inputs, duration)
 
-        self.output = output
+        self.output:type["Weapon"] = output
     
     def craft(self):
         from Objects import Player

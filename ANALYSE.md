@@ -8,10 +8,10 @@ _réalisé avec la bibliothèque inspect et une IA_
 **Hérite de :** [Projectile](#projectile)
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* (Aucun attribut propre détecté)
 
 **Méthodes (propres) :**
-* (Aucune méthode spécifique)
+* (Aucune méthode propre)
 
 ---
 
@@ -20,10 +20,10 @@ _réalisé avec la bibliothèque inspect et une IA_
 **Hérite de :** [MeleeEnemy](#meleeenemy)
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* (Aucun attribut propre détecté)
 
 **Méthodes (propres) :**
-* (Aucune méthode spécifique)
+* (Aucune méthode propre)
 
 ---
 
@@ -32,7 +32,7 @@ _réalisé avec la bibliothèque inspect et une IA_
 **Hérite de :** [Projectile](#projectile)
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* (Aucun attribut propre détecté)
 
 **Méthodes (propres) :**
 * OnEnemyHit(enemy: Objects.Enemy)
@@ -45,10 +45,10 @@ _réalisé avec la bibliothèque inspect et une IA_
 **Hérite de :** [RangedWeapon](#rangedweapon)
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* icon : `str`
 
 **Méthodes (propres) :**
-* (Aucune méthode spécifique)
+* (Aucune méthode propre)
 
 ---
 
@@ -57,10 +57,10 @@ _réalisé avec la bibliothèque inspect et une IA_
 **Hérite de :** [RangedWeapon](#rangedweapon)
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* icon : `str`
 
 **Méthodes (propres) :**
-* (Aucune méthode spécifique)
+* (Aucune méthode propre)
 
 ---
 
@@ -69,7 +69,7 @@ _réalisé avec la bibliothèque inspect et une IA_
 **Hérite de :** [Projectile](#projectile)
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* (Aucun attribut propre détecté)
 
 **Méthodes (propres) :**
 * OnEnemyHit(enemy: Objects.Enemy)
@@ -82,10 +82,10 @@ _réalisé avec la bibliothèque inspect et une IA_
 **Hérite de :** [RangedWeapon](#rangedweapon)
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* icon : `str`
 
 **Méthodes (propres) :**
-* (Aucune méthode spécifique)
+* (Aucune méthode propre)
 
 ---
 
@@ -94,10 +94,10 @@ _réalisé avec la bibliothèque inspect et une IA_
 **Hérite de :** [MeleeWeapon](#meleeweapon)
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* icon : `str`
 
 **Méthodes (propres) :**
-* (Aucune méthode spécifique)
+* (Aucune méthode propre)
 
 ---
 
@@ -106,10 +106,10 @@ _réalisé avec la bibliothèque inspect et une IA_
 **Hérite de :** [Harvestable](#harvestable)
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* (Aucun attribut propre détecté)
 
 **Méthodes (propres) :**
-* (Aucune méthode spécifique)
+* (Aucune méthode propre)
 
 ---
 
@@ -120,19 +120,23 @@ _réalisé avec la bibliothèque inspect et une IA_
 ### CraftingManager
 
 **Attributs (propres) :**
-* recipes : `list`
 * craftingQueue : `Queue`
+* recipes : `list`
 
 **Méthodes (propres) :**
-* register(cls, recipe)
-* get_craftable(cls)
+* register(recipe)
+* get_craftable()
 
 ---
 
 ### Inventory
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* UI : `InventoryUI`
+* craftingQueueUI : `CraftingQueueUI`
+* craftingUI : `CraftingUI`
+* padding : `float`
+* slot_size : `int`
 
 **Méthodes (propres) :**
 * add(resource, amount)
@@ -146,7 +150,7 @@ _réalisé avec la bibliothèque inspect et une IA_
 **Hérite de :** `Recipe`
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* output : `ItemStack`
 
 **Méthodes (propres) :**
 * craft()
@@ -157,7 +161,8 @@ _réalisé avec la bibliothèque inspect et une IA_
 ### ItemStack
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* amount : `int`
+* resource : `Resource`
 
 **Méthodes (propres) :**
 * add(quantity: int)
@@ -169,7 +174,9 @@ _réalisé avec la bibliothèque inspect et une IA_
 ### Recipe
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* duration : `float`
+* inputs : `list[ItemStack]`
+* isCraftable : `bool`
 
 **Méthodes (propres) :**
 * can_craft()
@@ -181,20 +188,21 @@ _réalisé avec la bibliothèque inspect et une IA_
 ### Resource
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* icon : `str`
+* name : `str`
 
 **Méthodes (propres) :**
-* (Aucune méthode spécifique)
+* (Aucune méthode propre)
 
 ---
 
 ### ResourceManager
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* resources : `list`
 
 **Méthodes (propres) :**
-* register(cls, resource)
+* register(resource)
 
 ---
 
@@ -203,7 +211,8 @@ _réalisé avec la bibliothèque inspect et une IA_
 **Hérite de :** `Recipe`
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* isCraftable : `any`
+* output : `type[Weapon]`
 
 **Méthodes (propres) :**
 * craft()
@@ -218,7 +227,7 @@ _réalisé avec la bibliothèque inspect et une IA_
 ### Camera
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* (Aucun attribut propre détecté)
 
 **Méthodes (propres) :**
 * get_screen_rect(world_rect: pygame.rect.Rect) -> pygame.rect.Rect
@@ -232,7 +241,7 @@ _réalisé avec la bibliothèque inspect et une IA_
 **Hérite de :** [Object](#object)
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* stack : `ItemStack`
 
 **Méthodes (propres) :**
 * Render(screen, debug=False)
@@ -245,7 +254,16 @@ _réalisé avec la bibliothèque inspect et une IA_
 **Hérite de :** [Entity](#entity)
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* attackDmg : `float`
+* directionTimer : `float`
+* isChasing : `bool`
+* patrolDelay : `float`
+* sightRadius : `float`
+* speed : `float`
+* stopDuration : `float`
+* stopTimer : `float`
+* wanderRadius : `float`
+* wanderTarget : `any`
 
 **Méthodes (propres) :**
 * _choose_wander_target()
@@ -260,7 +278,8 @@ _réalisé avec la bibliothèque inspect et une IA_
 **Hérite de :** [Object](#object)
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* baseHealth : `float`
+* health : `float`
 
 **Méthodes (propres) :**
 * _render_health_bar(screen)
@@ -275,7 +294,8 @@ _réalisé avec la bibliothèque inspect et une IA_
 **Hérite de :** [Object](#object)
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* destination : `str`
+* name : `str`
 
 **Méthodes (propres) :**
 * Update(dt)
@@ -288,7 +308,7 @@ _réalisé avec la bibliothèque inspect et une IA_
 **Hérite de :** [Entity](#entity)
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* lootTable : `LootTable`
 
 **Méthodes (propres) :**
 * Render(screen, debug=False)
@@ -302,7 +322,11 @@ _réalisé avec la bibliothèque inspect et une IA_
 **Hérite de :** [Object](#object)
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* angle : `float`
+* damage : `float`
+* hitEnemies : `list[Object]`
+* lifetime : `float`
+* owner : `Object`
 
 **Méthodes (propres) :**
 * Update(dt)
@@ -313,17 +337,21 @@ _réalisé avec la bibliothèque inspect et une IA_
 ### LootEntry
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* max_amount : `int`
+* min_amount : `int`
+* resource : `Resource`
+* weight : `float`
 
 **Méthodes (propres) :**
-* (Aucune méthode spécifique)
+* (Aucune méthode propre)
 
 ---
 
 ### LootTable
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* entries : `LootEntry`
+* rolls : `int`
 
 **Méthodes (propres) :**
 * roll()
@@ -335,7 +363,9 @@ _réalisé avec la bibliothèque inspect et une IA_
 **Hérite de :** [Enemy](#enemy)
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* attackCooldown : `float`
+* attackRange : `float`
+* attackTimer : `float`
 
 **Méthodes (propres) :**
 * Update(dt)
@@ -348,7 +378,10 @@ _réalisé avec la bibliothèque inspect et une IA_
 **Hérite de :** [Weapon](#weapon)
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* attack_range : `float`
+* attack_timer : `float`
+* cooldown : `float`
+* damage : `float`
 
 **Méthodes (propres) :**
 * Update(dt)
@@ -359,7 +392,9 @@ _réalisé avec la bibliothèque inspect et une IA_
 ### Object
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* destroyOnLoad : `bool`
+* size : `Vector2`
+* sprite : `any`
 
 **Méthodes (propres) :**
 * Update(dt)
@@ -376,7 +411,13 @@ _réalisé avec la bibliothèque inspect et une IA_
 **Hérite de :** [Entity](#entity)
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* currentTool : `type[Weapon]`
+* inventory : `Inventory`
+* player : `Player`
+* recipeProcessTimer : `float`
+* recipeToProcess : `Recipe`
+* speed : `float`
+* tools : `Queue`
 
 **Méthodes (propres) :**
 * _get_movement_direction() -> pygame.math.Vector2
@@ -397,7 +438,12 @@ _réalisé avec la bibliothèque inspect et une IA_
 **Hérite de :** [Object](#object)
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* angle : `float`
+* damage : `float`
+* direction : `Vector2`
+* lifetime : `float`
+* owner : `Object`
+* speed : `float`
 
 **Méthodes (propres) :**
 * Update(dt)
@@ -414,7 +460,11 @@ _réalisé avec la bibliothèque inspect et une IA_
 **Hérite de :** [Weapon](#weapon)
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* angleDeviation : `float`
+* attack_range : `float`
+* attack_timer : `float`
+* bullet : `type[Projectile]`
+* cooldown : `float`
 
 **Méthodes (propres) :**
 * Update(dt)
@@ -427,7 +477,11 @@ _réalisé avec la bibliothèque inspect et une IA_
 **Hérite de :** [Object](#object)
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* count : `int`
+* delay : `int`
+* entity : `type[Entity]`
+* maxSpawnCount : `int`
+* timer : `float`
 
 **Méthodes (propres) :**
 * _spawn()
@@ -441,7 +495,10 @@ _réalisé avec la bibliothèque inspect et une IA_
 **Hérite de :** [Object](#object)
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* angle : `any`
+* offset : `Vector2`
+* offset_distance : `float`
+* position : `any`
 
 **Méthodes (propres) :**
 * Render(screen, debug=False)
@@ -455,7 +512,9 @@ _réalisé avec la bibliothèque inspect et une IA_
 ### Scene
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* name : `str`
+* objects : `list[Object]`
+* tilemap : `any`
 
 **Méthodes (propres) :**
 * GetAllColliders(ignoreObjects: list[Objects.Object] = None) -> list[pygame.rect.Rect]
@@ -470,7 +529,10 @@ _réalisé avec la bibliothèque inspect et une IA_
 **Hérite de :** [Object](#object)
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* camera_offset : `any`
+* collisions : `screen_rect`
+* path : `str`
+* tmx_data : `Tilemap`
 
 **Méthodes (propres) :**
 * _load_spawn_Area()
@@ -489,7 +551,7 @@ _réalisé avec la bibliothèque inspect et une IA_
 **Hérite de :** `Generic`
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* elements : `list`
 
 **Méthodes (propres) :**
 * enqueue(value: ~T)
@@ -508,7 +570,9 @@ _réalisé avec la bibliothèque inspect et une IA_
 **Hérite de :** [UIElement](#uielement)
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* crafting_ui : `CraftingUI`
+* icon_size : `float`
+* spacing : `float`
 
 **Méthodes (propres) :**
 * Render(screen, debug=False)
@@ -520,7 +584,9 @@ _réalisé avec la bibliothèque inspect et une IA_
 **Hérite de :** [UIElement](#uielement)
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* delay : `float`
+* show : `bool`
+* slotHeight : `int`
 
 **Méthodes (propres) :**
 * get_height()
@@ -535,7 +601,8 @@ _réalisé avec la bibliothèque inspect et une IA_
 **Hérite de :** [UIElement](#uielement)
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* inventory : `Inventory`
+* show : `any`
 
 **Méthodes (propres) :**
 * HandleEvent(event)
@@ -548,7 +615,12 @@ _réalisé avec la bibliothèque inspect et une IA_
 **Hérite de :** [UIElement](#uielement)
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* amount : `int`
+* lifetime : `float`
+* max_lifetime : `float`
+* notifications : `list`
+* position : `any`
+* resource : `Resource`
 
 **Méthodes (propres) :**
 * get_offset_y(index)
@@ -563,10 +635,10 @@ _réalisé avec la bibliothèque inspect et une IA_
 **Hérite de :** [Object](#object)
 
 **Attributs (propres) :**
-* (Aucun attribut spécifique détecté)
+* (Aucun attribut propre détecté)
 
 **Méthodes (propres) :**
-* (Aucune méthode spécifique)
+* (Aucune méthode propre)
 
 ---
 

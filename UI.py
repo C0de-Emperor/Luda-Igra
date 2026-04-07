@@ -3,23 +3,28 @@ import pygame
 from Objects import Object
 from Tools import Queue
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from InventorySystem import Resource, Inventory
+
 class UIElement(Object):
     def __init__(self, position, destroyOnLoad = True):
         super().__init__(position, pygame.Vector2(0, 0), destroyOnLoad)
 
 
 class ItemNotification(UIElement):
-    notifications = []
+    notifications:list = []
 
     def __init__(self, resource, amount):
         position = pygame.Vector2(30, pygame.display.Info().current_h - 130)
         super().__init__(position, False)
         
-        self.resource = resource
-        self.amount = amount
-        self.lifetime = 3.0
-        self.max_lifetime = 3.0
-        self.font = pygame.font.SysFont("Arial", 18, bold=True)
+        self.resource:Resource = resource
+        self.amount:int = amount
+        self.lifetime:float = 3.0
+        self.max_lifetime:float = 3.0
+        self.font:pygame.font.Font = pygame.font.SysFont("Arial", 18, bold=True)
         
         ItemNotification.notifications.append(self)
 
@@ -99,10 +104,10 @@ class ItemNotification(UIElement):
 class InventoryUI(UIElement):
     def __init__(self, inventory, position):
         super().__init__(position, False)
-        self.inventory = inventory
-        self.position = position
-        self.font = pygame.font.SysFont("Arial", 20, bold=True)
-        self.title_font = pygame.font.SysFont("Arial", 24, bold=True)
+        self.inventory:Inventory = inventory
+        self.position:pygame.Vector2 = position
+        self.font:pygame.font.Font = pygame.font.SysFont("Arial", 20, bold=True)
+        self.title_font:pygame.font.Font = pygame.font.SysFont("Arial", 24, bold=True)
 
         self.show = False
 
@@ -170,12 +175,12 @@ class InventoryUI(UIElement):
 class CraftingUI(UIElement):
     def __init__(self, position):
         super().__init__(position, False)
-        self.font = pygame.font.SysFont("Arial", 18, bold=True)
-        self.title_font = pygame.font.SysFont("Arial", 24, bold=True)
-        self.show = False
-        self.slotHeight = 60
+        self.font:pygame.font.Font = pygame.font.SysFont("Arial", 18, bold=True)
+        self.title_font:pygame.font.Font = pygame.font.SysFont("Arial", 24, bold=True)
+        self.show:bool = False
+        self.slotHeight:int = 60
 
-        self.delay = -1
+        self.delay:float = -1
 
     def get_height(self):
         """Retourne la hauteur totale du panel de crafting"""
@@ -316,9 +321,9 @@ class CraftingUI(UIElement):
 class CraftingQueueUI(UIElement):
     def __init__(self, position, crafting_ui: CraftingUI):
         super().__init__(position, False)
-        self.icon_size = 40
-        self.spacing = 10
-        self.crafting_ui = crafting_ui
+        self.icon_size:float = 40
+        self.spacing:float = 10
+        self.crafting_ui:CraftingUI = crafting_ui
 
     def Render(self, screen, debug=False):
         from Objects import Player

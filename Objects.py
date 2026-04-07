@@ -7,7 +7,7 @@ import random
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from InventorySystem import ItemStack
+    from InventorySystem import ItemStack, Resource
 
 
 
@@ -55,7 +55,7 @@ class Object:
         self.size: Vector2 = size
         self.destroyOnLoad: bool = destroyOnLoad
 
-        self.rect = pygame.Rect(position.x, position.y, size.x, size.y)
+        self.rect:pygame.Rect = pygame.Rect(position.x, position.y, size.x, size.y)
 
         Scene.currentScene.objects.append(self)
 
@@ -108,8 +108,8 @@ class Object:
 class Entity(Object):
     def __init__(self, position: Vector2, size: Vector2, destroyOnLoad: bool = True, baseHealth: float = 1):
         super().__init__(position, size, destroyOnLoad)
-        self.baseHealth = baseHealth
-        self.health = baseHealth
+        self.baseHealth:float = baseHealth
+        self.health:float = baseHealth
 
     def _render_health_bar(self, screen):
         # position de l'ennemi à l'écran
@@ -141,21 +141,21 @@ class Entity(Object):
         self.Destroy()
 
 class Player(Entity):
-    player = None
+    player:"Player" = None
 
     def __init__(self, position: pygame.Vector2, size: pygame.Vector2, sprite: str, tools: list[type["Weapon"]], baseHealth: float, speed: float = 300):
         super().__init__(position, size, False, baseHealth)
         self.LoadSprite(sprite, True)
-        self.speed = speed
+        self.speed:float = speed
 
         self.tools: Queue = Queue(*tools)
         self.currentTool: type[Weapon] = None
 
         from InventorySystem import Inventory, Recipe
-        self.inventory = Inventory()
+        self.inventory:Inventory = Inventory()
 
         self.recipeToProcess: Recipe = None
-        self.recipeProcessTimer = 0
+        self.recipeProcessTimer:float = 0
 
         if Player.player != None:
             print("Error : 2 player in the scene")
@@ -335,8 +335,8 @@ class Gate(Object):
         super().__init__(position, size, True)
         self.LoadSprite(sprite, True)
 
-        self.name = name
-        self.destination = destination
+        self.name:str = name
+        self.destination:str = destination
 
     def Update(self, dt):
         from SceneManager import SCENES
@@ -358,12 +358,12 @@ class SpawnArea(Object):
         import random
         super().__init__(position, size, True)
 
-        self.entity = entity
-        self.maxSpawnCount = maxSpawnCount
-        self.delay = delay
-        self.count = 0
+        self.entity:type["Entity"] = entity
+        self.maxSpawnCount:int = maxSpawnCount
+        self.delay:int = delay
+        self.count:int = 0
 
-        self.timer = 0
+        self.timer:float = 0
 
         for i in range(random.randint(0, self.maxSpawnCount)):
             self._spawn()
@@ -401,16 +401,16 @@ class Enemy(Entity):
         import random
 
 
-        self.attackDmg = attackDmg
-        self.speed = speed
-        self.wanderRadius = wanderRadius
-        self.sightRadius = sightRadius
-        self.patrolDelay = patrolDelay + random.randint(-patrolDelay//5, patrolDelay//5)
-        self.stopDuration = stopDuration + random.randint(-stopDuration//5, stopDuration//5)
+        self.attackDmg:float = attackDmg
+        self.speed:float = speed
+        self.wanderRadius:float = wanderRadius
+        self.sightRadius:float = sightRadius
+        self.patrolDelay:float = patrolDelay + random.randint(-patrolDelay//5, patrolDelay//5)
+        self.stopDuration:float = stopDuration + random.randint(-stopDuration//5, stopDuration//5)
 
-        self.directionTimer = 0
-        self.stopTimer = -1
-        self.isChasing=False
+        self.directionTimer:float = 0
+        self.stopTimer:float = -1
+        self.isChasing:bool = False
         self._choose_wander_target()
 
     def _choose_wander_target(self):
@@ -507,9 +507,9 @@ class MeleeEnemy (Enemy):
             stopDuration
         )
 
-        self.attackCooldown = attackCooldown
-        self.attackRange = attackRange   
-        self.attackTimer = attackCooldown
+        self.attackCooldown:float = attackCooldown
+        self.attackRange:float = attackRange   
+        self.attackTimer:float = attackCooldown
 
     def Update(self, dt):
         super().Update(dt)
@@ -560,8 +560,8 @@ class Weapon(Object):
         super().__init__(position, size, False)
         self.LoadSprite(sprite, True)
 
-        self.offset = offset
-        self.offset_distance = 20
+        self.offset:Vector2 = offset
+        self.offset_distance:float = 20
 
     def Render(self, screen, debug=False):
         screen_rect = Camera.get_screen_rect(self.rect)
@@ -613,10 +613,10 @@ class Weapon(Object):
 class MeleeWeapon(Weapon):
     def __init__(self, position: Vector2, size: Vector2, sprite:str, damage: float, attack_range: float, cooldown: float):
         super().__init__(position, size, sprite, Vector2(0, -10))
-        self.damage = damage
-        self.attack_range = attack_range
-        self.cooldown = cooldown
-        self.attack_timer = 0
+        self.damage:float = damage
+        self.attack_range:float = attack_range
+        self.cooldown:float = cooldown
+        self.attack_timer:float = 0
 
     def Update(self, dt):
         super().Update(dt)
@@ -650,12 +650,12 @@ class MeleeWeapon(Weapon):
 class RangedWeapon(Weapon):
     def __init__(self, position: Vector2, size: Vector2, sprite:str, cooldown: float, angleDeviation: int, bullet: type["Projectile"]):
         super().__init__(position, size, sprite, Vector2(10, 10))
-        self.attack_range = (self.size.x // 2) + 8
-        self.cooldown = cooldown
-        self.bullet = bullet
-        self.angleDeviation = angleDeviation
+        self.attack_range:float = (self.size.x // 2) + 8
+        self.cooldown:float = cooldown
+        self.bullet:type["Projectile"] = bullet
+        self.angleDeviation:float = angleDeviation
 
-        self.attack_timer = 0
+        self.attack_timer:float = 0
 
     def Update(self, dt):
         super().Update(dt)
@@ -696,13 +696,13 @@ class Hitbox(Object):
     def __init__(self, position: Vector2, size: Vector2, angle: float, sprite: str, damage: float, scale: bool, lifetime: float, owner):
         super().__init__(position, size, False)
         self.LoadSprite(sprite, scale)
-        self.damage = damage
-        self.lifetime = lifetime
-        self.owner = owner
+        self.damage:float = damage
+        self.lifetime:float = lifetime
+        self.owner:Object = owner
 
-        self.hitEnemies = set()
+        self.hitEnemies:list[Object] = set()
 
-        self.angle = angle
+        self.angle:float = angle
         self.rect.center = (position.x, position.y)
 
     def Update(self, dt):
@@ -737,16 +737,16 @@ class Projectile(Object):
         super().__init__(position, size, True)
         self.LoadSprite(sprite, True)
 
-        self.rect = pygame.Rect(0, 0, size.x, size.y)
+        self.rect:pygame.Rect = pygame.Rect(0, 0, size.x, size.y)
         self.rect.center = (position.x, position.y)
 
-        self.damage = damage
-        self.direction = direction.normalize()
-        self.speed = speed
-        self.lifetime = lifetime
-        self.angle = angle
+        self.damage:float = damage
+        self.direction:Vector2 = direction.normalize()
+        self.speed:float = speed
+        self.lifetime:float = lifetime
+        self.angle:float = angle
 
-        self.owner = owner
+        self.owner:Object = owner
 
     def Update(self, dt):
         from SceneManager import Scene
@@ -805,15 +805,15 @@ class Projectile(Object):
 
 class LootEntry:
     def __init__(self, resource, min_amount, max_amount, weight):
-        self.resource = resource
-        self.min_amount = min_amount
-        self.max_amount = max_amount
-        self.weight = weight
+        self.resource:"Resource" = resource
+        self.min_amount:int = min_amount
+        self.max_amount:int = max_amount
+        self.weight:float = weight
 
 class LootTable:
     def __init__(self, *entries: LootEntry, rolls=1):
-        self.entries = list(entries)
-        self.rolls = rolls
+        self.entries:LootEntry = list(entries)
+        self.rolls:int = rolls
 
     def roll(self):
         from InventorySystem import ItemStack
@@ -842,7 +842,7 @@ class Harvestable(Entity):
         super().__init__(position, size, True, baseHealth)
         self.LoadSprite(sprite, True)
         
-        self.lootTable = lootTable
+        self.lootTable:LootTable = lootTable
 
     def Render(self, screen, debug=False):
         screen_rect = Camera.get_screen_rect(self.rect)
@@ -878,9 +878,9 @@ class DroppedStack(Object):
     def __init__(self, position, stack: "ItemStack", destroyOnLoad=True):
         super().__init__(position, pygame.Vector2(40, 40), destroyOnLoad)
         self.LoadSprite(stack.resource.icon, False)
-        self.stack = stack
+        self.stack:"ItemStack" = stack
 
-        self.font = pygame.font.SysFont(None, 20)
+        self.font:pygame.font.Font = pygame.font.SysFont(None, 20)
 
     def Render(self, screen, debug=False):
         screen_rect = Camera.get_screen_rect(self.rect)

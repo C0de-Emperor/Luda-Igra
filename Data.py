@@ -47,7 +47,7 @@ ENTITIES: dict[str, type[Entity]] = {
 ################################
 
 class Sword(MeleeWeapon):
-    icon =  r"data/Sprites/icon_sword.png"
+    icon:str =  r"data/Sprites/icon_sword.png"
 
     def __init__(self):
         super().__init__(
@@ -60,7 +60,7 @@ class Sword(MeleeWeapon):
         )
 
 class MiniGun(RangedWeapon):
-    icon = r"data/Sprites/icon_minigun.png"
+    icon:str = r"data/Sprites/icon_minigun.png"
 
     def __init__(self):
         super().__init__(
@@ -73,7 +73,7 @@ class MiniGun(RangedWeapon):
         )
 
 class RocketLaucher(RangedWeapon):
-    icon = r"data/Sprites/icon_rocketLauncher.png"
+    icon:str = r"data/Sprites/icon_rocketLauncher.png"
 
     def __init__(self):
         super().__init__(
@@ -86,7 +86,7 @@ class RocketLaucher(RangedWeapon):
         )
 
 class FlameThrower(RangedWeapon):
-    icon = r"data/Sprites/icon_flameThrower.png"
+    icon:str = r"data/Sprites/icon_flameThrower.png"
 
     def __init__(self):
         super().__init__(

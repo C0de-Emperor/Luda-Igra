@@ -4,7 +4,7 @@ T = TypeVar("T")
 
 class Queue(Generic[T]):
     def __init__(self, *elements: T):
-        self.elements=list(elements)
+        self.elements:list=list(elements)
 
     def __repr__(self):
         return "Queue(" + ", ".join(self.elements) + ")"
