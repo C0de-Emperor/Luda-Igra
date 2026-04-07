@@ -12,7 +12,7 @@ class CochonTronc(MeleeEnemy):
             sprite = r"data/Sprites/cochonTronc.png", 
             baseHealth = 100, 
             attackDmg = 5, 
-            speed = 60, 
+            speed = 33, 
             sightRadius = 400, 
             wanderRadius = 100, 
             patrolDelay = 6, 
@@ -28,17 +28,17 @@ class Dragon(RangeEnemy):
             position, 
             size = Vector2(30, 30), 
             sprite = r"data/Sprites/dragon2.png", 
-            baseHealth = 5000, 
+            baseHealth = 3000, 
             attackDmg = 10, 
-            speed = 60, 
+            speed = 35, 
             sightRadius = 400, 
             wanderRadius = 100, 
             patrolDelay = 6, 
             stopDuration = 2,
-            attackCooldown = 0.01,
+            attackCooldown = 0.1,
             attackRange = 500,
-            bullet=Flame,
-            angleDeviation=30
+            bullet = FireBall,
+            angleDeviation=40
         )
 
 class Tree(Harvestable):
@@ -47,8 +47,8 @@ class Tree(Harvestable):
 
         super().__init__(
             position, 
-            Vector2(20, 20), 
-            r"data/Sprites/log.png", 
+            Vector2(30, 30), 
+            r"data/Sprites/Oak_Tree.png", 
             150, 
             LootTable(
                 LootEntry(WOOD, 2, 4, 3),
@@ -57,9 +57,27 @@ class Tree(Harvestable):
             )
         )
 
+class Rock(Harvestable):
+    def __init__(self, position: pygame.Vector2):
+        from InventorySystem import GOLD_ORE, IRON_ORE, STONE
+
+        super().__init__(
+            position, 
+            Vector2(30, 30), 
+            r"data/Sprites/rock.png", 
+            200, 
+            LootTable(
+                LootEntry(GOLD_ORE, 1, 3, 1),
+                LootEntry(IRON_ORE, 2, 4, 3),
+                LootEntry(IRON_ORE, 3, 5, 7),
+                rolls=2
+            )
+        )
+
 
 ENTITIES: dict[str, type[Entity]] = {
     "Tree" : Tree,
+    "Rock" : Rock,
     "CochonTronc": CochonTronc,
     "Dragon": Dragon
 }
@@ -99,7 +117,7 @@ class RocketLaucher(RangedWeapon):
     def __init__(self):
         super().__init__(
             Vector2(0, 0), 
-            pygame.Vector2(20, 10), 
+            pygame.Vector2(20, 7), 
             r"data/Sprites/rocketLauncher.png",
             0.75,
             1,
@@ -112,7 +130,7 @@ class FlameThrower(RangedWeapon):
     def __init__(self):
         super().__init__(
             Vector2(0, 0), 
-            pygame.Vector2(20, 10), 
+            pygame.Vector2(20, 7), 
             r"data/Sprites/flameThrower.png",
             0.05,
             10,
@@ -126,12 +144,12 @@ class Bullet(Projectile):
     def __init__(self, position, angle, direction, owner):
         super().__init__(
             position, 
-            Vector2(4, 2), 
+            Vector2(2, 1), 
             angle,
             r"data/Sprites/bullet.png", 
             10, 
             direction, 
-            250, 
+            150, 
             2,
             owner
         )
@@ -203,6 +221,21 @@ class Flame(Projectile):
 
     def OnHarvestableHit(self, object: Harvestable):
         object.TakeDamage(self.damage)
+
+class FireBall(Projectile):
+    def __init__(self, position, angle, direction, owner):
+        super().__init__(
+            position, 
+            Vector2(5, 5), 
+            angle,
+            r"data/Sprites/fireball.png",
+            30, 
+            direction, 
+            150, 
+            2,
+            owner
+        )
+
 
 ##################### DIALOGUES
 ################################

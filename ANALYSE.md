@@ -26,6 +26,30 @@ _réalisé avec la bibliothèque inspect_
 
 ---
 
+### Dragon
+
+**Hérite de :** [RangeEnemy](#rangeenemy)
+
+**Attributs (propres) :**
+* (Aucun attribut propre détecté)
+
+**Méthodes (propres) :**
+* (Aucune méthode propre)
+
+---
+
+### FireBall
+
+**Hérite de :** [Projectile](#projectile)
+
+**Attributs (propres) :**
+* (Aucun attribut propre détecté)
+
+**Méthodes (propres) :**
+* (Aucune méthode propre)
+
+---
+
 ### Flame
 
 **Hérite de :** [Projectile](#projectile)
@@ -464,7 +488,7 @@ _réalisé avec la bibliothèque inspect_
 **Attributs (propres) :**
 * angle : `float`
 * damage : `float`
-* hitEnemies : `list[Object]`
+* hitEnemies : `set`
 * lifetime : `float`
 * owner : `Object`
 
@@ -505,6 +529,7 @@ _réalisé avec la bibliothèque inspect_
 **Attributs (propres) :**
 * attackCooldown : `float`
 * attackRange : `float`
+* attackSprite : `any`
 * attackTimer : `float`
 
 **Méthodes (propres) :**
@@ -525,13 +550,13 @@ _réalisé avec la bibliothèque inspect_
 
 **Méthodes (propres) :**
 * Update(dt)
-* Attack()
+* Attack(target)
 
 ---
 
 ### NPC
 
-**Hérite de :** [Entity](#entity)
+**Hérite de :** [Object](#object)
 
 **Attributs (propres) :**
 * dialogueQueue : `Queue`
@@ -540,6 +565,7 @@ _réalisé avec la bibliothèque inspect_
 * wasTalking : `bool`
 
 **Méthodes (propres) :**
+* GetColliders()
 * Update(dt)
 * Render(screen, debug=False)
 
@@ -576,6 +602,7 @@ _réalisé avec la bibliothèque inspect_
 
 **Méthodes (propres) :**
 * _get_movement_direction() -> pygame.math.Vector2
+* TakeDamage(amount)
 * _check_collision(walls, axis)
 * Update(dt)
 * Render(screen: pygame.surface.Surface, debug: bool = False)
@@ -594,6 +621,7 @@ _réalisé avec la bibliothèque inspect_
 
 **Attributs (propres) :**
 * effect : `any`
+* liquid : `any`
 
 **Méthodes (propres) :**
 * Use()
@@ -624,6 +652,23 @@ _réalisé avec la bibliothèque inspect_
 
 ---
 
+### RangeEnemy
+
+**Hérite de :** [Enemy](#enemy)
+
+**Attributs (propres) :**
+* angleDeviation : `float`
+* attackCooldown : `float`
+* attackRange : `float`
+* attackTimer : `float`
+* bullet : `type[Projectile]`
+
+**Méthodes (propres) :**
+* Update(dt)
+* Attack()
+
+---
+
 ### RangedWeapon
 
 **Hérite de :** [Weapon](#weapon)
@@ -637,7 +682,7 @@ _réalisé avec la bibliothèque inspect_
 
 **Méthodes (propres) :**
 * Update(dt)
-* Attack()
+* Attack(target)
 
 ---
 

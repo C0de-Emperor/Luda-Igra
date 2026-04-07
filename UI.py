@@ -277,7 +277,7 @@ class CraftingUI(UIElement):
                 qty_rect = qty_text.get_rect(center=qty_bg.center)
                 screen.blit(qty_text, qty_rect)
 
-                offset_x += 40
+                offset_x += 50
 
             # --- ARROW ---
             arrow_text = self.font.render("→", True, (220, 220, 220))
@@ -292,7 +292,7 @@ class CraftingUI(UIElement):
                 out_bg = pygame.Rect(offset_x, center_y - 16, 32, 32)
                 pygame.draw.circle(screen, (80, 80, 100), out_bg.center, 18)
                 
-                out_icon = pygame.transform.scale(recipe.output.resource.icon, (32, 32))
+                out_icon = recipe.output.resource.icon
                 out_rect = out_icon.get_rect(center=out_bg.center)
                 screen.blit(out_icon, out_rect)
 

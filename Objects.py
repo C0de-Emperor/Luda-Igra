@@ -22,7 +22,7 @@ KEYS_MOVEMENT = {
 
 
 class Camera:
-    zoom = 5.5
+    zoom = 4.5
 
     @staticmethod
     def get_screen_rect(world_rect: pygame.Rect) -> pygame.Rect:
@@ -646,7 +646,7 @@ class RangeEnemy (Enemy):
             angle_rad = math.atan2(direction.y, direction.x) + math.radians(spread_angle)
             direction = Vector2(math.cos(angle_rad), math.sin(angle_rad)).normalize()
 
-        hitbox_pos = self.position + direction * (5)
+        hitbox_pos = self.position + direction * 10
 
         angle = math.degrees(math.atan2(-direction.y, direction.x))
 
@@ -756,9 +756,9 @@ class Consumable(Object):
         pass
 
 class Potion(Consumable):
-    liquid_sprite = pygame.transform.scale(pygame.image.load(r"data/Sprites/potionLiquid.png").convert_alpha(), Vector2(10, 10))
+    liquid_sprite = pygame.transform.scale(pygame.image.load(r"data/Sprites/potionLiquid.png").convert_alpha(), Vector2(30, 30))
 
-    bottle_sprite = pygame.transform.scale(pygame.image.load(r"data/Sprites/potionFlask.png").convert_alpha(), Vector2(10, 10))
+    bottle_sprite = pygame.transform.scale(pygame.image.load(r"data/Sprites/potionFlask.png").convert_alpha(), Vector2(30, 30))
 
     def __init__(self, position: Vector2, effect: "Effect"):
         super().__init__(position, Vector2(10, 10), r"data/Sprites/potionFlask.png", Vector2(0, 0))

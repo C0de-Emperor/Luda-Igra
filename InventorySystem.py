@@ -1,6 +1,6 @@
 import pygame
 from Tools import Queue
-from Data import RocketLaucher, SpeedPotion
+from Data import RocketLaucher, SpeedPotion, RegenPotion, HealthPotion
 
 from typing import TYPE_CHECKING
 
@@ -69,7 +69,11 @@ class Resource:
 
 WOOD = Resource("Wood", r"data/Sprites/log.png")
 STONE = Resource("Stone", r"data/Sprites/stone.png")
-IRON = Resource("Iron", r"data/Sprites/iron.png")
+IRON = Resource("Iron Ingot", r"data/Sprites/iron.png")
+IRON_ORE = Resource("Iron Ore", r"data/Sprites/ironOre.png")
+GOLD = Resource("Gold Ingot", r"data/Sprites/gold.png")
+GOLD_ORE = Resource("Gold Ore", r"data/Sprites/goldOre.png")
+COAL = Resource("Coal", r"data/Sprites/coal.png")
 
 class CraftingManager:
     recipes: list["Recipe"] = []
@@ -162,11 +166,29 @@ class WeaponRecipe(Recipe):
         return True
 
 
-IRON_FROM_WOOD = ItemRecipe([
-        ItemStack(WOOD, 2)
+
+
+IRON_FROM_IRON_ORE = ItemRecipe([
+        ItemStack(IRON_ORE, 2),
+        ItemStack(COAL, 1)
     ],
-    ItemStack(IRON, 3980),
-    duration=1
+    ItemStack(IRON, 1),
+    duration=3
+)
+
+COAL_FROM_WOOD = ItemRecipe([
+        ItemStack(WOOD, 1)
+    ],
+    ItemStack(COAL, 2),
+    duration=1.5
+)
+
+GOLD_FROM_GOLD_ORE = ItemRecipe([
+        ItemStack(GOLD_ORE, 2),
+        ItemStack(COAL, 1)
+    ],
+    ItemStack(GOLD, 1),
+    duration=5
 )
 
 ROCKETLAUNCHER_FROM_IRON = WeaponRecipe([
@@ -176,31 +198,24 @@ ROCKETLAUNCHER_FROM_IRON = WeaponRecipe([
     duration=2
 )
 
-IRON_FROM_IRON = ItemRecipe([
-        ItemStack(IRON, 2)
-    ],
-    ItemStack(IRON, 1),
-    duration=3
-)
-
-IRON_FROM_IRON = ItemRecipe([
-        ItemStack(IRON, 2)
-    ],
-    ItemStack(IRON, 1),
-    duration=3
-)
-
-IRON_FROM_IRON = ItemRecipe([
-        ItemStack(IRON, 2)
-    ],
-    ItemStack(IRON, 1),
-    duration=3
-)
-
-POTION_FROM_WOOD = WeaponRecipe([
-        ItemStack(WOOD, 1)
+SPEED_POTION_FROM_GOLD = WeaponRecipe([
+        ItemStack(GOLD, 3)
     ],
     SpeedPotion,
+    duration=3
+)
+
+REGEN_POTION_FROM_GOLD = WeaponRecipe([
+        ItemStack(GOLD, 3)
+    ],
+    RegenPotion,
+    duration=3
+)
+
+HEALTH_POTION_FROM_GOLD = WeaponRecipe([
+        ItemStack(GOLD, 3)
+    ],
+    HealthPotion,
     duration=3
 )
 

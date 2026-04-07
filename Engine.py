@@ -26,9 +26,9 @@ def reset_game():
         SceneManager.Scene.currentScene.tilemap.points["SpawnPoint"], 
         pygame.Vector2(15, 15), 
         r"data/Sprites/toruk_makto.png",
-        [Sword, MiniGun, FlameThrower, HealthPotion, RegenPotion, SpeedPotion],  # Assure-toi que ces imports sont disponibles
+        [Sword, MiniGun, FlameThrower, HealthPotion, RegenPotion, SpeedPotion],
         100,
-        500
+        300
     )
 
     DialogueManager()
