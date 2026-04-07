@@ -42,6 +42,7 @@ class Scene:
         self.tilemap = Tilemap(f"data/tilemaps/{self.name}.tmx")
 
         # Mettre le tilemap en premier pour qu'il soit rendu avant les autres objets
+        self.objects.insert(0, self.tilemap)
         self.objects.extend(objectsToKeep)
 
         if Player.player:
