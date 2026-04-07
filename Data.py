@@ -9,7 +9,7 @@ class CochonTronc(MeleeEnemy):
         super().__init__(
             position, 
             size = Vector2(20, 20), 
-            sprite = r"data/Sprites/cochonTronc.png", 
+            sprite = r"data/Sprites/cochonTronc2.png", 
             baseHealth = 100, 
             attackDmg = 5, 
             speed = 60, 
