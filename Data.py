@@ -221,28 +221,28 @@ class SpeedEffect(Effect):
 ################################
 
 class HealthPotion(Potion):
-    icon:str =  r"data/Sprites/icon_sword.png"
+    effect = HealEffect(20)
 
     def __init__(self):
         super().__init__(
             Vector2(0, 0),
-            HealEffect(20)
+            HealthPotion.effect
         )
 
 class RegenPotion(Potion):
-    icon:str =  r"data/Sprites/icon_sword.png"
+    effect = RegenEffect(2, 10)
 
     def __init__(self):
         super().__init__(
             Vector2(0, 0),
-            RegenEffect(2, 10)
+            RegenPotion.effect
         )
 
 class SpeedPotion(Potion):
-    icon:str =  r"data/Sprites/icon_sword.png"
+    effect = SpeedEffect(1.2, 15)
 
     def __init__(self):
         super().__init__(
             Vector2(0, 0),
-            SpeedEffect(1.2, 15)
+            SpeedPotion.effect
         )

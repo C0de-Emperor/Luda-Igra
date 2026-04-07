@@ -1,6 +1,6 @@
 import pygame
 from Tools import Queue
-from Data import RocketLaucher
+from Data import RocketLaucher, SpeedPotion
 
 from typing import TYPE_CHECKING
 
@@ -197,5 +197,11 @@ IRON_FROM_IRON = ItemRecipe([
     duration=3
 )
 
+POTION_FROM_WOOD = WeaponRecipe([
+        ItemStack(WOOD, 1)
+    ],
+    SpeedPotion,
+    duration=3
+)
 
 

@@ -633,13 +633,14 @@ class Consumable(Object):
         pass
 
 class Potion(Consumable):
+    liquid_sprite = pygame.transform.scale(pygame.image.load(r"data/Sprites/potionLiquid.png").convert_alpha(), (30, 30))
+
+    bottle_sprite = pygame.transform.scale(pygame.image.load(r"data/Sprites/potionFlask.png").convert_alpha(), (30, 30))
+
     def __init__(self, position: Vector2, effect: "Effect"):
         super().__init__(position, Vector2(30, 30), r"data/Sprites/potionFlask.png", Vector2(0, -10))
 
         self.effect = effect
-
-        self.liquid_sprite = pygame.transform.scale(pygame.image.load(r"data/Sprites/potionLiquid.png").convert_alpha(), (int(self.size.x), int(self.size.y)))
-
 
     def Use(self):
         Player.player.AddEffect(self.effect)
@@ -649,7 +650,7 @@ class Potion(Consumable):
         self.Destroy()
 
     @staticmethod
-    def tint_surface(surface, color):
+    def tint_surface(surface, color) -> pygame.surface.Surface:
         tinted = surface.copy()
         tinted.fill(color, special_flags=pygame.BLEND_RGBA_MULT)
         return tinted
@@ -658,7 +659,7 @@ class Potion(Consumable):
         screen_rect = Camera.get_screen_rect(self.rect)
 
         # recolorer le liquide
-        liquid = Potion.tint_surface(self.liquid_sprite, self.effect.color)
+        liquid = Potion.tint_surface(Potion.liquid_sprite, self.effect.color)
 
         sprite_flask = self.sprite
 
