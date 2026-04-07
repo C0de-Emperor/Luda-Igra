@@ -34,7 +34,7 @@ _réalisé avec la bibliothèque inspect_
 * (Aucun attribut propre détecté)
 
 **Méthodes (propres) :**
-* (Aucune méthode propre)
+* Die()
 
 ---
 
@@ -123,6 +123,18 @@ _réalisé avec la bibliothèque inspect_
 
 ---
 
+### NPC2
+
+**Hérite de :** [NPC](#npc)
+
+**Attributs (propres) :**
+* (Aucun attribut propre détecté)
+
+**Méthodes (propres) :**
+* (Aucune méthode propre)
+
+---
+
 ### RegenEffect
 
 **Hérite de :** [Effect](#effect)
@@ -138,6 +150,18 @@ _réalisé avec la bibliothèque inspect_
 ### RegenPotion
 
 **Hérite de :** [Potion](#potion)
+
+**Attributs (propres) :**
+* (Aucun attribut propre détecté)
+
+**Méthodes (propres) :**
+* (Aucune méthode propre)
+
+---
+
+### Rock
+
+**Hérite de :** [Harvestable](#harvestable)
 
 **Attributs (propres) :**
 * (Aucun attribut propre détecté)
@@ -203,6 +227,18 @@ _réalisé avec la bibliothèque inspect_
 
 **Attributs (propres) :**
 * icon : `str`
+
+**Méthodes (propres) :**
+* (Aucune méthode propre)
+
+---
+
+### Taupe
+
+**Hérite de :** [MeleeEnemy](#meleeenemy)
+
+**Attributs (propres) :**
+* (Aucun attribut propre détecté)
 
 **Méthodes (propres) :**
 * (Aucune méthode propre)
@@ -460,6 +496,7 @@ _réalisé avec la bibliothèque inspect_
 **Attributs (propres) :**
 * destination : `str`
 * name : `str`
+* sprite : `any`
 
 **Méthodes (propres) :**
 * Update(dt)

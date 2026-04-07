@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="45" height="60" tilewidth="16" tileheight="16" infinite="0" nextlayerid="12" nextobjectid="38">
+<map version="1.10" tiledversion="1.12.1" orientation="orthogonal" renderorder="right-down" width="45" height="60" tilewidth="16" tileheight="16" infinite="0" nextlayerid="12" nextobjectid="40">
  <tileset firstgid="1" source="../tilesets/free_pixel_16_woods.tsx"/>
  <tileset firstgid="265" source="../tilesets/barrières.tsx"/>
  <tileset firstgid="281" source="../tilesets/House.tsx"/>
@@ -356,7 +356,14 @@
   <object id="41" x="196.167" y="324.083" width="9" height="26.5"/>
   <object id="42" x="419.5" y="387.417" width="9" height="26.5"/>
  </objectgroup>
- <objectgroup id="7" name="NPC"/>
+ <objectgroup id="7" name="NPC">
+  <object id="38" name="NPC1" x="352" y="544">
+   <point/>
+  </object>
+  <object id="39" name="NPC2" x="368" y="624">
+   <point/>
+  </object>
+ </objectgroup>
  <objectgroup id="9" name="Points">
   <object id="33" name="door4" x="288" y="64">
    <point/>
