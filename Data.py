@@ -291,7 +291,8 @@ class NPC2(NPC):
             dialogueQueue=Queue(
                 Dialogue("Vous voila enfin de retour, jeune prince !", 5), 
                 Dialogue("N'oubliez pas l'entraînement que je vous ai prodigué ces 10 dernières années,", 5),
-                Dialogue("Utilisez ZQSD pour vous déplacer et clic-gauche pour attaquer.", 7)
+                Dialogue("Utilisez ZQSD pour vous déplacer et clic-gauche pour attaquer.", 7),
+                Dialogue("Aussi, n'oubliez pas: si vous avez plusieurs armes, utilisez la molette pour passer de l'une à l'autre !", 8)
             ),
             name="Maitre d'armes"
         )

@@ -135,6 +135,78 @@ _réalisé avec la bibliothèque inspect_
 
 ---
 
+### NPC3
+
+**Hérite de :** [NPC](#npc)
+
+**Attributs (propres) :**
+* (Aucun attribut propre détecté)
+
+**Méthodes (propres) :**
+* (Aucune méthode propre)
+
+---
+
+### NPC4
+
+**Hérite de :** [NPC](#npc)
+
+**Attributs (propres) :**
+* (Aucun attribut propre détecté)
+
+**Méthodes (propres) :**
+* (Aucune méthode propre)
+
+---
+
+### NPC5
+
+**Hérite de :** [NPC](#npc)
+
+**Attributs (propres) :**
+* (Aucun attribut propre détecté)
+
+**Méthodes (propres) :**
+* (Aucune méthode propre)
+
+---
+
+### NPC6
+
+**Hérite de :** [NPC](#npc)
+
+**Attributs (propres) :**
+* (Aucun attribut propre détecté)
+
+**Méthodes (propres) :**
+* (Aucune méthode propre)
+
+---
+
+### NPC7
+
+**Hérite de :** [NPC](#npc)
+
+**Attributs (propres) :**
+* (Aucun attribut propre détecté)
+
+**Méthodes (propres) :**
+* (Aucune méthode propre)
+
+---
+
+### NPC8
+
+**Hérite de :** [NPC](#npc)
+
+**Attributs (propres) :**
+* (Aucun attribut propre détecté)
+
+**Méthodes (propres) :**
+* (Aucune méthode propre)
+
+---
+
 ### RegenEffect
 
 **Hérite de :** [Effect](#effect)
@@ -791,6 +863,7 @@ _réalisé avec la bibliothèque inspect_
 * _load_collisions()
 * _load_points()
 * _load_gates()
+* Update(dt)
 * Render(screen: pygame.surface.Surface, debug: bool = False)
 * GetColliders() -> list[pygame.rect.Rect]
 
