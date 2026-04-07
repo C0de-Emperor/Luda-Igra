@@ -191,6 +191,10 @@ class Player(Entity):
             direction = direction.normalize()
         
         return direction
+    
+    def TakeDamage(self, amount):
+        super().TakeDamage(amount)
+        print(amount)
 
     def _check_collision(self, walls, axis):
         for wall in walls:
@@ -511,7 +515,7 @@ class Enemy(Entity):
                         self.rect.top = wall.bottom
 
 class MeleeEnemy (Enemy):
-    def __init__(self, position:Vector2, size:Vector2, sprite:str, baseHealth:float, attackDmg:float, speed:float, sightRadius:float, wanderRadius:float, patrolDelay:float, stopDuration: float, attackCooldown: float, attackRange: float):
+    def __init__(self, position:Vector2, size:Vector2, sprite:str, baseHealth:float, attackDmg:float, speed:float, sightRadius:float, wanderRadius:float, patrolDelay:float, stopDuration: float, attackCooldown: float, attackRange: float, attackSprite:str):
         super().__init__(
             position, 
             size,
@@ -528,6 +532,8 @@ class MeleeEnemy (Enemy):
         self.attackCooldown:float = attackCooldown
         self.attackRange:float = attackRange   
         self.attackTimer:float = attackCooldown
+
+        self.attackSprite=attackSprite
 
     def Update(self, dt):
         super().Update(dt)
@@ -564,12 +570,70 @@ class MeleeEnemy (Enemy):
             hitbox_pos,
             Vector2(30, 20),
             angle,
-            r"data/Sprites/slash.png",
+            self.attackSprite,
             self.attackDmg,
             True,
             0.1,
             Enemy
         )
+
+class RangeEnemy (Enemy):
+    def __init__(self, position:Vector2, size:Vector2, sprite:str, baseHealth:float, attackDmg:float, speed:float, sightRadius:float, wanderRadius:float, patrolDelay:float, stopDuration: float, attackCooldown: float, attackRange: float, bullet:type["Projectile"], angleDeviation:float):
+        super().__init__(
+            position, 
+            size,
+            sprite, 
+            baseHealth, 
+            attackDmg, 
+            speed, 
+            sightRadius, 
+            wanderRadius, 
+            patrolDelay, 
+            stopDuration
+        )
+
+        self.attackCooldown:float = attackCooldown
+        self.attackRange:float = attackRange   
+        self.attackTimer:float = attackCooldown
+        self.angleDeviation:float = angleDeviation
+
+        self.bullet:type["Projectile"] = bullet
+
+    def Update(self, dt):
+        super().Update(dt)
+
+        if self.attackTimer > 0:
+            self.attackTimer -= dt
+
+        if (Player.player.position - self.position).magnitude() <= self.attackRange and self.attackTimer <= 0:
+                self.Attack()
+
+    def Attack(self):
+        if self.attackTimer > 0:
+            return
+
+        import random, math
+        from pygame import Vector2
+
+        self.attackTimer = self.attackCooldown
+
+        mouse_world = Player.player.position
+        delta = mouse_world - self.position
+        if delta.length() > 0:
+            direction = delta.normalize()
+        else:
+            direction = Vector2(1, 0)
+
+        if self.angleDeviation > 0:
+            spread_angle = random.uniform(-self.angleDeviation, self.angleDeviation)
+            angle_rad = math.atan2(direction.y, direction.x) + math.radians(spread_angle)
+            direction = Vector2(math.cos(angle_rad), math.sin(angle_rad)).normalize()
+
+        hitbox_pos = self.position + direction * (5)
+
+        angle = math.degrees(math.atan2(-direction.y, direction.x))
+
+        self.bullet(hitbox_pos, angle, direction, RangeEnemy)
 
 
 class NPC(Object):
@@ -790,7 +854,7 @@ class Weapon(Object):
         self.angle = math.degrees(math.atan2(-delta.y, delta.x))
 
         if pygame.mouse.get_pressed()[0]:
-            self.Attack()
+            self.Attack(Camera.screen_to_world_point(Vector2(pygame.mouse.get_pos())))
 
     def Attack(self):
         pass
@@ -848,7 +912,7 @@ class RangedWeapon(Weapon):
         if self.attack_timer > 0:
             self.attack_timer -= dt
 
-    def Attack(self):
+    def Attack(self, target):
         if self.attack_timer > 0:
             return
 
@@ -857,7 +921,7 @@ class RangedWeapon(Weapon):
 
         self.attack_timer = self.cooldown
 
-        mouse_world = Camera.screen_to_world_point(Vector2(pygame.mouse.get_pos()))
+        mouse_world = target
         delta = mouse_world - self.position
         if delta.length() > 0:
             direction = delta.normalize()
@@ -938,22 +1002,22 @@ class Projectile(Object):
 
         self.position += self.direction * self.speed * dt
 
-        colliders = Scene.currentScene.GetAllColliders([])
-        for col in colliders:
-            if self.rect.colliderect(col):
-                self.OnWallHit()
-                return
-
         for obj in Scene.currentScene.objects:
             if obj is self:
                 continue
             if isinstance(obj, Entity) and self.rect.colliderect(obj.rect) and not isinstance(obj, self.owner):
-                if isinstance(obj, Enemy):
+                if isinstance(obj, Enemy) or isinstance(obj, Player):
                     self.OnEnemyHit(obj)
                 elif isinstance(obj, Harvestable):
                     self.OnHarvestableHit(obj)
                 else:
                     self.OnEntityHit(obj)
+                return
+        
+        colliders = Scene.currentScene.GetAllColliders([])
+        for col in colliders:
+            if self.rect.colliderect(col):
+                self.OnWallHit()
                 return
 
         self.lifetime -= dt

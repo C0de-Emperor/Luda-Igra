@@ -18,9 +18,28 @@ class CochonTronc(MeleeEnemy):
             patrolDelay = 6, 
             stopDuration = 2,
             attackCooldown = 2,
-            attackRange = 50
+            attackRange = 50,
+            attackSprite=r"data/Sprites/slash.png"
         )
 
+class Dragon(RangeEnemy):
+    def __init__(self, position: pygame.Vector2):
+        super().__init__(
+            position, 
+            size = Vector2(50, 50), 
+            sprite = r"data/Sprites/dragon2.png", 
+            baseHealth = 500, 
+            attackDmg = 10, 
+            speed = 60, 
+            sightRadius = 400, 
+            wanderRadius = 100, 
+            patrolDelay = 6, 
+            stopDuration = 2,
+            attackCooldown = 0.01,
+            attackRange = 500,
+            bullet=Flame,
+            angleDeviation=30
+        )
 
 class Tree(Harvestable):
     def __init__(self, position: pygame.Vector2):
@@ -41,7 +60,8 @@ class Tree(Harvestable):
 
 ENTITIES: dict[str, type[Entity]] = {
     "Tree" : Tree,
-    "CochonTronc": CochonTronc
+    "CochonTronc": CochonTronc,
+    "Dragon": Dragon
 }
 
 ######################### WEAPON
