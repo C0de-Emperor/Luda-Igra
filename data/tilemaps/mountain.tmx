@@ -156,7 +156,6 @@
  </objectgroup>
  <objectgroup id="4" name="Gates">
   <object id="23" name="island/door1" x="0" y="528" width="0.272727" height="32.0909"/>
-  <object id="24" name="center/door3" x="384" y="944" width="48" height="16"/>
  </objectgroup>
  <objectgroup id="5" name="Points">
   <object id="25" name="door1" x="400" y="912">
