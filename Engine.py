@@ -20,13 +20,13 @@ def reset_game():
     if SceneManager.Scene.currentScene:
         SceneManager.Scene.currentScene.objects.clear()
 
-    SceneManager.SCENES["farm"].load("SpawnPoint")
+    SceneManager.SCENES["center"].load("SpawnPoint")
 
     Player(
         SceneManager.Scene.currentScene.tilemap.points["SpawnPoint"], 
-        pygame.Vector2(15, 15), 
-        r"data/Sprites/toruk_makto.png",
-        [Sword, MiniGun, FlameThrower, HealthPotion, RegenPotion, SpeedPotion],
+        pygame.Vector2(15, 20), 
+        r"data/Sprites/hero.png",
+        [Sword, MiniGun, FlameThrower, HealthPotion, RegenPotion, SpeedPotion],  # Assure-toi que ces imports sont disponibles
         100,
         300
     )

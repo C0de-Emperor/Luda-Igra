@@ -9,7 +9,7 @@ class CochonTronc(MeleeEnemy):
         super().__init__(
             position, 
             size = Vector2(20, 20), 
-            sprite = r"data/Sprites/cochonTronc.png", 
+            sprite = r"data/Sprites/cochonTronc2.png", 
             baseHealth = 100, 
             attackDmg = 5, 
             speed = 33, 
@@ -255,8 +255,25 @@ class NPC1(NPC):
             name="Paysan"
         )
 
+class NPC2(NPC):
+    def __init__(self, position:Vector2):
+        super().__init__(
+            position=position,
+            size=Vector2(15, 15),
+            sprite=r"data/sprites/paysanDos.png",
+            interactRadius=30,
+            dialogueQueue=Queue(
+                Dialogue("AU SECOUUURS !", 2), 
+                Dialogue("Les cochons troncs ont massacré ma famille et toute la ville !", 4),
+                Dialogue("Je t'en supplie, venge les en massacrant ces fétides porcidés.", 3)
+            ),
+            name="Paysan"
+        )
+
+
 NPCS: dict[str, type[NPC]] ={
-    "NPC1":NPC1
+    "NPC1": NPC1,
+    "NPC2": NPC2
 }
 
 ######################## EFFECTS
