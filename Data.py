@@ -103,6 +103,7 @@ ENTITIES: dict[str, type[Entity]] = {
     "Tree" : Tree,
     "Rock" : Rock,
     "CochonTronc": CochonTronc,
+    "Taupe" : Taupe,
     "Dragon": Dragon
 }
 

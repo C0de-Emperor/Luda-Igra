@@ -40,6 +40,8 @@ class Tilemap(Object):
         for area in areas_layer:
             rect = pygame.Rect(area.x, area.y, area.width, area.height)
 
+            print(area.name)
+
             entityName, count, delay = area.name.split("-")
 
             entity = ENTITIES[entityName]
