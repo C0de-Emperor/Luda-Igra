@@ -55,7 +55,7 @@ class Taupe(MeleeEnemy):
             sprite = r"data/Sprites/taupe.png", 
             baseHealth = 80, 
             attackDmg = 8, 
-            speed = 30, 
+            speed = 32, 
             sightRadius = 300, 
             wanderRadius = 400, 
             patrolDelay = 6, 
