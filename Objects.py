@@ -594,6 +594,8 @@ class NPC(Entity):
 
         if not self.wasTalking and distanceToPlayer.magnitude() <= self.interactRadius:
             DialogueManager.loadNPC(self)
+        if self.wasTalking and distanceToPlayer.magnitude() >= self.interactRadius:
+            DialogueManager.abortDialogue()
         
         self.wasTalking = distanceToPlayer.magnitude() <= self.interactRadius
 
@@ -1127,16 +1129,19 @@ class DialogueManager(Object):
     
     def nextDialogue(self):
         if not self.currentDialogueQueue or self.currentDialogueQueue.isEmpty():
-            self.currentNPC=None
-            self.currentDialogueQueue=None
-            self.currentDialogue=None
-
-            self.dialogueUI.show=False
+            self.stopDialogue()
         else:
             self.currentDialogue=self.currentDialogueQueue.dequeue()
             self.dialogueTimer=0
 
             self.dialogueUI.show=True
+    
+    def stopDialogue(self):
+        self.currentNPC=None
+        self.currentDialogueQueue=None
+        self.currentDialogue=None
+
+        self.dialogueUI.show=False
     
     def Update(self, dt):
         if (self.currentDialogue and self.dialogueTimer > self.currentDialogue.dialogueTime) or (not self.currentDialogue and self.currentDialogueQueue):
@@ -1154,3 +1159,7 @@ class DialogueManager(Object):
             DialogueManager.dialogueManager.currentNPC = newNPC
             DialogueManager.dialogueManager.currentDialogueQueue = newNPC.dialogueQueue.copy()
             DialogueManager.dialogueManager.dialogueTimer = 0
+
+    @staticmethod
+    def abortDialogue():
+        DialogueManager.dialogueManager.stopDialogue()
