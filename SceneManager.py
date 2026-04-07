@@ -62,5 +62,6 @@ SCENES = {
     "dungeon": Scene("donjon"),
     "farm": Scene("farm"),
     "cave": Scene("cave"),
-    "center": Scene("center")
+    "center": Scene("center"),
+    "town": Scene("town")
 }
