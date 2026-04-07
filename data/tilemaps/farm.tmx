@@ -2633,7 +2633,7 @@
 </data>
  </layer>
  <objectgroup id="24" name="Gates">
-  <object id="214" name="center/door1" x="480" y="2544" width="320" height="16"/>
+  <object id="214" name="center/door1" x="623.25" y="2544" width="32.25" height="16"/>
  </objectgroup>
  <objectgroup id="4" name="Points">
   <object id="50" name="SpawnPoint" x="718" y="1266.67">
