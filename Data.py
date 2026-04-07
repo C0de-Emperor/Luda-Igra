@@ -337,7 +337,7 @@ class NPC5(NPC):
             interactRadius=30,
             dialogueQueue=Queue(
                 Dialogue("Comment forger ?", 3), 
-                Dialogue("Il faut aller demander au maître artisan, il est emprisonné par les taupes maléfiques au fond de la mine!", 4),
+                Dialogue("Il faut aller demander au maître artisan, mais il est emprisonné par les taupes maléfiques au fond de la mine!", 4),
                 Dialogue("Allez le lui demander en personne, il est très sympathique!", 3)
             ),
             name="Mineur"
@@ -358,6 +358,34 @@ class NPC6(NPC):
             name="Maître artisan"
         )
 
+class NPC7(NPC):
+    def __init__(self, position:Vector2):
+        super().__init__(
+            position=position,
+            size=Vector2(15, 15),
+            sprite=r"data/sprites/paysan.png",
+            interactRadius=30,
+            dialogueQueue=Queue(
+                Dialogue("Les monstres ont saccagé toute la ville, toute ma famille a été dévorée,", 3), 
+                Dialogue("Vengez moi et terrassez ces ignobles monstres !", 4),
+            ),
+            name="Habitant"
+        )
+
+class NPC8(NPC):
+    def __init__(self, position:Vector2):
+        super().__init__(
+            position=position,
+            size=Vector2(15, 15),
+            sprite=r"data/sprites/paysan.png",
+            interactRadius=30,
+            dialogueQueue=Queue(
+                Dialogue("J'ai entendu des exilés dire que le dragon a pris pied à l'ouest du royaume !", 3), 
+                Dialogue("Et d'autres m'ont confié qu'il y existe un portail magique, permettant de se mettre hors de portée du dragon !", 4),
+            ),
+            name="Tavernier"
+        )
+
 
 NPCS: dict[str, type[NPC]] ={
     "NPC1": NPC1,
@@ -365,7 +393,9 @@ NPCS: dict[str, type[NPC]] ={
     "NPC3": NPC3,
     "NPC4": NPC4,
     "NPC5": NPC5,
-    "NPC6": NPC6
+    "NPC6": NPC6,
+    "NPC7": NPC7,
+    "NPC8": NPC8
 }
 
 ######################## EFFECTS

@@ -132,7 +132,7 @@
 </data>
  </layer>
  <objectgroup id="3" name="Collisions">
-  <object id="1" x="47.9394" y="564.667" width="91.7273" height="8"/>
+  <object id="1" x="48.9394" y="564.667" width="90.7273" height="8"/>
   <object id="2" x="128.333" y="147" width="11.3333" height="417.667"/>
   <object id="3" x="141.333" y="146.667" width="656" height="9.66667"/>
   <object id="4" x="788.333" y="157" width="12.6667" height="318"/>
@@ -155,7 +155,7 @@
   <object id="22" x="48" y="528" width="16" height="44.1818"/>
  </objectgroup>
  <objectgroup id="4" name="Gates">
-  <object id="23" name="island/door1" x="0" y="528" width="0.272727" height="32.0909"/>
+  <object id="23" name="island/door1" x="-4.09091" y="528" width="4.36364" height="32.0909"/>
  </objectgroup>
  <objectgroup id="5" name="Points">
   <object id="25" name="door1" x="400" y="912">

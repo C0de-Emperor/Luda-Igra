@@ -33,7 +33,7 @@ def reset_game():
         SceneManager.Scene.currentScene.tilemap.points["SpawnPoint"], 
         pygame.Vector2(15, 17), 
         r"data/Sprites/hero.png",
-        [Sword, MiniGun, FlameThrower, HealthPotion, RegenPotion, SpeedPotion],  # Assure-toi que ces imports sont disponibles
+        [Sword],  # Assure-toi que ces imports sont disponibles
         100,
         300
     )
