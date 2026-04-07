@@ -22,7 +22,7 @@ KEYS_MOVEMENT = {
 
 
 class Camera:
-    zoom = 2
+    zoom = 5.5
 
     @staticmethod
     def get_screen_rect(world_rect: pygame.Rect) -> pygame.Rect:
@@ -585,7 +585,7 @@ class MeleeEnemy (Enemy):
 
         Hitbox(
             hitbox_pos,
-            Vector2(30, 20),
+            Vector2(15, 10),
             angle,
             self.attackSprite,
             self.attackDmg,
@@ -706,7 +706,7 @@ class Consumable(Object):
         self.LoadSprite(sprite, True)
 
         self.offset:Vector2 = offset
-        self.offset_distance:float = 20
+        self.offset_distance:float = 7
 
     def Render(self, screen, debug=False):
         screen_rect = Camera.get_screen_rect(self.rect)
@@ -756,14 +756,18 @@ class Consumable(Object):
         pass
 
 class Potion(Consumable):
-    liquid_sprite = pygame.transform.scale(pygame.image.load(r"data/Sprites/potionLiquid.png").convert_alpha(), (30, 30))
+    liquid_sprite = pygame.transform.scale(pygame.image.load(r"data/Sprites/potionLiquid.png").convert_alpha(), Vector2(10, 10))
 
-    bottle_sprite = pygame.transform.scale(pygame.image.load(r"data/Sprites/potionFlask.png").convert_alpha(), (30, 30))
+    bottle_sprite = pygame.transform.scale(pygame.image.load(r"data/Sprites/potionFlask.png").convert_alpha(), Vector2(10, 10))
 
     def __init__(self, position: Vector2, effect: "Effect"):
-        super().__init__(position, Vector2(30, 30), r"data/Sprites/potionFlask.png", Vector2(0, -10))
+        super().__init__(position, Vector2(10, 10), r"data/Sprites/potionFlask.png", Vector2(0, 0))
 
         self.effect = effect
+
+        image = pygame.image.load(r"data/Sprites/potionLiquid.png").convert_alpha()
+        self.liquid = pygame.transform.scale(image, (int(self.size.x * Camera.zoom), int(self.size.y * Camera.zoom)))
+
 
     def Use(self):
         Player.player.AddEffect(self.effect)
@@ -781,25 +785,28 @@ class Potion(Consumable):
     def Render(self, screen, debug=False):
         screen_rect = Camera.get_screen_rect(self.rect)
 
-        # Redimensionner le liquide à la même taille que la bouteille (zoomée)
-        liquid_base = Potion.tint_surface(Potion.liquid_sprite, self.effect.color)
-        liquid = pygame.transform.scale(liquid_base, (int(self.size.x * Camera.zoom), int(self.size.y * Camera.zoom)))
+
+        liquid = Potion.tint_surface(self.liquid, self.effect.color)
 
         sprite_flask = self.sprite
 
-        # flip
         if not (-90 <= self.angle <= 90):
             sprite_flask = pygame.transform.flip(sprite_flask, False, True)
             liquid = pygame.transform.flip(liquid, False, True)
 
-        # rotation
         rotated_flask = pygame.transform.rotozoom(sprite_flask, self.angle, 1)
         rotated_liquid = pygame.transform.rotozoom(liquid, self.angle, 1)
 
-        rect = rotated_flask.get_rect(center=screen_rect.center)
+        center = (
+            int(screen_rect.centerx),
+            int(screen_rect.centery)
+        )
 
-        screen.blit(rotated_liquid, rect)
-        screen.blit(rotated_flask, rect)
+        flask_rect = rotated_flask.get_rect(center=center)
+        liquid_rect = rotated_liquid.get_rect(center=center)
+
+        screen.blit(rotated_liquid, liquid_rect)
+        screen.blit(rotated_flask, flask_rect)
 
         if debug:
             pygame.draw.rect(screen, (0, 0, 255), screen_rect, 1)
@@ -828,7 +835,7 @@ class Weapon(Object):
         self.LoadSprite(sprite, True)
 
         self.offset:Vector2 = offset
-        self.offset_distance:float = 20
+        self.offset_distance:float = 10
 
     def Render(self, screen, debug=False):
         screen_rect = Camera.get_screen_rect(self.rect)
@@ -879,7 +886,7 @@ class Weapon(Object):
 
 class MeleeWeapon(Weapon):
     def __init__(self, position: Vector2, size: Vector2, sprite:str, damage: float, attack_range: float, cooldown: float):
-        super().__init__(position, size, sprite, Vector2(0, -10))
+        super().__init__(position, size, sprite, Vector2(0, -5))
         self.damage:float = damage
         self.attack_range:float = attack_range
         self.cooldown:float = cooldown
@@ -891,7 +898,7 @@ class MeleeWeapon(Weapon):
         if self.attack_timer > 0:
             self.attack_timer -= dt
 
-    def Attack(self):
+    def Attack(self, target):
         if self.attack_timer > 0:
             return
 
@@ -900,7 +907,7 @@ class MeleeWeapon(Weapon):
         import math
 
         # angles du slash
-        slash_angles = [-25, 0, 25]
+        slash_angles = [-30, 0, 30]
 
         for offset in slash_angles:
             angle = self.angle + offset
@@ -912,12 +919,12 @@ class MeleeWeapon(Weapon):
 
             hitbox_pos = self.position + direction * self.attack_range
 
-            Hitbox(hitbox_pos, Vector2(30, 25), self.angle - 90, r"data/Sprites/slash.png", self.damage/3, False, 0.1, Player)
+            Hitbox(hitbox_pos, Vector2(15, 10), self.angle - 90, r"data/Sprites/slash.png", self.damage/3, False, 0.1, Player)
 
 class RangedWeapon(Weapon):
     def __init__(self, position: Vector2, size: Vector2, sprite:str, cooldown: float, angleDeviation: int, bullet: type["Projectile"]):
-        super().__init__(position, size, sprite, Vector2(10, 10))
-        self.attack_range:float = (self.size.x // 2) + 8
+        super().__init__(position, size, sprite, Vector2(5, 5))
+        self.attack_range:float = (self.size.x // 2)
         self.cooldown:float = cooldown
         self.bullet:type["Projectile"] = bullet
         self.angleDeviation:float = angleDeviation
@@ -1133,7 +1140,7 @@ class Harvestable(Entity):
         from pygame import Vector2
 
         angle = random.uniform(0, 360)
-        distance = random.uniform(5, 20)
+        distance = random.uniform(2, 10)
 
         offset = Vector2(distance, 0).rotate(angle)
 
@@ -1143,7 +1150,7 @@ class Harvestable(Entity):
 
 class DroppedStack(Object):
     def __init__(self, position, stack: "ItemStack", destroyOnLoad=True):
-        super().__init__(position, pygame.Vector2(40, 40), destroyOnLoad)
+        super().__init__(position, pygame.Vector2(10, 10), destroyOnLoad)
         self.LoadSprite(stack.resource.icon, False)
         self.stack:"ItemStack" = stack
 
