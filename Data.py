@@ -273,9 +273,9 @@ class NPC1(NPC):
             sprite=r"data/sprites/cochonTronc.png",
             interactRadius=30,
             dialogueQueue=Queue(
-                Dialogue("Jeune prince Ljubazni Junak !!! Je vous attendais !", 2), 
-                Dialogue("Pendant votre absence, le dragon maléfique Gnusni Zlikovac a envahi le royaume avec ses sbires.", 3),
-                Dialogue("Votre père, le roi, fut dévoré par le dragon après 3 jours de combats", 3),
+                Dialogue("Jeune prince Ljubazni Junak !!! Je vous attendais !", 3), 
+                Dialogue("Pendant votre absence, le dragon maléfique Gnusni Zlikovac a envahi le royaume avec ses sbires.", 4),
+                Dialogue("Votre père, le roi, fut dévoré par le dragon après 3 jours de combats,", 4),
                 Dialogue("Par pitié, libérez le royaume de son joug et terrassez les sbires du dragon !", 5)
             ),
             name="Chambellan"
@@ -289,9 +289,9 @@ class NPC2(NPC):
             sprite=r"data/sprites/toruk_makto.png",
             interactRadius=30,
             dialogueQueue=Queue(
-                Dialogue("Vous voila enfin de retour, jeune prince !", 2), 
-                Dialogue("N'oubliez pas l'entraînement que je vous ai prodigué ces 10  dernières années", 4),
-                Dialogue("Utilisez ZQSD pour vous déplacer et clic-gauche pour attaquer.", 3)
+                Dialogue("Vous voila enfin de retour, jeune prince !", 3), 
+                Dialogue("N'oubliez pas l'entraînement que je vous ai prodigué ces 10 dernières années,", 3),
+                Dialogue("Utilisez ZQSD pour vous déplacer et clic-gauche pour attaquer.", 5)
             ),
             name="Maitre d'armes"
         )
@@ -301,13 +301,13 @@ class NPC3(NPC):
         super().__init__(
             position=position,
             size=Vector2(15, 15),
-            sprite=r"data/sprites/paysan.png",
+            sprite=r"data/sprites/paysanDos.png",
             interactRadius=30,
             dialogueQueue=Queue(
-                Dialogue("Vous voulez récolter ce bois ci ?", 2), 
-                Dialogue("Pas de problème, mettez-y quelques coup d'épée pour les couper", 2),
-                Dialogue("Regardez intensément les souches coupées pour les récupérer", 2),
-                Dialogue("Je vous rappelle que votre sac à dos s'ouvre en appuyant sur E.", 2)
+                Dialogue("Vous voulez récolter ce bois ci ?", 3), 
+                Dialogue("Pas de problème, mettez-y quelques coup d'épée pour les couper,", 3),
+                Dialogue("Regardez intensément les souches coupées pour les récupérer,", 3),
+                Dialogue("Je vous rappelle que votre sac à dos s'ouvre en appuyant sur E.", 4)
             ),
             name="Bûcheron"
         )
@@ -317,15 +317,45 @@ class NPC4(NPC):
         super().__init__(
             position=position,
             size=Vector2(15, 15),
-            sprite=r"data/sprites/paysanDos.png",
+            sprite=r"data/sprites/paysan.png",
             interactRadius=30,
             dialogueQueue=Queue(
                 Dialogue("Messire, messire !", 2), 
-                Dialogue("Les ignobles cochons troncs ont envahi la plaine voisine ;", 2),
+                Dialogue("Les ignobles cochons troncs ont envahi la plaine voisine ;", 3),
                 Dialogue("Il pourraient attaquer ma ferme et ma famille à n'importe quel moment", 3),
-                Dialogue("Je vous implore de les terrasser au plus vite possible!", 2)
+                Dialogue("Je vous implore de les terrasser au plus vite possible!", 3)
             ),
             name="Paysan"
+        )
+
+class NPC5(NPC):
+    def __init__(self, position:Vector2):
+        super().__init__(
+            position=position,
+            size=Vector2(15, 15),
+            sprite=r"data/sprites/paysan.png",
+            interactRadius=30,
+            dialogueQueue=Queue(
+                Dialogue("Comment forger ?", 3), 
+                Dialogue("Il faut aller demander au maître artisan, il est emprisonné par les taupes maléfiques au fond de la mine!", 4),
+                Dialogue("Allez le lui demander en personne, il est très sympathique!", 3)
+            ),
+            name="Mineur"
+        )
+
+class NPC6(NPC):
+    def __init__(self, position:Vector2):
+        super().__init__(
+            position=position,
+            size=Vector2(15, 15),
+            sprite=r"data/sprites/paysan.png",
+            interactRadius=30,
+            dialogueQueue=Queue(
+                Dialogue("Comment forger ?", 3), 
+                Dialogue("C'est très simple voyons !", 3),
+                Dialogue("Il suffit de disposer des bon matériaux et d'appuyer sur C.", 4)
+            ),
+            name="Maître artisan"
         )
 
 
@@ -333,7 +363,9 @@ NPCS: dict[str, type[NPC]] ={
     "NPC1": NPC1,
     "NPC2": NPC2,
     "NPC3": NPC3,
-    "NPC4": NPC4
+    "NPC4": NPC4,
+    "NPC5": NPC5,
+    "NPC6": NPC6
 }
 
 ######################## EFFECTS

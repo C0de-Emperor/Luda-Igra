@@ -357,7 +357,7 @@
   <object id="42" x="419.5" y="387.417" width="9" height="26.5"/>
  </objectgroup>
  <objectgroup id="7" name="NPC">
-  <object id="38" name="NPC1" x="368" y="592">
+  <object id="38" name="NPC1" x="352" y="544">
    <point/>
   </object>
   <object id="39" name="NPC2" x="368" y="624">
