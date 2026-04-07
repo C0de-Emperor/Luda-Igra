@@ -53,11 +53,12 @@ class Scene:
 
 
         self.tilemap.map_layer = pyscroll.orthographic.BufferedRenderer(
-            self.tilemap.map_data, SCREEN.get_size()
+            self.tilemap.map_data, SCREEN.get_size(), zoom=1
         )
         self.tilemap.group = pyscroll.PyscrollGroup(self.tilemap.map_layer, default_layer=0)
 
 SCENES = {
     "carte" : Scene("carte"),
-    "dungeon": Scene("donjon")
+    "dungeon": Scene("donjon"),
+    "farm": Scene("farm")
 }
