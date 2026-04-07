@@ -273,9 +273,9 @@ class NPC1(NPC):
             sprite=r"data/sprites/cochonTronc.png",
             interactRadius=30,
             dialogueQueue=Queue(
-                Dialogue("Jeune prince Ljubazni Junak !!! Je vous attendais !", 3), 
-                Dialogue("Pendant votre absence, le dragon maléfique Gnusni Zlikovac a envahi le royaume avec ses sbires.", 4),
-                Dialogue("Votre père, le roi, fut dévoré par le dragon après 3 jours de combats,", 4),
+                Dialogue("Jeune prince Ljubazni Junak !!! Je vous attendais !", 5), 
+                Dialogue("Pendant votre absence, le dragon maléfique Gnusni Zlikovac a envahi le royaume avec ses sbires.",7),
+                Dialogue("Votre père, le roi, fut dévoré par le dragon après 3 jours de combats,", 6),
                 Dialogue("Par pitié, libérez le royaume de son joug et terrassez les sbires du dragon !", 5)
             ),
             name="Chambellan"
@@ -289,9 +289,9 @@ class NPC2(NPC):
             sprite=r"data/sprites/toruk_makto.png",
             interactRadius=30,
             dialogueQueue=Queue(
-                Dialogue("Vous voila enfin de retour, jeune prince !", 3), 
-                Dialogue("N'oubliez pas l'entraînement que je vous ai prodigué ces 10 dernières années,", 3),
-                Dialogue("Utilisez ZQSD pour vous déplacer et clic-gauche pour attaquer.", 5)
+                Dialogue("Vous voila enfin de retour, jeune prince !", 5), 
+                Dialogue("N'oubliez pas l'entraînement que je vous ai prodigué ces 10 dernières années,", 5),
+                Dialogue("Utilisez ZQSD pour vous déplacer et clic-gauche pour attaquer.", 7)
             ),
             name="Maitre d'armes"
         )
@@ -304,10 +304,10 @@ class NPC3(NPC):
             sprite=r"data/sprites/paysanDos.png",
             interactRadius=30,
             dialogueQueue=Queue(
-                Dialogue("Vous voulez récolter ce bois ci ?", 3), 
-                Dialogue("Pas de problème, mettez-y quelques coup d'épée pour les couper,", 3),
-                Dialogue("Regardez intensément les souches coupées pour les récupérer,", 3),
-                Dialogue("Je vous rappelle que votre sac à dos s'ouvre en appuyant sur E.", 4)
+                Dialogue("Vous voulez récolter ce bois ci ?", 5), 
+                Dialogue("Pas de problème, mettez-y quelques coup d'épée pour les couper,", 5),
+                Dialogue("Regardez intensément les souches coupées pour les récupérer,", 7),
+                Dialogue("Je vous rappelle que votre sac à dos s'ouvre en appuyant sur E.", 7)
             ),
             name="Bûcheron"
         )
@@ -321,9 +321,9 @@ class NPC4(NPC):
             interactRadius=30,
             dialogueQueue=Queue(
                 Dialogue("Messire, messire !", 2), 
-                Dialogue("Les ignobles cochons troncs ont envahi la plaine voisine ;", 3),
-                Dialogue("Il pourraient attaquer ma ferme et ma famille à n'importe quel moment", 3),
-                Dialogue("Je vous implore de les terrasser au plus vite possible!", 3)
+                Dialogue("Les ignobles cochons troncs ont envahi la plaine voisine ;", 5),
+                Dialogue("Il pourraient attaquer ma ferme et ma famille à n'importe quel moment", 5),
+                Dialogue("Je vous implore de les terrasser au plus vite possible!", 5)
             ),
             name="Paysan"
         )
@@ -336,9 +336,9 @@ class NPC5(NPC):
             sprite=r"data/sprites/paysan.png",
             interactRadius=30,
             dialogueQueue=Queue(
-                Dialogue("Comment forger ?", 3), 
-                Dialogue("Il faut aller demander au maître artisan, mais il est emprisonné par les taupes maléfiques au fond de la mine!", 4),
-                Dialogue("Allez le lui demander en personne, il est très sympathique!", 3)
+                Dialogue("Comment forger ?", 5), 
+                Dialogue("Il faut aller demander au maître artisan, mais il est emprisonné par les taupes maléfiques au fond de la mine!", 7),
+                Dialogue("Allez le lui demander en personne, il est très sympathique!", 5)
             ),
             name="Mineur"
         )
@@ -351,9 +351,9 @@ class NPC6(NPC):
             sprite=r"data/sprites/paysan.png",
             interactRadius=30,
             dialogueQueue=Queue(
-                Dialogue("Comment forger ?", 3), 
-                Dialogue("C'est très simple voyons !", 3),
-                Dialogue("Il suffit de disposer des bon matériaux et d'appuyer sur C.", 4)
+                Dialogue("Comment forger ?", 5), 
+                Dialogue("C'est très simple voyons !", 5),
+                Dialogue("Il suffit de disposer des bon matériaux et d'appuyer sur C.", 7)
             ),
             name="Maître artisan"
         )
@@ -366,8 +366,8 @@ class NPC7(NPC):
             sprite=r"data/sprites/paysan.png",
             interactRadius=30,
             dialogueQueue=Queue(
-                Dialogue("Les monstres ont saccagé toute la ville, toute ma famille a été dévorée,", 3), 
-                Dialogue("Vengez moi et terrassez ces ignobles monstres !", 4),
+                Dialogue("Les monstres ont saccagé toute la ville, toute ma famille a été dévorée,", 5), 
+                Dialogue("Vengez moi et terrassez ces ignobles monstres !", 5),
             ),
             name="Habitant"
         )
@@ -380,8 +380,8 @@ class NPC8(NPC):
             sprite=r"data/sprites/paysan.png",
             interactRadius=30,
             dialogueQueue=Queue(
-                Dialogue("J'ai entendu des exilés dire que le dragon a pris pied à l'ouest du royaume !", 3), 
-                Dialogue("Et d'autres m'ont confié qu'il y existe un portail magique, permettant de se mettre hors de portée du dragon !", 4),
+                Dialogue("J'ai entendu des exilés dire que le dragon a pris pied à l'ouest du royaume !", 7), 
+                Dialogue("Et d'autres m'ont confié qu'il y existe un portail magique, permettant de se mettre hors de portée du dragon !", 7),
             ),
             name="Tavernier"
         )
