@@ -55,20 +55,27 @@ class Dragon(RangeEnemy):
 
 class Taupe(MeleeEnemy):
     def __init__(self, position: pygame.Vector2):
+        from InventorySystem import STONE, GOLD_ORE
+
         super().__init__(
             position, 
             size = Vector2(20, 20), 
             sprite = r"data/Sprites/taupe.png", 
             baseHealth = 80, 
             attackDmg = 8, 
-            speed = 32, 
+            speed = 40, 
             sightRadius = 300, 
             wanderRadius = 400, 
             patrolDelay = 6, 
             stopDuration = 2,
             attackCooldown = 2,
-            attackRange = 50,
-            attackSprite=r"data/Sprites/slash.png"
+            attackRange = 30,
+            attackSprite=r"data/Sprites/slash.png",
+            lootTable=LootTable(
+                LootEntry(STONE, 1, 1, 8),
+                LootEntry(GOLD_ORE, 1, 1, 2),
+                rolls=1
+            )
         )
 
 class Tree(Harvestable):

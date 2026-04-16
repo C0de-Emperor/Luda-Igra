@@ -436,7 +436,7 @@ class SpawnArea(Object):
 
 
 class Enemy(Entity):
-    def __init__(self, position:Vector2, size:Vector2, sprite:str, baseHealth:float, attackDmg:float, speed:float, sightRadius:float, wanderRadius:float, patrolDelay:float, stopDuration: float):
+    def __init__(self, position:Vector2, size:Vector2, sprite:str, baseHealth:float, attackDmg:float, speed:float, sightRadius:float, wanderRadius:float, patrolDelay:float, stopDuration: float, lootTable:'LootTable'):
         super().__init__(position, size, speed, True, baseHealth)
         self.LoadSprite(sprite, True)
         import random
@@ -446,6 +446,8 @@ class Enemy(Entity):
         self.sightRadius:float = sightRadius
         self.patrolDelay:float = patrolDelay + random.randint(-patrolDelay//5, patrolDelay//5)
         self.stopDuration:float = stopDuration + random.randint(-stopDuration//5, stopDuration//5)
+
+        self.lootTable = lootTable
 
         self.directionTimer:float = 0
         self.stopTimer:float = -1
@@ -485,7 +487,8 @@ class Enemy(Entity):
         self.isChasing = distanceToPlayer.magnitude() <= self.sightRadius
 
         if self.isChasing:
-            direction =- distanceToPlayer.normalize()
+            direction = -distanceToPlayer.normalize()
+
         elif self.directionTimer > -1:
             self.directionTimer += dt
 
@@ -506,15 +509,16 @@ class Enemy(Entity):
                 
             return  
            
-
         colliders = Scene.currentScene.GetAllColliders([self, Player.player])
 
-        if direction.x != 0:
-            self.rect.x += direction.x * self.speed * dt
+        movement : Vector2 = direction * self.speed * dt
+
+        if movement.x != 0:
+            self.rect.x += movement.x
             self._check_collision(colliders, "x")
 
-        if direction.y != 0:
-            self.rect.y += direction.y * self.speed * dt
+        if movement.y != 0:
+            self.rect.y += movement.y
             self._check_collision(colliders, "y")
     
     def _check_collision(self, walls, axis):
@@ -533,6 +537,14 @@ class Enemy(Entity):
                     else:
                         self.rect.top = wall.bottom
 
+    def Die(self):
+        drops = self.lootTable.roll()
+
+        for drop in drops:
+            self.lootTable._spawn_drop(drop, self.position)
+
+        super().Die()
+
 class MeleeEnemy (Enemy):
     def __init__(self, position:Vector2, size:Vector2, sprite:str, baseHealth:float, attackDmg:float, speed:float, sightRadius:float, wanderRadius:float, patrolDelay:float, stopDuration: float, attackCooldown: float, attackRange: float, attackSprite:str, lootTable:'LootTable'):
         super().__init__(
@@ -545,10 +557,9 @@ class MeleeEnemy (Enemy):
             sightRadius, 
             wanderRadius, 
             patrolDelay, 
-            stopDuration
+            stopDuration,
+            lootTable
         )
-
-        self.lootTable:LootTable = lootTable
 
         self.attackCooldown:float = attackCooldown
         self.attackRange:float = attackRange   
@@ -597,28 +608,11 @@ class MeleeEnemy (Enemy):
             0.1,
             Enemy
         )
-    
-    def _spawn_drop(self, stack):
-        import random
-        from pygame import Vector2
 
-        angle = random.uniform(0, 360)
-        distance = random.uniform(2, 10)
 
-        offset = Vector2(distance, 0).rotate(angle)
-
-        DroppedStack(self.position + offset, stack)
-
-    def Die(self):
-        drops = self.lootTable.roll()
-
-        for drop in drops:
-            self._spawn_drop(drop)
-
-        super().Die()
 
 class RangeEnemy (Enemy):
-    def __init__(self, position:Vector2, size:Vector2, sprite:str, baseHealth:float, attackDmg:float, speed:float, sightRadius:float, wanderRadius:float, patrolDelay:float, stopDuration: float, attackCooldown: float, attackRange: float, bullet:type["Projectile"], angleDeviation:float):
+    def __init__(self, position:Vector2, size:Vector2, sprite:str, baseHealth:float, attackDmg:float, speed:float, sightRadius:float, wanderRadius:float, patrolDelay:float, stopDuration: float, attackCooldown: float, attackRange: float, bullet:type["Projectile"], angleDeviation:float, lootTable : 'LootTable'):
         super().__init__(
             position, 
             size,
@@ -629,7 +623,8 @@ class RangeEnemy (Enemy):
             sightRadius, 
             wanderRadius, 
             patrolDelay, 
-            stopDuration
+            stopDuration,
+            lootTable
         )
 
         self.attackCooldown:float = attackCooldown
@@ -715,11 +710,6 @@ class NPC(Object):
             pygame.draw.rect(screen, (255, 0, 0), screen_rect, 1)
 
             pygame.draw.circle(screen, (255, 255, 0), screen_rect.center, int(self.interactRadius * Camera.zoom), 1)
-
-
-
-
-
 
 
 
@@ -1130,6 +1120,16 @@ class LootTable:
 
         return drops
 
+    def _spawn_drop(self, stack, position):
+        import random
+        from pygame import Vector2
+
+        angle = random.uniform(0, 360)
+        distance = random.uniform(2, 10)
+
+        offset = Vector2(distance, 0).rotate(angle)
+
+        DroppedStack(position + offset, stack)
 
 
 class Harvestable(Entity):
