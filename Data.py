@@ -265,6 +265,7 @@ class FireBall(Projectile):
 ##################### DIALOGUES
 ################################
 
+
 class NPC1(NPC):
     def __init__(self, position:Vector2):
         super().__init__(

@@ -1,6 +1,6 @@
 import pygame
 from Tools import Queue
-from Data import RocketLaucher, SpeedPotion, RegenPotion, HealthPotion
+from Data import RocketLaucher, SpeedPotion, RegenPotion, HealthPotion, FlameThrower, MiniGun
 
 from typing import TYPE_CHECKING
 
@@ -139,10 +139,11 @@ class ItemRecipe(Recipe):
         return True
  
 class WeaponRecipe(Recipe):
-    def __init__(self, inputs: list[ItemStack], output: type["Weapon"], duration: float):
+    def __init__(self, inputs: list[ItemStack], output: type["Weapon"], repeatable : bool, duration: float):
         super().__init__(inputs, duration)
 
         self.output:type["Weapon"] = output
+        self.repeatable = repeatable
     
     def craft(self):
         from Objects import Player
@@ -161,7 +162,9 @@ class WeaponRecipe(Recipe):
             Player.player.inventory.remove(stack.resource, stack.amount)
 
         CraftingManager.craftingQueue.enqueue(self)
-        self.isCraftable = False
+
+        if not self.repeatable:
+            self.isCraftable = False
 
         return True
 
@@ -195,6 +198,24 @@ ROCKETLAUNCHER_FROM_IRON = WeaponRecipe([
         ItemStack(IRON, 24)
     ],
     RocketLaucher,
+    repeatable=False,
+    duration=2
+)
+
+FLAMMETHROWER_FROM_IRON_AND_GOLD = WeaponRecipe([
+        ItemStack(IRON, 10),
+        ItemStack(GOLD, 1),
+    ],
+    FlameThrower,
+    repeatable=False,
+    duration=4
+)
+
+MINIGUN_FROM_IRON = WeaponRecipe([
+        ItemStack(IRON, 10)
+    ],
+    MiniGun,
+    repeatable=False,
     duration=2
 )
 
@@ -202,6 +223,7 @@ SPEED_POTION_FROM_GOLD = WeaponRecipe([
         ItemStack(GOLD, 3)
     ],
     SpeedPotion,
+    repeatable=True,
     duration=3
 )
 
@@ -209,6 +231,7 @@ REGEN_POTION_FROM_GOLD = WeaponRecipe([
         ItemStack(GOLD, 3)
     ],
     RegenPotion,
+    repeatable=True,
     duration=3
 )
 
@@ -216,6 +239,7 @@ HEALTH_POTION_FROM_GOLD = WeaponRecipe([
         ItemStack(GOLD, 3)
     ],
     HealthPotion,
+    repeatable=True,
     duration=3
 )
 
