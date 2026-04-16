@@ -6,6 +6,8 @@ from DialogueSystem import Dialogue
 
 class CochonTronc(MeleeEnemy):
     def __init__(self, position: pygame.Vector2):
+        from InventorySystem import PORC
+
         super().__init__(
             position, 
             size = Vector2(20, 20), 
@@ -19,7 +21,11 @@ class CochonTronc(MeleeEnemy):
             stopDuration = 2,
             attackCooldown = 2,
             attackRange = 50,
-            attackSprite=r"data/Sprites/slash.png"
+            attackSprite=r"data/Sprites/slash.png",
+            lootTable=LootTable(
+                LootEntry(PORC, 2, 4, 1),
+                rolls=1
+            )
         )
 
 class Dragon(RangeEnemy):

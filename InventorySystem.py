@@ -75,6 +75,8 @@ GOLD = Resource("Gold Ingot", r"data/Sprites/gold.png")
 GOLD_ORE = Resource("Gold Ore", r"data/Sprites/goldOre.png")
 COAL = Resource("Coal", r"data/Sprites/coal.png")
 
+PORC = Resource("Porc", r"data/Sprites/porc.png")
+
 class CraftingManager:
     recipes: list["Recipe"] = []
     craftingQueue: Queue["Recipe"] = Queue()
@@ -228,7 +230,8 @@ SPEED_POTION_FROM_GOLD = WeaponRecipe([
 )
 
 REGEN_POTION_FROM_GOLD = WeaponRecipe([
-        ItemStack(GOLD, 3)
+        ItemStack(GOLD, 3),
+        ItemStack(PORC, 1)
     ],
     RegenPotion,
     repeatable=True,
