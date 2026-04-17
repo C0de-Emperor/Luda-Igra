@@ -30,6 +30,8 @@ class CochonTronc(MeleeEnemy):
 
 class Dragon(RangeEnemy):
     def __init__(self, position: pygame.Vector2):
+        from InventorySystem import GOLD_ORE
+
         super().__init__(
             position, 
             size = Vector2(30, 30), 
@@ -44,7 +46,11 @@ class Dragon(RangeEnemy):
             attackCooldown = 0.1,
             attackRange = 500,
             bullet = FireBall,
-            angleDeviation=40
+            angleDeviation=40,
+            lootTable=LootTable(
+                LootEntry(GOLD_ORE, 1, 4, 1),
+                rolls=1
+            )
         )
     
     def Die(self):

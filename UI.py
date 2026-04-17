@@ -467,24 +467,3 @@ class DialogueUI(UIElement):
         NPCRect=pygame.Rect(x-20, y-20, 0, 0)
         NPCSprite=pygame.transform.scale(NPCSprite, (100, 100*NPCSprite.get_width()/NPCSprite.get_height()))
         screen.blit(NPCSprite, NPCRect)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
